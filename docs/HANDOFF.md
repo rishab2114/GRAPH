@@ -11,6 +11,7 @@ Read this first if you are a new Claude Code session, local or cloud. Then read 
 | Multi-split study (3 splits × 3 edge sets × 8 methods) | `src/gffs/study.py`, `docs/results/study.md` | Popularity wins. Structure adds a small signal only within popularity bands |
 | Pre-registration (resolves with the first ATT&CK release on or after 2027-10-01) | `PREREGISTRATION.md` | Do not edit |
 | Phase 0: Elliptic check | `src/gffs/{elliptic,phase0}.py`, `docs/phase0-decision.md` | Facts verified; dark-market collapse reproduced; recent-window stress test: recall ρ ≈ 0, +24 pt error across the shift |
+| AML vocabulary v1, frozen before counting | `config/aml_vocabulary.toml`, `src/gffs/aml_vocab.py` | 14 concepts (8 expressible as Elliptic motifs), 91 pairs (28 expressible). Scope anchor terms filter out other senses |
 | Impact4Cast control (sparse concept graph) | `src/gffs/concept_control.py`, `docs/results/control.md` | Prediction committed; **check whether the result section is filled in** |
 
 ## Decisions made by the owner
@@ -21,8 +22,9 @@ Read this first if you are a new Claude Code session, local or cloud. Then read 
 
 ## Next steps
 
-1. **Write the vocabulary** of graph-observable AML red flags in `config/aml_vocabulary.toml`, with
-   synonyms for each concept. Commit it **before** counting anything.
+1. ~~Write the vocabulary~~ **Done** (v1). Do not edit it: any change goes in a new versioned file,
+   with a note saying why. Risk: with only 14 nodes, the 2016 graph may already be nearly complete,
+   leaving few unseen pairs to forecast. If so, report that as a result; don't add concepts to fix it.
 2. **Build the literature graph:** query the OpenAlex API (`api.openalex.org/works`, filtered by
    `to_publication_date`) for works mentioning each concept. Nodes are concepts. An edge means the two
    concepts appear in the same work, dated by publication year. Freeze the graph at end of 2016.
