@@ -65,3 +65,89 @@ data? Has anyone forecast new attack-technique combinations, or used hyperbolic 
   is what we improve on.
 - **Caveat:** this was a web search, not a systematic review. A paper could still exist that these searches missed.
   Before any submission, run a citation-trail search from SynthAML and Weber et al. 2019.
+
+---
+
+## 2026-11-18 19:00 — Step B, design (written before running anything)
+
+**Question.** Are the 8 Elliptic-expressible motifs more common among illicit transactions than licit ones?
+If none are, scenarios built from them cannot stress-test a detector, and step 4 needs rethinking.
+
+**Rules, fixed now:**
+- **Data:** time steps **1–34 only** (the training period). Steps 35–49 stay untouched for E3/E4.
+- **Graph:** `elliptic_txs_edgelist.csv`, a directed transaction → transaction graph. Degrees are counted on the
+  whole graph; no edge crosses time steps, so this equals counting within each step.
+- **Thresholds:** k = ceil(max(95th percentile of in-degree, 95th percentile of out-degree)) over **all** step 1–34
+  transactions, labelled or not. L = ceil(max(95th percentile of peel-run length, 95th percentile of depth)),
+  chosen the same way. Labels play no part in choosing thresholds. (Wording clarified before any run.)
+- **Motifs per transaction:**
+  - fan_in: in ≥ k
+  - fan_out: out ≥ k
+  - coinjoin: in ≥ k and out ≥ k
+  - pass_through: in = 1 and out = 1
+  - peel_chain: lies on a run of ≥ L consecutive "peel" transactions (in = 1, out ≤ 2; the last one may have out = 0,
+    which matches the vocabulary's "inner transactions" wording)
+  - layering: longest path ending here ≥ L
+  - mixing: coinjoin, and also next to another coinjoin transaction
+  - smurfing: out ≥ k, and two of its successors reach a common transaction within 3 hops
+- **Ruling:** the vocabulary defines layering as a path from an *illicit-labelled* source. Using labels in a
+  motif would leak the answer into detector inputs, so I use the label-free depth version above.
+  *Cost if wrong:* layering is measured as "deep paths" instead of "deep paths from known illicit transactions".
+- **Output:** for each motif, its rate among illicit and among licit transactions, the lift (illicit ÷ licit)
+  with a 95% Wilson interval for each rate, and how many illicit transactions show each *pair* of motifs. The pair
+  counts preview which of the 28 expressible scenario pairs exist at all in real illicit data.
+
+---
+
+## 2026-11-18 19:20 — Step B, results and recheck
+
+**Run.** `python -m gffs.motifs` on time steps 1–34 (136,265 transactions, 156,843 payment links, 34 components,
+one per step; 3,462 illicit and 26,432 licit labelled). Thresholds from the frozen rule: **k = 2, L = 200.**
+The output is in `results/motifs_elliptic.json`.
+
+**Result under the frozen rules:**
+
+| Motif | Illicit rate | Licit rate | Lift (illicit ÷ licit) |
+|---|---|---|---|
+| pass_through | 38.9% | 19.6% | **1.98** |
+| fan_out | 6.2% | 23.8% | 0.26 |
+| fan_in | 3.5% | 23.2% | 0.15 |
+| smurfing | 0.1% | 1.7% | 0.07 |
+| coinjoin | 0.2% | 3.7% | 0.05 |
+| mixing_service | 0.0% | 1.8% | 0.02 |
+| peel_chain | 0.0% | 0.2% | 0.00 |
+| layering | 0.0% | 1.2% | 0.00 |
+
+**Recheck. Was this a bug?** I looked at the raw distributions by class. This is descriptive only, and not used
+to change any rule.
+
+| Feature (95th / 99th percentile) | Illicit | Licit | Unlabelled |
+|---|---|---|---|
+| in-degree | 1 / 4 | 6 / 23 | 2 / 5 |
+| out-degree | 2 / 2 | 2 / 5 | 2 / 5 |
+| peel-run length | **182 / 182** | 14 / 74 | 363 / 1,248 |
+| path depth | 55 / 147 | 56 / 211 | 171 / 592 |
+
+- **No bug.** The graph is very sparse: half of all transactions have exactly one input link and one output link.
+  So k = 2 is genuinely the 95th percentile.
+- **The threshold rule was a poor choice for chains.** L = 200 comes mostly from *unlabelled* transactions, whose
+  peel runs are much longer. Labelled illicit transactions *do* sit on long peel runs: 5% are on runs of 182 or more,
+  against 14 for licit. The frozen L just misses them. **Lesson:** a percentile over all transactions is dominated by the
+  77% that are unlabelled. A future rule should be fixed in advance on a principled scale, not a percentile of a skewed mix.
+  I am not changing the rule after seeing labels. Any new rule goes in a new versioned design, and is tested only on new data.
+
+**What this finding means.**
+- **On Elliptic, illicit transactions look like *chains*, not *hubs*.** They are 2× more often pass-through, they
+  sit on long peel runs, and they are 4–40× *less* often fan-in, mixer or CoinJoin hubs.
+- **Most of the classic typology motifs are negatively associated with illicit labels here.** One likely reason is that
+  Elliptic's labelled illicit set comes from particular categories (scams, malware, ransomware, Ponzi schemes and so on;
+  Weber et al. 2019), not from mixing services.
+
+**What this changes for the project:**
+1. **Scenarios built from hub motifs** (fan-in, mixing, CoinJoin, smurfing) will look *licit* to a detector trained on
+   Elliptic. That is not a failure. It is exactly the **blind spot** the project is meant to expose. But it means the
+   stress test will report low recall for them, and E3/E4 will check whether real later illicit activity shows the same blind spot.
+2. **Pass-through and long peel chains are the motifs real illicit activity already uses.** Scenarios combining them are
+   the "familiar" end of the spectrum. A good stress test should contain both ends.
+3. **Next step:** write the E3/E4 design (the detectors, their inputs, how scenarios are injected, the metrics) and
+   commit it **before** anything touches steps 35–49.
