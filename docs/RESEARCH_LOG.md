@@ -151,3 +151,25 @@ to change any rule.
    the "familiar" end of the spectrum. A good stress test should contain both ends.
 3. **Next step:** write the E3/E4 design (the detectors, their inputs, how scenarios are injected, the metrics) and
    commit it **before** anything touches steps 35–49.
+
+---
+
+## 2026-11-18 19:35 — Step C: freeze the E3/E4 design before touching steps 35–49
+
+**Why now.** The core experiment is the only step that reads the untouched period. Fixing every choice first
+(detectors, thresholds, scenario construction, metrics, what counts as success) is what makes the result
+trustworthy. It is also what SynthAML did not do.
+
+**Key choices, and the reasons for them** (full text in `docs/e3e4-design.md`):
+- **Graph-only detectors.** Synthetic transactions cannot have Elliptic's anonymised features, and the detector
+  must score real and synthetic transactions with the same function. *Cost:* the conclusions cover graph-feature
+  detectors only.
+- **Three comparison stress tests:** S0 recent data, S2 uniform pairs, S3 single motifs. Beating S0 shows value
+  over doing nothing clever. Beating S2 shows that the *forecast* matters, not just "any synthetic motifs".
+- **Scenario sizes come from the training-period illicit distributions,** not from a percentile over all
+  transactions. This fixes the Step B lesson *in advance*, for data not yet seen.
+- **I wrote down the most likely failure in advance:** detectors may flag almost no hub-motif scenarios, which
+  would make E3 uninformative.
+
+**Next:** build the parts that do not read steps 35–49: graph-feature detectors, the scenario generator and
+injection, and S0/S2/S3. Test them on training-period data. S1 waits for tonight's literature run.
