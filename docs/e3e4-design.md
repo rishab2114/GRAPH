@@ -94,3 +94,11 @@ computed from their own steps' edges, exactly as for training.
   E3 fails by design. This would be a real finding about these scenarios, not a bug.
 - **One dataset and one cutoff** (34) for the main result. The rolling cutoffs from Phase 0 (24, 29, 39) are a
   robustness check, reported with the main result.
+
+## Deviations
+
+- **2026-11-18 19:55 — chain-length sampling counts each chain once.** The design says L is drawn "from real
+  illicit peel-run lengths". The first implementation drew it per *transaction*, so a chain of 182 transactions
+  had 182 times the weight of a chain of 1. Now each transaction is weighted by 1/L, so each chain counts once,
+  which is what the design meant. This was found in a training-data-only dry run, before any step 35–49 data was
+  read. Test: `test_size_sampler_counts_each_chain_once_not_each_transaction`.

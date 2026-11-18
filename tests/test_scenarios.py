@@ -39,3 +39,16 @@ def test_graph_features_include_neighbour_aggregates():
     f = graph_features(g)
     assert f.loc["c", "pred_mean_out_deg"] == 1 and f.loc["c", "succ_max_in_deg"] == 1
     assert f.loc["a", "pred_mean_out_deg"] == 0                        # no predecessors -> 0
+
+
+def test_size_sampler_counts_each_chain_once_not_each_transaction():
+    import pandas as pd
+    from gffs.scenarios import size_sampler_from
+    # one chain of length 100 (100 transactions) and 100 chains of length 2 (200 transactions)
+    runs = [100] * 100 + [2] * 200
+    f = pd.DataFrame({"in_deg": [1] * 299 + [3], "out_deg": [1] * 300, "peel_run": runs})
+    y = pd.Series([1] * 300)
+    s = size_sampler_from(f, y)
+    rng = np.random.default_rng(0)
+    Ls = [s(rng)[1] for _ in range(4000)]
+    assert abs(np.mean(np.array(Ls) == 100) - 1 / 101) < 0.01   # 1 long chain among 101 chains

@@ -49,8 +49,12 @@ def motif_subgraph(name: str, k: int, L: int, prefix: str) -> Sub:
     raise ValueError(f"unknown motif {name!r}")
 
 
-def scenario(pair: tuple[str, str], k: int, L: int, prefix: str) -> tuple[list, list, object]:
-    """Motif A's exit feeds motif B's entry. Returns nodes, edges and the scenario's entry node."""
+def scenario(pair: tuple[str, ...], k: int, L: int, prefix: str) -> tuple[list, list, object]:
+    """Motif A's exit feeds motif B's entry. Returns nodes, edges and the scenario's entry node.
+    A one-element tuple gives a single-motif scenario (stress test S3)."""
+    if len(pair) == 1:
+        nodes, edges, entry, _ = motif_subgraph(pair[0], k, L, prefix + ":A")
+        return nodes, edges, entry
     na, ea, ina, outa = motif_subgraph(pair[0], k, L, prefix + ":A")
     nb, eb, inb, _ = motif_subgraph(pair[1], k, L, prefix + ":B")
     return na + nb, ea + eb + [(outa, inb)], ina
@@ -79,7 +83,10 @@ def size_sampler_from(train_features: pd.DataFrame, train_y: pd.Series) -> Calla
     ls = ill["peel_run"][ill["peel_run"] >= 2].to_numpy().astype(int)
     if len(ks) == 0 or len(ls) == 0:
         raise ValueError("no illicit hub or peel examples to draw sizes from")
-    return lambda rng: (int(rng.choice(ks)), int(rng.choice(ls)))
+    # A chain of length L contributes L transactions; weight each by 1/L so every chain counts once.
+    w = 1.0 / ls
+    w = w / w.sum()
+    return lambda rng: (int(rng.choice(ks)), int(rng.choice(ls, p=w)))
 
 
 def graph_features(g: nx.DiGraph) -> pd.DataFrame:

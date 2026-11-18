@@ -173,3 +173,28 @@ trustworthy. It is also what SynthAML did not do.
 
 **Next:** build the parts that do not read steps 35–49: graph-feature detectors, the scenario generator and
 injection, and S0/S2/S3. Test them on training-period data. S1 waits for tonight's literature run.
+
+---
+
+## 2026-11-18 19:55 — Step D: E3/E4 harness built; training-only dry run
+
+**Built:** `src/gffs/scenarios.py` (motif subgraphs, pair scenarios, injection, graph features) and
+`src/gffs/e3e4.py` (10 graph-only detectors, 5% false-positive thresholds, stress tests S0–S3 and S1, bootstrap
+agreement and paired comparisons). 92 tests pass. Each of the 8 generated motifs is checked against the
+Step B motif detector, so the generator and the detector cannot silently disagree.
+
+**Not run on steps 35–49.** The design evaluates all stress tests together once S1 exists (after tonight's
+literature run). That way no result can be seen before every input is fixed.
+
+**Dry run on steps 1–34 only** (to catch crashes and time the run, about 10 s):
+- Graph features for 136,265 training transactions; injection of 200 peel_chain → fan_in instances (16,044
+  synthetic transactions).
+- A random forest fitted on steps 1–28 flags **0.2%** of those synthetic transactions at its 5% false-positive threshold.
+  → **The weakness predicted in the design is real:** graph detectors trained on Elliptic see these
+  scenarios as licit. If this holds across scenarios, stress-test recall will be near 0 for every detector, and
+  E3 cannot rank them. This is on record *before* the holdout is read.
+- **Bug found:** chain length L was sampled per transaction, so one 182-transaction illicit chain dominated
+  (L = 182 in 2 of 6 draws). Fixed so each chain counts once (test first, red then green). Logged as a deviation
+  in the design file.
+
+**Next:** review the new code with fresh eyes (bugs, leakage paths), then wait for the 00:10 UTC literature run.
