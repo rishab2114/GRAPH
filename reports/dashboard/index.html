@@ -1,0 +1,423 @@
+<meta name="dash-one-writer">
+<style>
+.gf { display: grid; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.gf-lede { font-size: var(--cds-font-size-heading); max-width: 70ch; line-height: 1.45; margin: 0; }
+.gf-sec { display: grid; gap: var(--cds-gap-md); }
+.gf-sec > h2 { font-size: var(--cds-font-size-title); font-family: var(--font-anthropic-serif); font-weight: 400; margin: 0; }
+.gf-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-body); max-width: 75ch; margin: 0; line-height: 1.5; }
+.gf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--cds-gap-lg); }
+.gf-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); min-width: 0; align-content: start; }
+.gf-card h3 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.gf-cap { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0; line-height: 1.45; }
+.gf-chart { position: relative; min-height: 260px; min-width: 0; }
+.gf-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.gf-chart text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.gf-chart .gf-lab { fill: var(--color-fg); }
+.gf-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); line-height: 1.45; white-space: nowrap; font-variant-numeric: tabular-nums; z-index: 2; }
+.gf-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.gf-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.gf-sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.gf-row { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+.gf-scroll { overflow-x: auto; }
+.gf table { border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; width: 100%; }
+.gf th, .gf td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.gf th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.gf-pending { border-style: dashed; }
+</style>
+
+<div class="gf">
+  <p class="gf-lede" id="lede">Across 9 ATT&amp;CK settings the popularity baseline reaches AUC <b data-draw="fmin" data-source="attack_summary" data-field="freq_auc_min" data-row="0">—</b>–<b data-draw="fmax" data-source="attack_summary" data-field="freq_auc_max" data-row="0">—</b>. The trained graph model beats it in only <b data-draw="lrwins" data-source="attack_summary" data-field="logreg_all_wins" data-row="0">—</b> of 9, yet on a sparse research graph the same model gains <b data-draw="cgain" data-source="control_impact4cast" data-field="diff_vs_freq" data-where="method=logreg_all">—</b> AUC, so density, not the method, is the problem. On Elliptic, the best detector's catch rate falls from <b data-draw="rfb" data-source="elliptic_detectors" data-field="recall_before_43" data-where="detector=rf_af">—</b> to <b data-draw="rfa" data-source="elliptic_detectors" data-field="recall_after_43" data-where="detector=rf_af">—</b> after the dark-market shutdown, and a recent-data stress test overstates it by <b data-draw="err39" data-source="elliptic_stress_backtest" data-field="signed_error" data-where="cutoff=39&amp;metric=recall">—</b>.</p>
+
+  <section class="gf-sec" id="attack">
+    <h2>1. Forecasting new ATT&amp;CK technique pairs</h2>
+    <p class="gf-note">Each setting freezes the MITRE ATT&amp;CK graph at a release, then asks which unlinked technique pairs get documented together two years later. A method is useful only if it beats ranking pairs by how common each technique is (the popularity baseline).</p>
+    <div class="gf-grid">
+      <div class="gf-card" id="forest-card">
+        <h3>AUC gain over the popularity baseline</h3>
+        <div class="gf-row">
+          <select class="dash-select" id="method-select" aria-label="Method">
+            <option value="logreg_all">Logistic regression, all features</option>
+            <option value="logreg_popularity">Logistic regression, popularity only</option>
+            <option value="hgb_all">Gradient boosting, all features</option>
+            <option value="train_best_single">Best single feature (chosen on training data)</option>
+            <option value="structural_rank_mean">Structural rank (untrained)</option>
+            <option value="hybrid_rank_exploratory">Popularity + structure blend (exploratory)</option>
+          </select>
+        </div>
+        <div class="gf-chart" id="forest" data-draw="forest" data-source="attack_study"></div>
+        <p class="gf-cap">Dot = AUC minus the baseline's AUC; line = 95% bootstrap interval. Green: interval above zero (beats popularity). Red: interval below zero. Grey: no clear difference.</p>
+      </div>
+      <div class="gf-card" id="strat-card">
+        <h3>Signal beyond popularity</h3>
+        <div class="gf-legend"><span><i class="gf-sw" data-color="0"></i>Popularity baseline</span><span><i class="gf-sw" data-color="1"></i>Structural rank (untrained)</span></div>
+        <div class="gf-chart" id="strat" data-draw="strat" data-source="attack_study"></div>
+        <p class="gf-cap">AUC measured only between pairs of similar popularity (same decile). 0.5 means no signal once popularity is held fixed. Structure is ahead in every setting, but by a small margin.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="gf-sec" id="elliptic">
+    <h2>2. Elliptic: detectors and the dark-market shutdown</h2>
+    <p class="gf-note">Detectors trained on Bitcoin time steps 1–34 and scored on 35–49, the paper's split. A dark market closed at step 43.</p>
+    <div class="gf-grid">
+      <div class="gf-card" id="steps-card">
+        <h3>Performance per time step</h3>
+        <div class="gf-row">
+          <select class="dash-select" id="detector-select" aria-label="Detector">
+            <option value="rf_af">Random forest, all features</option>
+            <option value="extra_trees_af">Extra trees, all features</option>
+            <option value="hgb_af">Gradient boosting, all features</option>
+            <option value="rf_lf">Random forest, local features</option>
+            <option value="mlp_af">Neural net (MLP)</option>
+            <option value="knn_af">k-nearest neighbours</option>
+            <option value="tree_af">Decision tree</option>
+            <option value="lr_af">Logistic regression, all features</option>
+            <option value="lr_scaled_af">Logistic regression, scaled</option>
+            <option value="lr_lf">Logistic regression, local features</option>
+            <option value="nb_af">Naive Bayes</option>
+          </select>
+        </div>
+        <div class="gf-legend"><span><i class="gf-sw" data-color="0"></i>F1</span><span><i class="gf-sw" data-color="1"></i>Recall (catch rate)</span></div>
+        <div class="gf-chart" id="steps" data-draw="steps" data-source="elliptic_per_step"></div>
+      </div>
+      <div class="gf-card" id="shutdown-card">
+        <h3>Catch rate before and after the shutdown</h3>
+        <div class="gf-legend"><span><i class="gf-sw" data-color="0"></i>Steps 35–42</span><span><i class="gf-sw" data-color="1"></i>Steps 43–49</span></div>
+        <div class="gf-chart" id="shutdown" data-draw="shutdown" data-source="elliptic_detectors"></div>
+        <p class="gf-cap">Only Naive Bayes keeps catching illicit transactions after the shutdown, and it flags many innocent ones on the way.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="gf-sec" id="stress">
+    <h2>3. Does a recent-data stress test predict the later period?</h2>
+    <p class="gf-note">At each cutoff, every detector is scored on the last 6 time steps before the cutoff (the stress test) and on the next 10 steps (the real later period). This is the bar that graph-invented scenarios must beat.</p>
+    <div class="gf-grid">
+      <div class="gf-card" id="rank-card">
+        <h3>Does it rank the 11 detectors correctly?</h3>
+        <div class="gf-legend"><span><i class="gf-sw" data-color="0"></i>F1</span><span><i class="gf-sw" data-color="1"></i>Precision</span><span><i class="gf-sw" data-color="2"></i>Recall</span></div>
+        <div class="gf-chart" id="rank" data-draw="rank" data-source="elliptic_stress_backtest"></div>
+        <p class="gf-cap">Spearman rank correlation between stress-test and later scores. 1 = same order; 0 = no relation.</p>
+      </div>
+      <div class="gf-card" id="calib-card">
+        <h3>How far off is its catch rate?</h3>
+        <div class="gf-chart" id="calib" data-draw="calib" data-source="elliptic_stress_backtest"></div>
+        <p class="gf-cap">Average recall in the stress test minus the real later recall, in percentage points. Positive = the test promised more than detectors delivered.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="gf-sec" id="checks">
+    <h2>4. Checks</h2>
+    <div class="gf-grid">
+      <div class="gf-card" id="facts-card">
+        <h3>Elliptic facts against the original paper</h3>
+        <div class="gf-scroll">
+          <table data-source="elliptic_facts" data-row-key="fact">
+            <thead><tr><th data-field="fact">Fact</th><th data-field="published">Published</th><th data-field="observed">Observed</th><th data-field="match">Match</th></tr></thead>
+            <tbody data-draw="facts"></tbody>
+          </table>
+        </div>
+        <p class="gf-cap">Weber et al. 2019 (arXiv 1908.02591), section 2.1.</p>
+      </div>
+      <div class="gf-card" id="control-card">
+        <h3>Control: the same methods on a sparse research graph</h3>
+        <p class="gf-cap">The Impact4Cast physics-concept graph has density <b data-draw="cdens" data-source="control_impact4cast" data-field="density" data-row="0">—</b>, against <b data-draw="adensmin" data-source="attack_summary" data-field="density_min" data-row="0">—</b>–<b data-draw="adensmax" data-source="attack_summary" data-field="density_max" data-row="0">—</b> for ATT&amp;CK. There, structure clearly beats popularity, so the method works; ATT&amp;CK's dense graph is why it failed.</p>
+        <div class="gf-legend"><span><i class="gf-sw" data-color="0"></i>ATT&amp;CK (median of 9 settings)</span><span><i class="gf-sw" data-color="1"></i>Impact4Cast concept graph, with 95% interval</span></div>
+        <div class="gf-chart" id="control" data-draw="control" data-source="control_impact4cast attack_median"></div>
+        <p class="gf-cap">AUC gain over the popularity baseline, same methods and code on both graphs. Impact4Cast: graph at 2019, links new by 2022, 200,000 sampled pairs.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+window.GF = (() => {
+  const num = (v) => (v === null || v === undefined || v === '' ? NaN : +v);
+  const pct = d3.format('.0%');
+  const f3 = d3.format('.3f');
+  const signed = (v, f = f3) => (v > 0 ? '+' : v < 0 ? '−' : '±') + f(Math.abs(v));
+  function textWidth(svg, strings) {
+    const t = svg.append('text').attr('class', 'gf-lab');
+    let w = 0;
+    for (const s of strings) { t.text(s); w = Math.max(w, t.node().getComputedTextLength() || s.length * 7); }
+    t.remove();
+    return w;
+  }
+  function tooltip(el) {
+    let tip = el.querySelector('.gf-tip');
+    if (!tip) { tip = document.createElement('div'); tip.className = 'gf-tip'; tip.hidden = true; el.appendChild(tip); }
+    return {
+      show(ev, lines) {
+        tip.replaceChildren(...lines.map((l, i) => { const d = document.createElement('div'); d.textContent = l; if (i === 0) d.style.fontWeight = '600'; return d; }));
+        tip.hidden = false;
+        const box = el.getBoundingClientRect();
+        let x = ev.clientX - box.left + 12, y = ev.clientY - box.top + 12;
+        if (x + tip.offsetWidth > box.width) x = Math.max(0, ev.clientX - box.left - tip.offsetWidth - 12);
+        tip.style.left = x + 'px'; tip.style.top = y + 'px';
+      },
+      hide() { tip.hidden = true; },
+    };
+  }
+  function status(el, ...ids) {
+    const s = ids.map((id) => dash.data(id));
+    if (s.every((x) => x.status === 'ok')) return s.map((x) => x.data);
+    el.replaceChildren();
+    if (s.some((x) => x.status === 'error')) { const p = document.createElement('p'); p.className = 'gf-cap'; p.textContent = 'Failed to load'; el.appendChild(p); }
+    return null;
+  }
+  return { num, pct, f3, signed, textWidth, tooltip, status };
+})();
+
+const SETTINGS = ['S1 all', 'S1 groups', 'S1 software', 'S2 all', 'S2 groups', 'S2 software', 'S3 all', 'S3 groups', 'S3 software'];
+const SHUTDOWN_STEP = 43;
+window.GF.state = { method: 'logreg_all', detector: 'rf_af' };
+
+dash.calc('attack_summary', {
+  title: 'ATT&CK summary figures',
+  description: 'Range of the popularity baseline AUC and how often each method beats it (95% interval above zero).',
+  inputs: ['attack_study'],
+  fn: (attack_study) => {
+    const freq = attack_study.filter((r) => r.method === 'frequency').map((r) => +r.auc);
+    const wins = (m) => attack_study.filter((r) => r.method === m && +r.ci_lo > 0).length;
+    const dens = attack_study.filter((r) => r.method === 'frequency').map((r) => +r.density);
+    return [{ freq_auc_min: d3.min(freq), freq_auc_max: d3.max(freq), logreg_all_wins: wins('logreg_all'), hybrid_wins: wins('hybrid_rank_exploratory'), density_min: d3.min(dens), density_max: d3.max(dens) }];
+  },
+});
+
+dash.calc('attack_median', {
+  title: 'ATT&CK median gain per method',
+  description: 'Median over the 9 ATT&CK settings of each method\'s AUC minus the popularity baseline\'s AUC.',
+  inputs: ['attack_study'],
+  fn: (attack_study) => d3.rollups(attack_study, (v) => d3.median(v, (r) => +r.diff_vs_freq), (r) => r.method).map(([method, median_diff]) => ({ method, median_diff })),
+});
+
+const CONTROL_METHODS = [['logreg_all', 'Logistic regression, all'], ['logreg_popularity', 'Logistic regression, popularity'], ['hgb_all', 'Gradient boosting'], ['train_best_single', 'Best single feature'], ['structural_rank_mean', 'Structural rank'], ['hybrid_rank_exploratory', 'Blend (exploratory)']];
+
+document.querySelectorAll('.gf-sw[data-color]').forEach((s) => { s.style.background = dash.colors[+s.dataset.color]; });
+document.querySelectorAll('#method-select').forEach((sel) => { sel.value = window.GF.state.method; sel.addEventListener('change', () => { window.GF.state.method = sel.value; dash.draw('forest'); }); });
+document.querySelectorAll('#detector-select').forEach((sel) => { sel.value = window.GF.state.detector; sel.addEventListener('change', () => { window.GF.state.detector = sel.value; dash.draw('steps'); }); });
+
+function drawFigure(name, source, field, fmt) {
+  dash.draw(name, (el) => {
+    const d = dash.data(source);
+    if (d.status !== 'ok' || !d.data.length) { el.textContent = '—'; return; }
+    el.textContent = fmt(d.data);
+  });
+}
+drawFigure('fmin', 'attack_summary', null, (r) => d3.format('.2f')(r[0].freq_auc_min));
+drawFigure('fmax', 'attack_summary', null, (r) => d3.format('.2f')(r[0].freq_auc_max));
+drawFigure('lrwins', 'attack_summary', null, (r) => String(r[0].logreg_all_wins));
+drawFigure('cgain', 'control_impact4cast', null, (r) => GF.signed(+r.find((x) => x.method === 'logreg_all').diff_vs_freq));
+drawFigure('rfb', 'elliptic_detectors', null, (r) => GF.pct(+r.find((x) => x.detector === 'rf_af').recall_before_43));
+drawFigure('rfa', 'elliptic_detectors', null, (r) => GF.pct(+r.find((x) => x.detector === 'rf_af').recall_after_43));
+drawFigure('err39', 'elliptic_stress_backtest', null, (r) => {
+  const v = +r.find((x) => +x.cutoff === 39 && x.metric === 'recall').signed_error;
+  return Math.round(v * 100) + ' points';
+});
+
+dash.draw('forest', (el) => {
+  const got = GF.status(el, 'attack_study'); if (!got) return;
+  const method = GF.state.method;
+  const rows = SETTINGS.map((s) => got[0].find((r) => r.setting === s && r.method === method)).filter(Boolean)
+    .map((r) => ({ s: r.setting, d: +r.diff_vs_freq, lo: +r.ci_lo, hi: +r.ci_hi, auc: +r.auc, p: +r.precision_at_100 }));
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), rowH = 28;
+  const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', 'AUC difference versus the popularity baseline for each of nine settings');
+  const left = GF.textWidth(svg, SETTINGS) + 12, right = GF.textWidth(svg, ['+0.000']) + 12, top = 22, bottom = 28;
+  const H = top + rowH * rows.length + bottom;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  const ext = d3.extent(rows.flatMap((r) => [r.lo, r.hi]).concat([0]));
+  const x = d3.scaleLinear().domain([Math.min(ext[0], -0.02), Math.max(ext[1], 0.02)]).nice().range([left, W - right]);
+  const ticks = x.ticks(Math.max(2, Math.floor((W - left - right) / 70)));
+  svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', top - 6).attr('y2', H - bottom)
+    .style('stroke', (t) => (t === 0 ? 'var(--cds-chart-reference)' : 'var(--cds-chart-grid)')).style('stroke-width', (t) => (t === 0 ? 1.5 : 1));
+  svg.append('g').selectAll('text').data(ticks).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((t) => (t === 0 ? '0' : GF.signed(t, d3.format('.2f'))));
+  svg.append('text').attr('x', left).attr('y', 12).text('worse than popularity');
+  svg.append('text').attr('x', W - right).attr('y', 12).attr('text-anchor', 'end').text('better');
+  const col = (r) => (r.lo > 0 ? 'var(--color-ok)' : r.hi < 0 ? 'var(--color-bad)' : 'var(--cds-chart-muted)');
+  const tip = GF.tooltip(el);
+  const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${top + rowH * i + rowH / 2})`);
+  g.append('text').attr('class', 'gf-lab').attr('x', 0).attr('dy', '0.35em').text((r) => r.s);
+  g.append('line').attr('x1', (r) => x(r.lo)).attr('x2', (r) => x(r.hi)).style('stroke', col).style('stroke-width', 2).style('stroke-linecap', 'round');
+  g.append('circle').attr('cx', (r) => x(r.d)).attr('r', 5).style('fill', col).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
+  g.append('text').attr('x', W - right + 8).attr('dy', '0.35em').text((r) => GF.signed(r.d));
+  g.append('rect').attr('x', left).attr('y', -rowH / 2).attr('width', W - left - right).attr('height', rowH).style('fill', 'transparent')
+    .on('pointermove', (ev, r) => tip.show(ev, [r.s, `AUC ${GF.f3(r.auc)}`, `vs popularity ${GF.signed(r.d)} [${GF.signed(r.lo)}, ${GF.signed(r.hi)}]`, `Precision at top 100: ${d3.format('.2f')(r.p)}`]))
+    .on('pointerleave', () => tip.hide());
+});
+
+dash.draw('strat', (el) => {
+  const got = GF.status(el, 'attack_study'); if (!got) return;
+  const get = (s, m) => +got[0].find((r) => r.setting === s && r.method === m).strat_auc;
+  const rows = SETTINGS.map((s) => ({ s, f: get(s, 'frequency'), st: get(s, 'structural_rank_mean') }));
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), rowH = 28;
+  const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', 'Within-popularity AUC of the popularity baseline and the structural score for nine settings');
+  const left = GF.textWidth(svg, SETTINGS) + 12, right = GF.textWidth(svg, ['0.000']) + 12, top = 10, bottom = 28;
+  const H = top + rowH * rows.length + bottom;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  const x = d3.scaleLinear().domain([0.45, 0.7]).range([left, W - right]);
+  const ticks = x.ticks(Math.max(2, Math.floor((W - left - right) / 60)));
+  svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', top).attr('y2', H - bottom)
+    .style('stroke', (t) => (Math.abs(t - 0.5) < 1e-9 ? 'var(--cds-chart-reference)' : 'var(--cds-chart-grid)'));
+  svg.append('g').selectAll('text').data(ticks).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text(d3.format('.2f'));
+  const tip = GF.tooltip(el);
+  const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${top + rowH * i + rowH / 2})`);
+  g.append('text').attr('class', 'gf-lab').attr('dy', '0.35em').text((r) => r.s);
+  g.append('line').attr('x1', (r) => x(r.f)).attr('x2', (r) => x(r.st)).style('stroke', 'var(--cds-chart-muted)').style('stroke-width', 2);
+  g.append('circle').attr('cx', (r) => x(r.f)).attr('r', 5).style('fill', dash.colors[0]).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
+  g.append('circle').attr('cx', (r) => x(r.st)).attr('r', 5).style('fill', dash.colors[1]).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
+  g.append('text').attr('x', W - right + 8).attr('dy', '0.35em').text((r) => GF.f3(r.st));
+  g.append('rect').attr('x', left).attr('y', -rowH / 2).attr('width', W - left - right).attr('height', rowH).style('fill', 'transparent')
+    .on('pointermove', (ev, r) => tip.show(ev, [r.s, `Popularity baseline ${GF.f3(r.f)}`, `Structural rank ${GF.f3(r.st)}`]))
+    .on('pointerleave', () => tip.hide());
+});
+
+dash.draw('steps', (el) => {
+  const got = GF.status(el, 'elliptic_per_step'); if (!got) return;
+  const det = GF.state.detector;
+  const rows = got[0].filter((r) => r.detector === det).map((r) => ({ t: +r.time_step, f1: +r.f1, rec: +r.recall })).sort((a, b) => a.t - b.t);
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), H = 240;
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'F1 and recall per time step for the selected detector, with the dark-market shutdown at step 43');
+  const m = { l: GF.textWidth(svg, ['100%']) + 10, r: 12, t: 22, b: 28 };
+  const x = d3.scaleLinear().domain(d3.extent(rows, (r) => r.t)).range([m.l, W - m.r]);
+  const y = d3.scaleLinear().domain([0, 1]).range([H - m.b, m.t]);
+  svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y).style('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', m.l - 6).attr('y', y).attr('dy', '0.35em').attr('text-anchor', 'end').text(GF.pct);
+  svg.append('g').selectAll('text').data(rows.filter((r) => r.t % 2 === 1)).join('text').attr('x', (r) => x(r.t)).attr('y', H - 8).attr('text-anchor', 'middle').text((r) => r.t);
+  svg.append('line').attr('x1', x(SHUTDOWN_STEP - 0.5)).attr('x2', x(SHUTDOWN_STEP - 0.5)).attr('y1', m.t - 6).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-status-critical)').style('stroke-dasharray', '4 3');
+  svg.append('text').attr('x', x(SHUTDOWN_STEP - 0.5) + 4).attr('y', m.t - 8).text(`Dark market closes (step ${SHUTDOWN_STEP})`);
+  [['f1', 0], ['rec', 1]].forEach(([k, c]) => {
+    svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r[k]))).style('fill', 'none').style('stroke', dash.colors[c]).style('stroke-width', 2);
+    svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.t)).attr('cy', (r) => y(r[k])).attr('r', 3).style('fill', dash.colors[c]);
+  });
+  const tip = GF.tooltip(el);
+  svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).style('fill', 'transparent')
+    .on('pointermove', (ev) => {
+      const [px] = d3.pointer(ev); const t = Math.round(x.invert(px)); const r = rows.find((q) => q.t === t); if (!r) return;
+      tip.show(ev, [`Time step ${t}`, `F1 ${GF.f3(r.f1)}`, `Recall ${GF.pct(r.rec)}`]);
+    }).on('pointerleave', () => tip.hide());
+});
+
+dash.draw('shutdown', (el) => {
+  const got = GF.status(el, 'elliptic_detectors'); if (!got) return;
+  const rows = got[0].map((r) => ({ d: r.detector, b: +r.recall_before_43, a: +r.recall_after_43 }));
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), rowH = 26;
+  const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', 'Recall before and after the dark-market shutdown for eleven detectors');
+  const left = GF.textWidth(svg, rows.map((r) => r.d)) + 12, right = GF.textWidth(svg, ['100%']) + 10, top = 6, bottom = 26;
+  const H = top + rowH * rows.length + bottom;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  const x = d3.scaleLinear().domain([0, 1]).range([left, W - right]);
+  svg.append('g').selectAll('line').data(x.ticks(4)).join('line').attr('x1', x).attr('x2', x).attr('y1', top).attr('y2', H - bottom).style('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(x.ticks(4)).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text(GF.pct);
+  const tip = GF.tooltip(el);
+  const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${top + rowH * i})`);
+  g.append('text').attr('class', 'gf-lab').attr('y', rowH / 2).attr('dy', '0.35em').text((r) => r.d);
+  g.append('rect').attr('x', left).attr('y', 3).attr('height', 9).attr('width', (r) => Math.max(1, x(r.b) - left)).attr('rx', 2).style('fill', dash.colors[0]);
+  g.append('rect').attr('x', left).attr('y', 14).attr('height', 9).attr('width', (r) => Math.max(1, x(r.a) - left)).attr('rx', 2).style('fill', dash.colors[1]);
+  g.append('text').attr('x', (r) => x(r.a) + 4).attr('y', 18.5).attr('dy', '0.35em').text((r) => GF.pct(r.a));
+  g.append('rect').attr('x', 0).attr('y', 0).attr('width', W).attr('height', rowH).style('fill', 'transparent')
+    .on('pointermove', (ev, r) => tip.show(ev, [r.d, `Recall, steps 35–42: ${GF.pct(r.b)}`, `Recall, steps 43–49: ${GF.pct(r.a)}`]))
+    .on('pointerleave', () => tip.hide());
+});
+
+dash.draw('rank', (el) => {
+  const got = GF.status(el, 'elliptic_stress_backtest'); if (!got) return;
+  const metrics = ['f1', 'precision', 'recall'];
+  const rows = got[0].map((r) => ({ c: +r.cutoff, m: r.metric, rho: +r.spearman, p: +r.p_value, steps: r.test_steps }));
+  const cut = [...new Set(rows.map((r) => r.c))].sort((a, b) => a - b);
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), H = 240;
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Rank agreement between stress test and later period, by cutoff, for F1, precision and recall');
+  const m = { l: GF.textWidth(svg, ['−0.5']) + 10, r: 14, t: 12, b: 28 };
+  const x = d3.scalePoint().domain(cut).range([m.l + 20, W - m.r - 20]);
+  const y = d3.scaleLinear().domain([-0.5, 1]).range([H - m.b, m.t]);
+  svg.append('g').selectAll('line').data(y.ticks(6)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y)
+    .style('stroke', (t) => (t === 0 ? 'var(--cds-chart-reference)' : 'var(--cds-chart-grid)'));
+  svg.append('g').selectAll('text').data(y.ticks(6)).join('text').attr('x', m.l - 6).attr('y', y).attr('dy', '0.35em').attr('text-anchor', 'end').text((t) => (t < 0 ? '−' + Math.abs(t) : t));
+  svg.append('g').selectAll('text').data(cut).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((c) => `cutoff ${c}`);
+  const tip = GF.tooltip(el);
+  metrics.forEach((k, i) => {
+    const s = rows.filter((r) => r.m === k).sort((a, b) => a.c - b.c);
+    svg.append('path').datum(s).attr('d', d3.line().x((r) => x(r.c)).y((r) => y(r.rho))).style('fill', 'none').style('stroke', dash.colors[i]).style('stroke-width', 2);
+    svg.append('g').selectAll('circle').data(s).join('circle').attr('cx', (r) => x(r.c)).attr('cy', (r) => y(r.rho)).attr('r', 5)
+      .style('fill', dash.colors[i]).style('stroke', 'var(--color-panel)').style('stroke-width', 2)
+      .on('pointermove', (ev, r) => tip.show(ev, [`Cutoff ${r.c} (later steps ${r.steps})`, `${k}: ρ ${d3.format('+.2f')(r.rho)}`, `p = ${d3.format('.3f')(r.p)}`]))
+      .on('pointerleave', () => tip.hide());
+  });
+});
+
+dash.draw('calib', (el) => {
+  const got = GF.status(el, 'elliptic_stress_backtest'); if (!got) return;
+  const rows = got[0].filter((r) => r.metric === 'recall').map((r) => ({ c: +r.cutoff, e: +r.signed_error * 100, steps: r.test_steps })).sort((a, b) => a.c - b.c);
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), H = 240;
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Recall error of the stress test, in percentage points, by cutoff');
+  const m = { l: GF.textWidth(svg, ['−20']) + 10, r: 12, t: 18, b: 28 };
+  const x = d3.scaleBand().domain(rows.map((r) => r.c)).range([m.l, W - m.r]).padding(0.35);
+  const y = d3.scaleLinear().domain([Math.min(-25, d3.min(rows, (r) => r.e)), Math.max(30, d3.max(rows, (r) => r.e))]).nice().range([H - m.b, m.t]);
+  svg.append('g').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y)
+    .style('stroke', (t) => (t === 0 ? 'var(--cds-chart-reference)' : 'var(--cds-chart-grid)'));
+  svg.append('g').selectAll('text').data(y.ticks(5)).join('text').attr('x', m.l - 6).attr('y', y).attr('dy', '0.35em').attr('text-anchor', 'end').text((t) => (t < 0 ? '−' + Math.abs(t) : t));
+  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(r.c) + x.bandwidth() / 2).attr('y', H - 8).attr('text-anchor', 'middle').text((r) => `cutoff ${r.c}`);
+  const tip = GF.tooltip(el);
+  svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(r.c)).attr('width', x.bandwidth())
+    .attr('y', (r) => y(Math.max(0, r.e))).attr('height', (r) => Math.abs(y(r.e) - y(0))).attr('rx', 3)
+    .style('fill', (r) => (Math.abs(r.e) >= 15 ? 'var(--cds-chart-status-critical)' : dash.colors[0]))
+    .on('pointermove', (ev, r) => tip.show(ev, [`Cutoff ${r.c} (later steps ${r.steps})`, `Stress test minus later recall: ${d3.format('+.1f')(r.e)} pts`]))
+    .on('pointerleave', () => tip.hide());
+  svg.append('g').selectAll('text.v').data(rows).join('text').attr('x', (r) => x(r.c) + x.bandwidth() / 2)
+    .attr('y', (r) => (r.e >= 0 ? y(r.e) - 5 : y(r.e) + 13)).attr('text-anchor', 'middle').attr('class', 'gf-lab').text((r) => d3.format('+.0f')(r.e));
+});
+
+drawFigure('cdens', 'control_impact4cast', null, (r) => d3.format('.0%')(+r[0].density));
+drawFigure('adensmin', 'attack_summary', null, (r) => d3.format('.0%')(r[0].density_min));
+drawFigure('adensmax', 'attack_summary', null, (r) => d3.format('.0%')(r[0].density_max));
+
+dash.draw('control', (el) => {
+  const got = GF.status(el, 'control_impact4cast', 'attack_median'); if (!got) return;
+  const [ctl, med] = got;
+  const rows = CONTROL_METHODS.map(([k, label]) => {
+    const c = ctl.find((r) => r.method === k), a = med.find((r) => r.method === k);
+    return c && a ? { label, a: a.median_diff, d: +c.diff_vs_freq, lo: +c.ci_lo, hi: +c.ci_hi, auc: +c.auc, strat: +c.strat_auc } : null;
+  }).filter(Boolean);
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), rowH = 30;
+  const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', 'AUC gain over popularity for six methods on the ATT&CK graph and on the Impact4Cast concept graph');
+  const left = GF.textWidth(svg, rows.map((r) => r.label)) + 12, right = 12, top = 22, bottom = 28;
+  const H = top + rowH * rows.length + bottom;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  const ext = d3.extent(rows.flatMap((r) => [r.a, r.lo, r.hi]).concat([0]));
+  const x = d3.scaleLinear().domain([Math.min(ext[0], -0.02), ext[1]]).nice().range([left, W - right]);
+  const ticks = x.ticks(Math.max(2, Math.floor((W - left - right) / 70)));
+  svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', top - 6).attr('y2', H - bottom)
+    .style('stroke', (t) => (t === 0 ? 'var(--cds-chart-reference)' : 'var(--cds-chart-grid)')).style('stroke-width', (t) => (t === 0 ? 1.5 : 1));
+  svg.append('g').selectAll('text').data(ticks).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((t) => (t === 0 ? '0' : GF.signed(t, d3.format('.2f'))));
+  svg.append('text').attr('x', left).attr('y', 12).text('worse than popularity');
+  svg.append('text').attr('x', W - right).attr('y', 12).attr('text-anchor', 'end').text('better');
+  const tip = GF.tooltip(el);
+  const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${top + rowH * i + rowH / 2})`);
+  g.append('text').attr('class', 'gf-lab').attr('dy', '0.35em').text((r) => r.label);
+  g.append('line').attr('x1', (r) => x(r.lo)).attr('x2', (r) => x(r.hi)).attr('y1', 5).attr('y2', 5).style('stroke', dash.colors[1]).style('stroke-width', 2).style('stroke-linecap', 'round');
+  g.append('circle').attr('cx', (r) => x(r.d)).attr('cy', 5).attr('r', 5).style('fill', dash.colors[1]).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
+  g.append('circle').attr('cx', (r) => x(r.a)).attr('cy', -5).attr('r', 5).style('fill', dash.colors[0]).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
+  g.append('rect').attr('x', left).attr('y', -rowH / 2).attr('width', W - left - right).attr('height', rowH).style('fill', 'transparent')
+    .on('pointermove', (ev, r) => tip.show(ev, [r.label, `ATT&CK median: ${GF.signed(r.a)}`, `Impact4Cast: ${GF.signed(r.d)} [${GF.signed(r.lo)}, ${GF.signed(r.hi)}]`, `Impact4Cast AUC ${GF.f3(r.auc)}, within-popularity ${GF.f3(r.strat)}`]))
+    .on('pointerleave', () => tip.hide());
+});
+
+dash.draw('facts', (tbody) => {
+  const d = dash.data('elliptic_facts');
+  tbody.replaceChildren();
+  if (d.status !== 'ok') return;
+  const fmt = (v) => (/^\d+$/.test(v) ? d3.format(',')(+v) : v);
+  for (const r of d.data) {
+    const tr = document.createElement('tr');
+    for (const k of ['fact', 'published', 'observed', 'match']) { const td = document.createElement('td'); td.textContent = k === 'match' ? (r.match === 'True' ? 'Yes' : 'No') : fmt(r[k]); tr.appendChild(td); }
+    tbody.appendChild(tr);
+  }
+});
+</script>

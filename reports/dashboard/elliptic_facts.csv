@@ -1,0 +1,8 @@
+fact,published,observed,match
+n_nodes,203769,203769,True
+n_edges,234355,234355,True
+n_illicit,4545,4545,True
+n_licit,42019,42019,True
+n_steps,49,49,True
+n_features,166,166,True
+edges_cross_time_steps,0,0,True
