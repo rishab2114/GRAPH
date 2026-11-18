@@ -58,3 +58,37 @@ def test_sample_unconnected_rejects_impossible_request(edges):
     A = adjacency_at(edges, day_of_year_end(2016), n=7)   # 7 nodes, 6 links -> 15 unlinked pairs
     with pytest.raises(ValueError, match="only 15 unlinked pairs"):
         sample_unconnected(A, 16, np.random.default_rng(0))
+
+
+def test_streamed_parquet_adjacency_matches_in_memory(edges, tmp_path):
+    from gffs.concept_control import adjacencies_from_parquet
+    path = tmp_path / "g.parquet"
+    edges.assign(ct=0).to_parquet(path, row_group_size=4)   # several row groups
+    years = [2016, 2019]
+    got = adjacencies_from_parquet(path, years, n=7)
+    for y in years:
+        want = adjacency_at(edges, day_of_year_end(y), n=7)
+        assert (got[y] != want).nnz == 0
+
+
+def test_run_control_reports_methods(tmp_path):
+    from gffs.concept_control import run_control
+    from gffs.models import MODELS
+    rng = np.random.default_rng(1)
+    n = 80
+    # growing graph with triadic closure, so later links are partly predictable
+    links = {(i, i + 1) for i in range(n - 1)}
+    adj = {}
+    for year in (2016, 2019, 2022):
+        for _ in range(60):
+            a = int(rng.integers(n)); nb = [y for x, y in links if x == a] + [x for x, y in links if y == a]
+            if nb:
+                b = int(rng.choice(nb)); nb2 = [y for x, y in links if x == b] + [x for x, y in links if y == b]
+                c = int(rng.choice(nb2))
+                if c != a:
+                    links.add((min(a, c), max(a, c)))
+        rows = pd.DataFrame(sorted(links), columns=["v1", "v2"]).assign(time=day_of_year_end(year))
+        adj[year] = adjacency_at(rows, day_of_year_end(year), n)
+    r = run_control(adj, train=(2016, 2019), test=(2019, 2022), n_pairs=400, n_boot=20, seed=0)
+    assert set(r["methods"]) == set(MODELS) | {"frequency", "random"}
+    assert r["graph"]["test_positive"] > 0 and 0 < r["graph"]["density_t"] < 1
