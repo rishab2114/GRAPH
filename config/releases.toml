@@ -1,0 +1,6 @@
+# Time-travel set-up for E1. Dates = latest `modified` stamp in each bundle.
+# Train: graph at train_from, labels = pairs newly documented by train_to (= cutoff T).
+# Test:  graph at T, labels = pairs newly documented by test_to.
+train_from = "ATT&CK-v8.0"   # 2020-10-27
+train_to   = "ATT&CK-v12.0"  # 2022-10-24  (cutoff T)
+test_to    = "ATT&CK-v16.0"  # 2024-10-28

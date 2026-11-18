@@ -1,0 +1,30 @@
+{
+  "releases": {
+    "train_from": "ATT&CK-v8.0",
+    "train_to_T": "ATT&CK-v12.0",
+    "test_to": "ATT&CK-v16.0"
+  },
+  "metrics": {
+    "forecaster": {
+      "auc": 0.6686796982167353,
+      "precision_at_k": 0.19,
+      "k": 100,
+      "n_candidates": 5529,
+      "n_positive": 729
+    },
+    "frequency": {
+      "auc": 0.7275508687700046,
+      "precision_at_k": 0.45,
+      "k": 100,
+      "n_candidates": 5529,
+      "n_positive": 729
+    },
+    "random": {
+      "auc": 0.49918981481481484,
+      "precision_at_k": 0.1,
+      "k": 100,
+      "n_candidates": 5529,
+      "n_positive": 729
+    }
+  }
+}

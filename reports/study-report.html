@@ -1,0 +1,237 @@
+<title>ATT&amp;CK Pair Forecasting Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a single reading column (~68ch) with full-width figure bands; data set in mono. */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #161a21; --muted: #586172; --rule: #dce0e7;
+  --accent: #2a78d6; --zero: #8a93a3;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --pos: #1f6f4a; --neg: #a23b2a;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121418; --panel: #191c22; --fg: #eceef2; --muted: #9ba4b3; --rule: #2b3039;
+  --accent: #5598e7; --zero: #6c7586;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --pos: #5fc795; --neg: #ef8a78; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121418; --panel: #191c22; --fg: #eceef2; --muted: #9ba4b3; --rule: #2b3039;
+  --accent: #5598e7; --zero: #6c7586;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --pos: #5fc795; --neg: #ef8a78; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 40px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 40px; }
+.col { max-width: 68ch; display: grid; gap: 14px; min-width: 0; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; letter-spacing: -0.01em; }
+h2 { font-size: 1.5rem; font-weight: 600; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+.eyebrow { font: 500 0.75rem/1.4 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.dek { font-size: 1.15rem; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 20px; font: 0.85rem/1.5 var(--f-mono); color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code, .mono { font-family: var(--f-mono); font-size: 0.9em; }
+
+.verdict { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 20px 22px; display: grid; gap: 12px; }
+.verdict ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+
+.figure { display: grid; gap: 12px; min-width: 0; }
+.figure .cap { color: var(--muted); font-size: 0.92rem; max-width: 80ch; }
+.scroll { overflow-x: auto; min-width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.88rem; color: var(--fg); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+svg text { fill: var(--muted); font: 12px var(--f-mono); }
+svg .rowlab { fill: var(--fg); font: 500 12.5px var(--f-mono); }
+.tip { position: fixed; pointer-events: none; background: var(--panel); color: var(--fg); border: 1px solid var(--rule);
+  border-radius: 4px; padding: 8px 10px; font: 12px/1.45 var(--f-mono); box-shadow: 0 4px 14px rgb(0 0 0 / 0.14); max-width: 280px; }
+
+table { border-collapse: collapse; font: 0.86rem/1.4 var(--f-mono); font-variant-numeric: tabular-nums; width: 100%; }
+th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-weight: 500; color: var(--muted); }
+th:first-child, td:first-child { text-align: left; }
+td.win { color: var(--pos); font-weight: 500; }
+td.lose { color: var(--neg); }
+.note { font-size: 0.85rem; color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.split > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+footer { border-top: 1px solid var(--rule); padding-top: 18px; color: var(--muted); font-size: 0.85rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="col">
+    <div class="eyebrow">Graph-Forecast Fraud Scenarios · Phase 1 study</div>
+    <h1>ATT&amp;CK Pair Forecasting Study</h1>
+    <p class="dek">Can a shared-neighbour graph forecaster predict which MITRE ATT&amp;CK techniques will next be documented together, better than knowing how common each technique is?</p>
+    <div class="meta"><span>2026-11-18</span><span>3 splits × 3 edge sets · 8 methods</span><span>Code: github.com/rishab2114/graph</span></div>
+  </header>
+
+  <section class="verdict" aria-labelledby="v">
+    <h2 id="v">Verdict</h2>
+    <ol>
+      <li><strong>Popularity explains most of it.</strong> A baseline that ranks pairs by freq(u)·freq(v) reaches an AUC of 0.72–0.79 in every setting.</li>
+      <li><strong>Supervised graph models do not transfer across time.</strong> Logistic regression on all features beats that baseline in 1 of 9 settings. Gradient boosting does so in 0 of 9.</li>
+      <li><strong>Structure carries a small signal at fixed popularity.</strong> Within popularity deciles, the untrained structural score beats frequency in 9 of 9 settings.</li>
+      <li><strong>An exploratory blend gains up to +0.027 AUC but loses at the top of the list.</strong> Its precision at 100 is lower than frequency in 8 of 9 settings. It was designed after seeing the data, so a prospective test is pre-registered.</li>
+    </ol>
+  </section>
+
+  <section class="col" aria-labelledby="d">
+    <h2 id="d">Design</h2>
+    <p>Each ATT&amp;CK Enterprise release becomes a graph. Nodes are parent techniques (sub-techniques are collapsed). An edge joins two techniques used by the same intrusion set, campaign, malware or tool. Revoked and deprecated objects are dropped. For a cutoff release T, the candidates are all unlinked pairs at T. The positives are pairs <em>newly documented together</em> by a release two years later.</p>
+    <p>Supervised models train on the previous two-year window (graph at T−2y, labels at T). They never see the test release. Every method except one was fixed before any multi-split result was seen.</p>
+  </section>
+  <div class="scroll"><table aria-label="Time splits">
+    <thead><tr><th>Split</th><th>Train graph</th><th>Cutoff T</th><th>Test labels</th></tr></thead>
+    <tbody><tr><td>S1</td><td>ATT&amp;CK-v8.0 (2020-10-27)</td><td>ATT&amp;CK-v12.0 (2022-10-24)</td><td>ATT&amp;CK-v16.0 (2024-10-28)</td></tr><tr><td>S2</td><td>ATT&amp;CK-v10.0 (2021-10-20)</td><td>ATT&amp;CK-v14.0 (2023-10-27)</td><td>ATT&amp;CK-v18.0 (2025-10-27)</td></tr><tr><td>S3</td><td>ATT&amp;CK-v12.0 (2022-10-24)</td><td>ATT&amp;CK-v16.0 (2024-10-28)</td><td>ATT&amp;CK-v20.0 (2026-10-13)</td></tr></tbody></table></div>
+
+  <section class="figure" aria-labelledby="f1">
+    <h2 id="f1">Figure 1. AUC gain over the frequency baseline</h2>
+    <p class="cap">Each mark is a method's AUC minus the frequency baseline's AUC on the same candidates. Lines show the 95% paired-bootstrap interval (1,000 resamples). Marks to the right of zero beat popularity. Hover a mark for exact values.</p>
+    <div class="legend" id="legend"></div>
+    <div class="scroll"><svg id="forest" role="img" aria-label="Forest plot of AUC differences versus the frequency baseline for four methods across nine settings"></svg></div>
+  </section>
+
+  <section class="figure" aria-labelledby="t1">
+    <h2 id="t1">Table 1. All methods, all settings</h2>
+    <p class="cap">AUC, precision at the top 100, and AUC within popularity deciles ("strat."). A score that only tracks popularity gets about 0.5 on the stratified measure. Green means the interval for AUC − frequency is above zero; red means it is below.</p>
+    <div class="scroll"><table id="full"></table></div>
+  </section>
+
+  <section class="split">
+    <div>
+      <h2>Why the bridge idea is weak here</h2>
+      <p>In the research-concept graphs this method came from, there are about 123,000 concepts and most pairs are far apart, so a pair with a few shared neighbours is unusual and informative. ATT&amp;CK has only about 180 parent techniques, and 49%–66% of all pairs are already linked. Almost every unlinked pair is bridged many times over, so shared-neighbour counts mostly restate popularity.</p>
+      <p>Using a sparser edge set (malware and tools only, density about 0.5) gave structure less of an edge, not more.</p>
+    </div>
+    <div>
+      <h2>Threats to validity</h2>
+      <ul class="plain">
+        <li>The target is MITRE's documentation, not attacker behaviour. Many new edges document old activity.</li>
+        <li>S2 overlaps S1 and S3 in time, so the nine settings show robustness but are not nine independent replications.</li>
+        <li>The test windows have now been looked at. Only the pre-registered test can confirm the exploratory blend.</li>
+        <li>One data source. Fraud typologies may behave differently.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="col" aria-labelledby="pr">
+    <h2 id="pr">Pre-registered prospective test</h2>
+    <p>Fixed in <code>PREREGISTRATION.md</code> on 2026-11-18, before the data exists. Graph at <code>ATT&amp;CK-v20.1</code>; outcome is the first Enterprise release dated on or after 2027-10-01; edge set <code>all</code>; code frozen at that commit.</p>
+    <ul class="plain">
+      <li><strong>H1:</strong> the blend's AUC beats frequency (95% paired-bootstrap lower bound above 0).</li>
+      <li><strong>H2:</strong> within popularity deciles, the structural score beats frequency.</li>
+      <li><strong>H3, expected null:</strong> no supervised model beats frequency.</li>
+      <li>Precision at 100 is reported for every method whatever the outcome.</li>
+    </ul>
+  </section>
+
+  <section class="col" aria-labelledby="sig">
+    <h2 id="sig">What this is, and what it is not</h2>
+    <p>This is a careful, reproducible negative result with a sound evaluation method: leakage-controlled time-travel splits, a popularity-stratified AUC that separates structure from popularity, paired confidence intervals, and a pre-registered prospective test. That is a solid workshop paper, technical blog post or portfolio project.</p>
+    <p>It is not yet a major research contribution. The project's central question has not been tested: whether invented scenarios predict how fraud or intrusion detectors perform on a later, untouched period (experiments E3 and E4). That needs a dated, labelled holdout from the same domain as the graph. It also needs the prior-work search the plan calls for.</p>
+  </section>
+
+  <section class="col" aria-labelledby="next">
+    <h2 id="next">Next steps</h2>
+    <ul class="plain">
+      <li>Choose the holdout dataset and domain (Phase 0). The graph source must match it.</li>
+      <li>For scenario selection, rank by popularity and use structure only to re-rank inside a popularity band, where the signal is.</li>
+      <li>Run the prior-work search: SynthAML, studies of stress-test transfer, hyperbolic link forecasting.</li>
+      <li>Rerun <code>python -m gffs.study</code> when the pre-registered outcome release appears.</li>
+    </ul>
+  </section>
+
+  <footer>Built from <code>results/study.json</code> by <code>reports/build_report.py</code>. Technique IDs, scores and metrics only; no attack procedures.</footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const DATA = [{"split":"S1","edges":"all","graph":{"nodes_t":180,"entities_t":763,"density_t":0.6567970204841713,"n_candidates":5529,"n_positive":729,"train_positive":1713,"n_niche":2919,"niche_positive":272},"methods":{"frequency":{"auc":0.7275508687700046,"precision_at_k":0.45,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.5268815210403995,"niche_auc":0.7430477621724927,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.49918981481481484,"precision_at_k":0.1,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.5035417593828809,"niche_auc":0.49442209826885036,"vs_frequency":{"diff":-0.2283610539551898,"lo":-0.2584953867338546,"hi":-0.20044890708721225}},"logreg_all":{"auc":0.6686796982167353,"precision_at_k":0.19,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.5189542847253128,"niche_auc":0.7287620280450677,"vs_frequency":{"diff":-0.05887117055326929,"lo":-0.07973195064760359,"hi":-0.04190381735271835}},"logreg_popularity":{"auc":0.7415033436213991,"precision_at_k":0.45,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.610630532067448,"niche_auc":0.7584939387541945,"vs_frequency":{"diff":0.013952474851394503,"lo":0.0027797537232521845,"hi":0.02457169870757228}},"hgb_all":{"auc":0.7319630201188844,"precision_at_k":0.35,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.6168641522029372,"niche_auc":0.7265321173803863,"vs_frequency":{"diff":0.004412151348879734,"lo":-0.012633594053683691,"hi":0.021291468421553283}},"train_best_single":{"auc":0.7369027206218564,"precision_at_k":0.47,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.6321283316026307,"niche_auc":0.7547535778572857,"vs_frequency":{"diff":0.009351851851851722,"lo":-0.008021596865083474,"hi":0.028036863912098697}},"structural_rank_mean":{"auc":0.7316465192043897,"precision_at_k":0.43,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.6287380087029619,"niche_auc":0.751885458565746,"vs_frequency":{"diff":0.00409565043438509,"lo":-0.013500908021822272,"hi":0.02340195345404892}},"hybrid_rank_exploratory":{"auc":0.7540656435756743,"precision_at_k":0.48,"k":100,"n_candidates":5529,"n_positive":729,"strat_auc":0.6303883573159275,"niche_auc":0.7570321007133493,"vs_frequency":{"diff":0.02651477480566966,"lo":0.01759686353822234,"hi":0.036091331861802155}}}},{"split":"S1","edges":"groups","graph":{"nodes_t":168,"entities_t":143,"density_t":0.6419304248645566,"n_candidates":5023,"n_positive":708,"train_positive":1580,"n_niche":2767,"niche_positive":249},"methods":{"frequency":{"auc":0.7422385123501647,"precision_at_k":0.43,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.5246084889594249,"niche_auc":0.7423674044868911,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.4903516179926809,"precision_at_k":0.15,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.49292345152944755,"niche_auc":0.4809787202822409,"vs_frequency":{"diff":-0.2518868943574838,"lo":-0.28167172959843634,"hi":-0.22125716145983615}},"logreg_all":{"auc":0.7090781729743176,"precision_at_k":0.33,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.5134410939843903,"niche_auc":0.7489760471592486,"vs_frequency":{"diff":-0.03316033937584706,"lo":-0.046007142335328474,"hi":-0.020266260109471402}},"logreg_popularity":{"auc":0.731579989656369,"precision_at_k":0.28,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.4821310810125298,"niche_auc":0.7425906963836283,"vs_frequency":{"diff":-0.010658522693795747,"lo":-0.014720339054872847,"hi":-0.006553627996338272}},"hgb_all":{"auc":0.6226206375081014,"precision_at_k":0.35,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.4823213108101253,"niche_auc":0.559959456571321,"vs_frequency":{"diff":-0.11961787484206332,"lo":-0.13812696194342375,"hi":-0.10296815154093454}},"train_best_single":{"auc":0.6556428435820387,"precision_at_k":0.23,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.422043828945366,"niche_auc":0.6620891827835567,"vs_frequency":{"diff":-0.08659566876812597,"lo":-0.09936095415719846,"hi":-0.07489029584370231}},"structural_rank_mean":{"auc":0.7193319520003143,"precision_at_k":0.31,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.5881597350551847,"niche_auc":0.7238134428101604,"vs_frequency":{"diff":-0.02290656034985039,"lo":-0.04206911566076062,"hi":-0.0027963185848373954}},"hybrid_rank_exploratory":{"auc":0.7574079711425785,"precision_at_k":0.35,"k":100,"n_candidates":5023,"n_positive":708,"strat_auc":0.5919570841576625,"niche_auc":0.7465900137484011,"vs_frequency":{"diff":0.015169458792413826,"lo":0.005356878785842123,"hi":0.025705306695627733}}}},{"split":"S1","edges":"software","graph":{"nodes_t":161,"entities_t":620,"density_t":0.5197981366459627,"n_candidates":6185,"n_positive":399,"train_positive":1013,"n_niche":2952,"niche_positive":90},"methods":{"frequency":{"auc":0.7532926682416377,"precision_at_k":0.37,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.5260232638489002,"niche_auc":0.7143838807360819,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.48903367994822866,"precision_at_k":0.05,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.4861775883911091,"niche_auc":0.4596280767140306,"vs_frequency":{"diff":-0.264258988293409,"lo":-0.29887544139626016,"hi":-0.22756977667545736}},"logreg_all":{"auc":0.7301318020249379,"precision_at_k":0.18,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.4784913048485546,"niche_auc":0.6970164609053499,"vs_frequency":{"diff":-0.02316086621669977,"lo":-0.031079534483737924,"hi":-0.01430455621361074}},"logreg_popularity":{"auc":0.7353286430732898,"precision_at_k":0.24,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.49068064033168257,"niche_auc":0.6816464787638792,"vs_frequency":{"diff":-0.01796402516834783,"lo":-0.025495502164622895,"hi":-0.010578049919609237}},"hgb_all":{"auc":0.7078231787557383,"precision_at_k":0.3,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.519097086260509,"niche_auc":0.6222649274011958,"vs_frequency":{"diff":-0.04546948948589935,"lo":-0.061206067360806624,"hi":-0.02957706595897008}},"train_best_single":{"auc":0.723132797427374,"precision_at_k":0.19,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.5600253368651388,"niche_auc":0.7062349561301342,"vs_frequency":{"diff":-0.030159870814263634,"lo":-0.049486686473345115,"hi":-0.013260580154918322}},"structural_rank_mean":{"auc":0.7123774264558735,"precision_at_k":0.2,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.5540181964758724,"niche_auc":0.7013723891606491,"vs_frequency":{"diff":-0.04091524178576411,"lo":-0.062039061464392885,"hi":-0.022365235278138072}},"hybrid_rank_exploratory":{"auc":0.7531456103099088,"precision_at_k":0.3,"k":100,"n_candidates":6185,"n_positive":399,"strat_auc":0.5585719221467235,"niche_auc":0.7120525661930275,"vs_frequency":{"diff":-0.00014705793172886672,"lo":-0.011557573390555725,"hi":0.010110434414999122}}}},{"split":"S2","edges":"all","graph":{"nodes_t":189,"entities_t":809,"density_t":0.6193290554992683,"n_candidates":6763,"n_positive":1279,"train_positive":994,"n_niche":3478,"niche_positive":430},"methods":{"frequency":{"auc":0.7222778725401466,"precision_at_k":0.67,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.5428297326570799,"niche_auc":0.7166830708661418,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.50943294274509,"precision_at_k":0.18,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.513527958516678,"niche_auc":0.5261902581944699,"vs_frequency":{"diff":-0.21284492979505665,"lo":-0.23503408612441357,"hi":-0.1898022981613668}},"logreg_all":{"auc":0.7177825292028727,"precision_at_k":0.62,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.5729820788643484,"niche_auc":0.7244510315571019,"vs_frequency":{"diff":-0.0044953433372739715,"lo":-0.013727328861129994,"hi":0.0053682239235084556}},"logreg_popularity":{"auc":0.7341070818570078,"precision_at_k":0.61,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.606486262354579,"niche_auc":0.7235964872123543,"vs_frequency":{"diff":0.011829209316861156,"lo":0.002890735116497298,"hi":0.020810657608499296}},"hgb_all":{"auc":0.6573646756304073,"precision_at_k":0.55,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.5440374030986364,"niche_auc":0.6317020692180919,"vs_frequency":{"diff":-0.06491319690973929,"lo":-0.08001454499879512,"hi":-0.049322335897649054}},"train_best_single":{"auc":0.7143643830741673,"precision_at_k":0.61,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.6053700343224354,"niche_auc":0.7232920557895379,"vs_frequency":{"diff":-0.007913489465979362,"lo":-0.02173023773503909,"hi":0.0058954749492130115}},"structural_rank_mean":{"auc":0.7054504710269521,"precision_at_k":0.56,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.5986994682150915,"niche_auc":0.7189663065372642,"vs_frequency":{"diff":-0.016827401513194506,"lo":-0.03154921061136007,"hi":-0.0021547611335538132}},"hybrid_rank_exploratory":{"auc":0.7348774656987789,"precision_at_k":0.66,"k":100,"n_candidates":6763,"n_positive":1279,"strat_auc":0.6030682081544557,"niche_auc":0.7247630928401391,"vs_frequency":{"diff":0.012599593158632238,"lo":0.005052177175261525,"hi":0.020282261904072837}}}},{"split":"S2","edges":"groups","graph":{"nodes_t":176,"entities_t":161,"density_t":0.6016883116883117,"n_candidates":6134,"n_positive":1383,"train_positive":905,"n_niche":3312,"niche_positive":468},"methods":{"frequency":{"auc":0.7307983112129379,"precision_at_k":0.68,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.5070340507252559,"niche_auc":0.69473182408309,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.5051785725971911,"precision_at_k":0.22,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.5011099523112255,"niche_auc":0.5022562119081107,"vs_frequency":{"diff":-0.2256197386157468,"lo":-0.24726589336457927,"hi":-0.20268179398070474}},"logreg_all":{"auc":0.7282444476810682,"precision_at_k":0.63,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.5350875512972078,"niche_auc":0.6965872071357304,"vs_frequency":{"diff":-0.0025538635318697045,"lo":-0.007708038411435966,"hi":0.0032741897063993824}},"logreg_popularity":{"auc":0.7239024763671933,"precision_at_k":0.65,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.5229068040511954,"niche_auc":0.6865409408922067,"vs_frequency":{"diff":-0.006895834845744631,"lo":-0.0119750726959932,"hi":-0.0011846048938441798}},"hgb_all":{"auc":0.6772265320555872,"precision_at_k":0.54,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.4990911449310437,"niche_auc":0.6618334295022059,"vs_frequency":{"diff":-0.053571779157350674,"lo":-0.06438815154959936,"hi":-0.041011893034668366}},"train_best_single":{"auc":0.6849655885513619,"precision_at_k":0.56,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.5497424040087124,"niche_auc":0.6846141825044779,"vs_frequency":{"diff":-0.04583272266157601,"lo":-0.05934082908296401,"hi":-0.03137319200700278}},"structural_rank_mean":{"auc":0.6835441882083507,"precision_at_k":0.6,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.5650867329794254,"niche_auc":0.6894091023837858,"vs_frequency":{"diff":-0.0472541230045872,"lo":-0.06149598629122063,"hi":-0.031565327459610396}},"hybrid_rank_exploratory":{"auc":0.7294339829967675,"precision_at_k":0.64,"k":100,"n_candidates":6134,"n_positive":1383,"strat_auc":0.5631697800466267,"niche_auc":0.7030215057641218,"vs_frequency":{"diff":-0.0013643282161703851,"lo":-0.008873033918837678,"hi":0.006504223862583293}}}},{"split":"S2","edges":"software","graph":{"nodes_t":169,"entities_t":648,"density_t":0.49443505212735983,"n_candidates":7177,"n_positive":488,"train_positive":337,"n_niche":3293,"niche_positive":107},"methods":{"frequency":{"auc":0.7887170703552934,"precision_at_k":0.37,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.5504053111791862,"niche_auc":0.8346958950079496,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.48888436851302236,"precision_at_k":0.07,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.4886767325276679,"niche_auc":0.4626432229790379,"vs_frequency":{"diff":-0.299832701842271,"lo":-0.3320120079325088,"hi":-0.26650376803059594}},"logreg_all":{"auc":0.7608190839376613,"precision_at_k":0.18,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.5045620226894949,"niche_auc":0.7982983379387624,"vs_frequency":{"diff":-0.02789798641763208,"lo":-0.03786724215312623,"hi":-0.017221581053975327}},"logreg_popularity":{"auc":0.7772036423881636,"precision_at_k":0.33,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.5526623640563503,"niche_auc":0.795621615596271,"vs_frequency":{"diff":-0.01151342796712973,"lo":-0.020928894550837487,"hi":-0.0016561509213735425}},"hgb_all":{"auc":0.7237635070056294,"precision_at_k":0.26,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.5838595934661128,"niche_auc":0.7535948747733953,"vs_frequency":{"diff":-0.06495356334966396,"lo":-0.0883552870438825,"hi":-0.041648450633580775}},"train_best_single":{"auc":0.765940349828076,"precision_at_k":0.23,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.5994061604655543,"niche_auc":0.8060102316794856,"vs_frequency":{"diff":-0.022776720527217353,"lo":-0.041488586799041015,"hi":-0.0049079794993054605}},"structural_rank_mean":{"auc":0.7644311127395358,"precision_at_k":0.2,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.6049133033935103,"niche_auc":0.8130503781145315,"vs_frequency":{"diff":-0.02428595761575758,"lo":-0.04421521168832397,"hi":-0.005146065746218809}},"hybrid_rank_exploratory":{"auc":0.8005805040818177,"precision_at_k":0.31,"k":100,"n_candidates":7177,"n_positive":488,"strat_auc":0.6140852657076671,"niche_auc":0.8319003701943666,"vs_frequency":{"diff":0.01186343372652432,"lo":0.0020394538109058864,"hi":0.02158731868165916}}}},{"split":"S3","edges":"all","graph":{"nodes_t":194,"entities_t":897,"density_t":0.6434485337321725,"n_candidates":6675,"n_positive":1212,"train_positive":729,"n_niche":3619,"niche_positive":419},"methods":{"frequency":{"auc":0.7494309906004328,"precision_at_k":0.71,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.5638432954592635,"niche_auc":0.7359878430787589,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.5141867975924446,"precision_at_k":0.25,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.5129710616272471,"niche_auc":0.5096815334128879,"vs_frequency":{"diff":-0.23524419300798827,"lo":-0.25655507014994133,"hi":-0.21171597305732934}},"logreg_all":{"auc":0.7728206373630224,"precision_at_k":0.7,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.6394985952918056,"niche_auc":0.7561478221957041,"vs_frequency":{"diff":0.02338964676258959,"lo":0.013544444625462443,"hi":0.033831874484298786}},"logreg_popularity":{"auc":0.7648463500935487,"precision_at_k":0.67,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.6207927951617145,"niche_auc":0.7491650507159904,"vs_frequency":{"diff":0.015415359493115899,"lo":0.006301677573670403,"hi":0.024927125810786925}},"hgb_all":{"auc":0.6943428005623187,"precision_at_k":0.48,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.5527768935881645,"niche_auc":0.6930041766109785,"vs_frequency":{"diff":-0.05508819003811416,"lo":-0.06770643141836413,"hi":-0.041958897840007045}},"train_best_single":{"auc":0.7267416747166204,"precision_at_k":0.66,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.5983780118189241,"niche_auc":0.7340043257756563,"vs_frequency":{"diff":-0.0226893158838124,"lo":-0.03617703794110426,"hi":-0.009405245729631837}},"structural_rank_mean":{"auc":0.718449240585783,"precision_at_k":0.66,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.5989679200631081,"niche_auc":0.728176088902148,"vs_frequency":{"diff":-0.030981750014649867,"lo":-0.04499799490998066,"hi":-0.01652236820558436}},"hybrid_rank_exploratory":{"auc":0.7589343915171308,"precision_at_k":0.62,"k":100,"n_candidates":6675,"n_positive":1212,"strat_auc":0.6055650317616287,"niche_auc":0.7427543257756564,"vs_frequency":{"diff":0.00950340091669799,"lo":0.0019965011948536782,"hi":0.016746843036571403}}}},{"split":"S3","edges":"groups","graph":{"nodes_t":183,"entities_t":187,"density_t":0.623971656758542,"n_candidates":6262,"n_positive":1259,"train_positive":708,"n_niche":3520,"niche_positive":418},"methods":{"frequency":{"auc":0.7471774282531356,"precision_at_k":0.62,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5404248258155806,"niche_auc":0.7136000388698139,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.5027747450020853,"precision_at_k":0.21,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5052433111541849,"niche_auc":0.5017475991720113,"vs_frequency":{"diff":-0.2444026832510503,"lo":-0.2676351328159643,"hi":-0.22031001393506316}},"logreg_all":{"auc":0.7310114328543462,"precision_at_k":0.67,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5426585438346647,"niche_auc":0.7026902692814329,"vs_frequency":{"diff":-0.01616599539878938,"lo":-0.02355924658107868,"hi":-0.00830897861156921}},"logreg_popularity":{"auc":0.746046970705583,"precision_at_k":0.67,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5688513948429377,"niche_auc":0.7094034100549421,"vs_frequency":{"diff":-0.001130457547552588,"lo":-0.008042030427918586,"hi":0.005611886665354502}},"hgb_all":{"auc":0.699744886983616,"precision_at_k":0.65,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5490196257200322,"niche_auc":0.6883813190440493,"vs_frequency":{"diff":-0.04743254126951957,"lo":-0.06063484076084823,"hi":-0.03378701782392485}},"train_best_single":{"auc":0.7055758602027028,"precision_at_k":0.58,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5779777284637673,"niche_auc":0.7071082400920536,"vs_frequency":{"diff":-0.0416015680504328,"lo":-0.05581013749866996,"hi":-0.025933867477019812}},"structural_rank_mean":{"auc":0.6958963621033099,"precision_at_k":0.6,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5774088141601311,"niche_auc":0.7066100277950018,"vs_frequency":{"diff":-0.05128106614982575,"lo":-0.06709826060373886,"hi":-0.034856902627764134}},"hybrid_rank_exploratory":{"auc":0.7462208933575518,"precision_at_k":0.61,"k":100,"n_candidates":6262,"n_positive":1259,"strat_auc":0.5787089292194022,"niche_auc":0.7201134319886229,"vs_frequency":{"diff":-0.0009565348955837827,"lo":-0.009043262741270333,"hi":0.007834622902416263}}}},{"split":"S3","edges":"software","graph":{"nodes_t":174,"entities_t":710,"density_t":0.49186100591322834,"n_candidates":7648,"n_positive":742,"train_positive":399,"n_niche":3402,"niche_positive":156},"methods":{"frequency":{"auc":0.7596358453877755,"precision_at_k":0.45,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.5279007146284618,"niche_auc":0.7043402530925637,"vs_frequency":{"diff":0.0,"lo":0.0,"hi":0.0}},"random":{"auc":0.5062729155396729,"precision_at_k":0.15,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.506929925281053,"niche_auc":0.48229576441221544,"vs_frequency":{"diff":-0.2533629298481026,"lo":-0.2789897329335158,"hi":-0.22226842907232375}},"logreg_all":{"auc":0.7321038270561245,"precision_at_k":0.43,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.513367151083082,"niche_auc":0.6377948401977978,"vs_frequency":{"diff":-0.027532018331650976,"lo":-0.037430503268235674,"hi":-0.018024908671598387}},"logreg_popularity":{"auc":0.7477928485952682,"precision_at_k":0.33,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.5147349276802852,"niche_auc":0.6838307897688675,"vs_frequency":{"diff":-0.011842996792507332,"lo":-0.01738371689235403,"hi":-0.00588669315058312}},"hgb_all":{"auc":0.6879366978829301,"precision_at_k":0.45,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.5217087674801206,"niche_auc":0.679978908953031,"vs_frequency":{"diff":-0.0716991475048454,"lo":-0.08837756110626963,"hi":-0.05622076012583777}},"train_best_single":{"auc":0.7152001892178603,"precision_at_k":0.2,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.5353886756238004,"niche_auc":0.7014283852315276,"vs_frequency":{"diff":-0.04443565616991518,"lo":-0.060206826565644835,"hi":-0.029554334002249792}},"structural_rank_mean":{"auc":0.6980672496200422,"precision_at_k":0.22,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.5279714062928434,"niche_auc":0.6950625622067397,"vs_frequency":{"diff":-0.061568595767733325,"lo":-0.07844200430463404,"hi":-0.04489191993559104}},"hybrid_rank_exploratory":{"auc":0.7516262861389331,"precision_at_k":0.35,"k":100,"n_candidates":7648,"n_positive":742,"strat_auc":0.5337788336303811,"niche_auc":0.7118613441395326,"vs_frequency":{"diff":-0.00800955924884239,"lo":-0.016416200913624092,"hi":0.00011668396411472665}}}}];
+const SERIES = [
+  { key: "logreg_all", label: "Logistic regression, all features", color: "var(--s1)", shape: "circle" },
+  { key: "logreg_popularity", label: "Logistic regression, popularity only", color: "var(--s2)", shape: "square" },
+  { key: "structural_rank_mean", label: "Structural rank (untrained)", color: "var(--s3)", shape: "diamond" },
+  { key: "hybrid_rank_exploratory", label: "Popularity + structure blend (exploratory)", color: "var(--s4)", shape: "triangle" },
+];
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+const fmt = (x, d = 3) => (x > 0 ? "+" : x < 0 ? "−" : "±") + Math.abs(x).toFixed(d);
+
+function marker(shape, cx, cy, color, parent) {
+  const r = 5, a = { fill: color, stroke: "var(--panel)", "stroke-width": 2 };
+  if (shape === "circle") return el("circle", { cx, cy, r, ...a }, parent);
+  if (shape === "square") return el("rect", { x: cx - r, y: cy - r, width: 2 * r, height: 2 * r, rx: 1.5, ...a }, parent);
+  if (shape === "diamond") return el("path", { d: `M${cx},${cy - r - 1.5}L${cx + r + 1.5},${cy}L${cx},${cy + r + 1.5}L${cx - r - 1.5},${cy}Z`, ...a }, parent);
+  return el("path", { d: `M${cx},${cy - r - 1}L${cx + r + 1},${cy + r}L${cx - r - 1},${cy + r}Z`, ...a }, parent);
+}
+
+function legend() {
+  const L = document.getElementById("legend");
+  SERIES.forEach(s => {
+    const span = document.createElement("span");
+    const sv = el("svg", { width: 16, height: 16, viewBox: "0 0 16 16", "aria-hidden": "true" });
+    marker(s.shape, 8, 8, s.color, sv);
+    span.appendChild(sv); span.append(s.label); L.appendChild(span);
+  });
+}
+
+function forest() {
+  const svg = document.getElementById("forest");
+  const W = 760, left = 120, right = 24, top = 30, band = 60, H = top + band * DATA.length + 34;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("width", W); svg.style.maxWidth = "100%"; svg.style.minWidth = "620px"; svg.style.height = "auto";
+  const vals = DATA.flatMap(r => SERIES.map(s => r.methods[s.key].vs_frequency)).flatMap(v => [v.lo, v.hi]);
+  const lo = Math.floor(Math.min(...vals) * 50) / 50, hi = Math.ceil(Math.max(...vals, 0.02) * 50) / 50;
+  const x = v => left + (v - lo) / (hi - lo) * (W - left - right);
+  for (let t = lo; t <= hi + 1e-9; t += 0.02) {
+    const tx = x(t), isZero = Math.abs(t) < 1e-9;
+    el("line", { x1: tx, x2: tx, y1: top - 6, y2: H - 30, stroke: isZero ? "var(--zero)" : "var(--rule)", "stroke-width": isZero ? 1.5 : 1, "stroke-dasharray": isZero ? "" : "2 4" }, svg);
+    const lab = el("text", { x: tx, y: H - 12, "text-anchor": "middle" }, svg); lab.textContent = isZero ? "0" : fmt(t, 2);
+  }
+  const cap = el("text", { x: x(lo), y: 14 }, svg); cap.textContent = "worse than frequency";
+  const cap2 = el("text", { x: x(hi), y: 14, "text-anchor": "end" }, svg); cap2.textContent = "better than frequency";
+  const tip = document.getElementById("tip");
+  DATA.forEach((r, i) => {
+    const cy = top + band * i + band / 2;
+    if (i % 2 === 0) el("rect", { x: 0, y: top + band * i, width: W, height: band, fill: "var(--rule)", opacity: 0.25 }, svg);
+    const t = el("text", { x: 8, y: cy + 4, class: "rowlab" }, svg); t.textContent = `${r.split} ${r.edges}`;
+    SERIES.forEach((s, j) => {
+      const v = r.methods[s.key].vs_frequency, y = cy + (j - 1.5) * 11;
+      el("line", { x1: x(v.lo), x2: x(v.hi), y1: y, y2: y, stroke: s.color, "stroke-width": 2, "stroke-linecap": "round" }, svg);
+      marker(s.shape, x(v.diff), y, s.color, svg);
+      const hit = el("rect", { x: x(v.lo) - 6, y: y - 6, width: Math.max(x(v.hi) - x(v.lo) + 12, 16), height: 12, fill: "transparent", tabindex: 0 }, svg);
+      const show = ev => {
+        const m = r.methods[s.key];
+        tip.innerHTML = `<b>${r.split} · ${r.edges}</b><br>${s.label}<br>AUC ${m.auc.toFixed(3)} (frequency ${r.methods.frequency.auc.toFixed(3)})<br>Δ ${fmt(v.diff)} [${fmt(v.lo)}, ${fmt(v.hi)}]<br>P@100 ${m.precision_at_k.toFixed(2)}`;
+        tip.hidden = false;
+        const bx = ev.clientX ?? hit.getBoundingClientRect().right, by = ev.clientY ?? hit.getBoundingClientRect().top;
+        tip.style.left = Math.min(bx + 14, innerWidth - 296) + "px"; tip.style.top = (by + 14) + "px";
+      };
+      hit.addEventListener("pointermove", show); hit.addEventListener("focus", show);
+      hit.addEventListener("pointerleave", () => tip.hidden = true); hit.addEventListener("blur", () => tip.hidden = true);
+    });
+  });
+}
+
+function table() {
+  const order = ["frequency", "random", "logreg_all", "logreg_popularity", "hgb_all", "train_best_single", "structural_rank_mean", "hybrid_rank_exploratory"];
+  const T = document.getElementById("full");
+  let h = "<thead><tr><th>Setting</th><th>Positives / candidates</th><th>Method</th><th>AUC</th><th>Δ vs freq. [95% CI]</th><th>P@100</th><th>Strat. AUC</th></tr></thead><tbody>";
+  DATA.forEach(r => order.forEach((k, j) => {
+    const m = r.methods[k], v = m.vs_frequency;
+    const cls = k === "frequency" ? "" : v.lo > 0 ? "win" : v.hi < 0 ? "lose" : "";
+    h += `<tr><td>${j === 0 ? r.split + " " + r.edges : ""}</td><td>${j === 0 ? r.graph.n_positive + " / " + r.graph.n_candidates : ""}</td><td>${k}</td><td>${m.auc.toFixed(3)}</td><td class="${cls}">${k === "frequency" ? "–" : fmt(v.diff) + " [" + fmt(v.lo) + ", " + fmt(v.hi) + "]"}</td><td>${m.precision_at_k.toFixed(2)}</td><td>${m.strat_auc.toFixed(3)}</td></tr>`;
+  }));
+  T.innerHTML = h + "</tbody>";
+}
+legend(); forest(); table();
+</script>

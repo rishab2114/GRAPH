@@ -1,0 +1,237 @@
+<title>ATT&amp;CK Pair Forecasting Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a single reading column (~68ch) with full-width figure bands; data set in mono. */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #161a21; --muted: #586172; --rule: #dce0e7;
+  --accent: #2a78d6; --zero: #8a93a3;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --pos: #1f6f4a; --neg: #a23b2a;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121418; --panel: #191c22; --fg: #eceef2; --muted: #9ba4b3; --rule: #2b3039;
+  --accent: #5598e7; --zero: #6c7586;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --pos: #5fc795; --neg: #ef8a78; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121418; --panel: #191c22; --fg: #eceef2; --muted: #9ba4b3; --rule: #2b3039;
+  --accent: #5598e7; --zero: #6c7586;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --pos: #5fc795; --neg: #ef8a78; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 40px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 40px; }
+.col { max-width: 68ch; display: grid; gap: 14px; min-width: 0; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; letter-spacing: -0.01em; }
+h2 { font-size: 1.5rem; font-weight: 600; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+.eyebrow { font: 500 0.75rem/1.4 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.dek { font-size: 1.15rem; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 20px; font: 0.85rem/1.5 var(--f-mono); color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code, .mono { font-family: var(--f-mono); font-size: 0.9em; }
+
+.verdict { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 20px 22px; display: grid; gap: 12px; }
+.verdict ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+
+.figure { display: grid; gap: 12px; min-width: 0; }
+.figure .cap { color: var(--muted); font-size: 0.92rem; max-width: 80ch; }
+.scroll { overflow-x: auto; min-width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.88rem; color: var(--fg); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+svg text { fill: var(--muted); font: 12px var(--f-mono); }
+svg .rowlab { fill: var(--fg); font: 500 12.5px var(--f-mono); }
+.tip { position: fixed; pointer-events: none; background: var(--panel); color: var(--fg); border: 1px solid var(--rule);
+  border-radius: 4px; padding: 8px 10px; font: 12px/1.45 var(--f-mono); box-shadow: 0 4px 14px rgb(0 0 0 / 0.14); max-width: 280px; }
+
+table { border-collapse: collapse; font: 0.86rem/1.4 var(--f-mono); font-variant-numeric: tabular-nums; width: 100%; }
+th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-weight: 500; color: var(--muted); }
+th:first-child, td:first-child { text-align: left; }
+td.win { color: var(--pos); font-weight: 500; }
+td.lose { color: var(--neg); }
+.note { font-size: 0.85rem; color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.split > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+footer { border-top: 1px solid var(--rule); padding-top: 18px; color: var(--muted); font-size: 0.85rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="col">
+    <div class="eyebrow">Graph-Forecast Fraud Scenarios · Phase 1 study</div>
+    <h1>ATT&amp;CK Pair Forecasting Study</h1>
+    <p class="dek">Can a shared-neighbour graph forecaster predict which MITRE ATT&amp;CK techniques will next be documented together, better than knowing how common each technique is?</p>
+    <div class="meta"><span>__DATE__</span><span>3 splits × 3 edge sets · __NMETHODS__ methods</span><span>Code: github.com/rishab2114/graph</span></div>
+  </header>
+
+  <section class="verdict" aria-labelledby="v">
+    <h2 id="v">Verdict</h2>
+    <ol>
+      <li><strong>Popularity explains most of it.</strong> A baseline that ranks pairs by freq(u)·freq(v) reaches an AUC of __FREQ_RANGE__ in every setting.</li>
+      <li><strong>Supervised graph models do not transfer across time.</strong> Logistic regression on all features beats that baseline in __LOGREG_WINS__ of 9 settings. Gradient boosting does so in __HGB_WINS__ of 9.</li>
+      <li><strong>Structure carries a small signal at fixed popularity.</strong> Within popularity deciles, the untrained structural score beats frequency in __STRAT_WINS__ of 9 settings.</li>
+      <li><strong>An exploratory blend gains up to __HY_MAX__ AUC but loses at the top of the list.</strong> Its precision at 100 is lower than frequency in __HY_P100_LOSE__ of 9 settings. It was designed after seeing the data, so a prospective test is pre-registered.</li>
+    </ol>
+  </section>
+
+  <section class="col" aria-labelledby="d">
+    <h2 id="d">Design</h2>
+    <p>Each ATT&amp;CK Enterprise release becomes a graph. Nodes are parent techniques (sub-techniques are collapsed). An edge joins two techniques used by the same intrusion set, campaign, malware or tool. Revoked and deprecated objects are dropped. For a cutoff release T, the candidates are all unlinked pairs at T. The positives are pairs <em>newly documented together</em> by a release two years later.</p>
+    <p>Supervised models train on the previous two-year window (graph at T−2y, labels at T). They never see the test release. Every method except one was fixed before any multi-split result was seen.</p>
+  </section>
+  <div class="scroll"><table aria-label="Time splits">
+    <thead><tr><th>Split</th><th>Train graph</th><th>Cutoff T</th><th>Test labels</th></tr></thead>
+    <tbody>__SPLIT_ROWS__</tbody></table></div>
+
+  <section class="figure" aria-labelledby="f1">
+    <h2 id="f1">Figure 1. AUC gain over the frequency baseline</h2>
+    <p class="cap">Each mark is a method's AUC minus the frequency baseline's AUC on the same candidates. Lines show the 95% paired-bootstrap interval (1,000 resamples). Marks to the right of zero beat popularity. Hover a mark for exact values.</p>
+    <div class="legend" id="legend"></div>
+    <div class="scroll"><svg id="forest" role="img" aria-label="Forest plot of AUC differences versus the frequency baseline for four methods across nine settings"></svg></div>
+  </section>
+
+  <section class="figure" aria-labelledby="t1">
+    <h2 id="t1">Table 1. All methods, all settings</h2>
+    <p class="cap">AUC, precision at the top 100, and AUC within popularity deciles ("strat."). A score that only tracks popularity gets about 0.5 on the stratified measure. Green means the interval for AUC − frequency is above zero; red means it is below.</p>
+    <div class="scroll"><table id="full"></table></div>
+  </section>
+
+  <section class="split">
+    <div>
+      <h2>Why the bridge idea is weak here</h2>
+      <p>In the research-concept graphs this method came from, there are about 123,000 concepts and most pairs are far apart, so a pair with a few shared neighbours is unusual and informative. ATT&amp;CK has only about 180 parent techniques, and __DENSITY_RANGE__ of all pairs are already linked. Almost every unlinked pair is bridged many times over, so shared-neighbour counts mostly restate popularity.</p>
+      <p>Using a sparser edge set (malware and tools only, density about 0.5) gave structure less of an edge, not more.</p>
+    </div>
+    <div>
+      <h2>Threats to validity</h2>
+      <ul class="plain">
+        <li>The target is MITRE's documentation, not attacker behaviour. Many new edges document old activity.</li>
+        <li>S2 overlaps S1 and S3 in time, so the nine settings show robustness but are not nine independent replications.</li>
+        <li>The test windows have now been looked at. Only the pre-registered test can confirm the exploratory blend.</li>
+        <li>One data source. Fraud typologies may behave differently.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="col" aria-labelledby="pr">
+    <h2 id="pr">Pre-registered prospective test</h2>
+    <p>Fixed in <code>PREREGISTRATION.md</code> on 2026-11-18, before the data exists. Graph at <code>ATT&amp;CK-v20.1</code>; outcome is the first Enterprise release dated on or after 2027-10-01; edge set <code>all</code>; code frozen at that commit.</p>
+    <ul class="plain">
+      <li><strong>H1:</strong> the blend's AUC beats frequency (95% paired-bootstrap lower bound above 0).</li>
+      <li><strong>H2:</strong> within popularity deciles, the structural score beats frequency.</li>
+      <li><strong>H3, expected null:</strong> no supervised model beats frequency.</li>
+      <li>Precision at 100 is reported for every method whatever the outcome.</li>
+    </ul>
+  </section>
+
+  <section class="col" aria-labelledby="sig">
+    <h2 id="sig">What this is, and what it is not</h2>
+    <p>This is a careful, reproducible negative result with a sound evaluation method: leakage-controlled time-travel splits, a popularity-stratified AUC that separates structure from popularity, paired confidence intervals, and a pre-registered prospective test. That is a solid workshop paper, technical blog post or portfolio project.</p>
+    <p>It is not yet a major research contribution. The project's central question has not been tested: whether invented scenarios predict how fraud or intrusion detectors perform on a later, untouched period (experiments E3 and E4). That needs a dated, labelled holdout from the same domain as the graph. It also needs the prior-work search the plan calls for.</p>
+  </section>
+
+  <section class="col" aria-labelledby="next">
+    <h2 id="next">Next steps</h2>
+    <ul class="plain">
+      <li>Choose the holdout dataset and domain (Phase 0). The graph source must match it.</li>
+      <li>For scenario selection, rank by popularity and use structure only to re-rank inside a popularity band, where the signal is.</li>
+      <li>Run the prior-work search: SynthAML, studies of stress-test transfer, hyperbolic link forecasting.</li>
+      <li>Rerun <code>python -m gffs.study</code> when the pre-registered outcome release appears.</li>
+    </ul>
+  </section>
+
+  <footer>Built from <code>results/study.json</code> by <code>reports/build_report.py</code>. Technique IDs, scores and metrics only; no attack procedures.</footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const DATA = __DATA__;
+const SERIES = [
+  { key: "logreg_all", label: "Logistic regression, all features", color: "var(--s1)", shape: "circle" },
+  { key: "logreg_popularity", label: "Logistic regression, popularity only", color: "var(--s2)", shape: "square" },
+  { key: "structural_rank_mean", label: "Structural rank (untrained)", color: "var(--s3)", shape: "diamond" },
+  { key: "hybrid_rank_exploratory", label: "Popularity + structure blend (exploratory)", color: "var(--s4)", shape: "triangle" },
+];
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+const fmt = (x, d = 3) => (x > 0 ? "+" : x < 0 ? "−" : "±") + Math.abs(x).toFixed(d);
+
+function marker(shape, cx, cy, color, parent) {
+  const r = 5, a = { fill: color, stroke: "var(--panel)", "stroke-width": 2 };
+  if (shape === "circle") return el("circle", { cx, cy, r, ...a }, parent);
+  if (shape === "square") return el("rect", { x: cx - r, y: cy - r, width: 2 * r, height: 2 * r, rx: 1.5, ...a }, parent);
+  if (shape === "diamond") return el("path", { d: `M${cx},${cy - r - 1.5}L${cx + r + 1.5},${cy}L${cx},${cy + r + 1.5}L${cx - r - 1.5},${cy}Z`, ...a }, parent);
+  return el("path", { d: `M${cx},${cy - r - 1}L${cx + r + 1},${cy + r}L${cx - r - 1},${cy + r}Z`, ...a }, parent);
+}
+
+function legend() {
+  const L = document.getElementById("legend");
+  SERIES.forEach(s => {
+    const span = document.createElement("span");
+    const sv = el("svg", { width: 16, height: 16, viewBox: "0 0 16 16", "aria-hidden": "true" });
+    marker(s.shape, 8, 8, s.color, sv);
+    span.appendChild(sv); span.append(s.label); L.appendChild(span);
+  });
+}
+
+function forest() {
+  const svg = document.getElementById("forest");
+  const W = 760, left = 120, right = 24, top = 30, band = 60, H = top + band * DATA.length + 34;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("width", W); svg.style.maxWidth = "100%"; svg.style.minWidth = "620px"; svg.style.height = "auto";
+  const vals = DATA.flatMap(r => SERIES.map(s => r.methods[s.key].vs_frequency)).flatMap(v => [v.lo, v.hi]);
+  const lo = Math.floor(Math.min(...vals) * 50) / 50, hi = Math.ceil(Math.max(...vals, 0.02) * 50) / 50;
+  const x = v => left + (v - lo) / (hi - lo) * (W - left - right);
+  for (let t = lo; t <= hi + 1e-9; t += 0.02) {
+    const tx = x(t), isZero = Math.abs(t) < 1e-9;
+    el("line", { x1: tx, x2: tx, y1: top - 6, y2: H - 30, stroke: isZero ? "var(--zero)" : "var(--rule)", "stroke-width": isZero ? 1.5 : 1, "stroke-dasharray": isZero ? "" : "2 4" }, svg);
+    const lab = el("text", { x: tx, y: H - 12, "text-anchor": "middle" }, svg); lab.textContent = isZero ? "0" : fmt(t, 2);
+  }
+  const cap = el("text", { x: x(lo), y: 14 }, svg); cap.textContent = "worse than frequency";
+  const cap2 = el("text", { x: x(hi), y: 14, "text-anchor": "end" }, svg); cap2.textContent = "better than frequency";
+  const tip = document.getElementById("tip");
+  DATA.forEach((r, i) => {
+    const cy = top + band * i + band / 2;
+    if (i % 2 === 0) el("rect", { x: 0, y: top + band * i, width: W, height: band, fill: "var(--rule)", opacity: 0.25 }, svg);
+    const t = el("text", { x: 8, y: cy + 4, class: "rowlab" }, svg); t.textContent = `${r.split} ${r.edges}`;
+    SERIES.forEach((s, j) => {
+      const v = r.methods[s.key].vs_frequency, y = cy + (j - 1.5) * 11;
+      el("line", { x1: x(v.lo), x2: x(v.hi), y1: y, y2: y, stroke: s.color, "stroke-width": 2, "stroke-linecap": "round" }, svg);
+      marker(s.shape, x(v.diff), y, s.color, svg);
+      const hit = el("rect", { x: x(v.lo) - 6, y: y - 6, width: Math.max(x(v.hi) - x(v.lo) + 12, 16), height: 12, fill: "transparent", tabindex: 0 }, svg);
+      const show = ev => {
+        const m = r.methods[s.key];
+        tip.innerHTML = `<b>${r.split} · ${r.edges}</b><br>${s.label}<br>AUC ${m.auc.toFixed(3)} (frequency ${r.methods.frequency.auc.toFixed(3)})<br>Δ ${fmt(v.diff)} [${fmt(v.lo)}, ${fmt(v.hi)}]<br>P@100 ${m.precision_at_k.toFixed(2)}`;
+        tip.hidden = false;
+        const bx = ev.clientX ?? hit.getBoundingClientRect().right, by = ev.clientY ?? hit.getBoundingClientRect().top;
+        tip.style.left = Math.min(bx + 14, innerWidth - 296) + "px"; tip.style.top = (by + 14) + "px";
+      };
+      hit.addEventListener("pointermove", show); hit.addEventListener("focus", show);
+      hit.addEventListener("pointerleave", () => tip.hidden = true); hit.addEventListener("blur", () => tip.hidden = true);
+    });
+  });
+}
+
+function table() {
+  const order = ["frequency", "random", "logreg_all", "logreg_popularity", "hgb_all", "train_best_single", "structural_rank_mean", "hybrid_rank_exploratory"];
+  const T = document.getElementById("full");
+  let h = "<thead><tr><th>Setting</th><th>Positives / candidates</th><th>Method</th><th>AUC</th><th>Δ vs freq. [95% CI]</th><th>P@100</th><th>Strat. AUC</th></tr></thead><tbody>";
+  DATA.forEach(r => order.forEach((k, j) => {
+    const m = r.methods[k], v = m.vs_frequency;
+    const cls = k === "frequency" ? "" : v.lo > 0 ? "win" : v.hi < 0 ? "lose" : "";
+    h += `<tr><td>${j === 0 ? r.split + " " + r.edges : ""}</td><td>${j === 0 ? r.graph.n_positive + " / " + r.graph.n_candidates : ""}</td><td>${k}</td><td>${m.auc.toFixed(3)}</td><td class="${cls}">${k === "frequency" ? "–" : fmt(v.diff) + " [" + fmt(v.lo) + ", " + fmt(v.hi) + "]"}</td><td>${m.precision_at_k.toFixed(2)}</td><td>${m.strat_auc.toFixed(3)}</td></tr>`;
+  }));
+  T.innerHTML = h + "</tbody>";
+}
+legend(); forest(); table();
+</script>

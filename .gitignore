@@ -1,5 +1,7 @@
-data/
-results/
+/data/
+/results/
 __pycache__/
 *.egg-info/
 .venv/
+.superpowers/
+reports/dashboard/index_doc.json
