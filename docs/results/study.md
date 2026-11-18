@@ -89,7 +89,7 @@ Reproduce: `python -m gffs.study --config config/study.toml --out results/`. Raw
    `logreg_popularity`) helps in only 2 of 9. Coefficients learned in one 2-year window do not
    carry over to the next.
 3. **Structure carries a real but small signal at fixed popularity.** Within popularity deciles,
-   the untrained structural score beats frequency in 8 of 9 settings (0.53–0.63 vs 0.51–0.56).
+   the untrained structural score beats frequency in all 9 settings (0.53–0.63 vs 0.51–0.56). In S3 software the margin is negligible (0.528 vs 0.528 at three decimals).
    The Swanson-style "shared bridge" idea is not empty here. It is just much weaker than popularity.
 4. **The exploratory blend helps AUC but not the short list.** It gains in 5 of 9 settings, with
    CIs excluding 0 and gains of 0.010–0.027. However, it has a **lower precision@100 in 8 of 9**.
