@@ -1,0 +1,47 @@
+# AML literature graph, vocabulary v2. FROZEN BEFORE COUNTING.
+#
+# Committed 2026-11-18. At that time no OpenAlex query had returned data for v1 or v2: every request
+# had been refused by the shared rate limit. Why v2 exists: docs/vocabulary-v2.md.
+#
+# v2 = the 14 v1 concepts (config/aml_vocabulary.toml, unchanged, including its scope anchors)
+#      + context concepts chosen by a fixed rule from OpenAlex's own tags, not by hand.
+
+version = 2
+base_vocabulary = "config/aml_vocabulary.toml"   # the 14 target concepts and the scope anchors
+cutoff = "2016-12-31"
+
+[corpus]
+# Every work published on or before the cutoff whose title or abstract matches any v1 scope anchor.
+# This is the same scope filter v1 applies to each concept query. There is no cap on size.
+filter = "v1 anchor terms, title_and_abstract.search, to_publication_date = cutoff"
+
+[context]
+# Context nodes come from OpenAlex's machine-assigned tags on corpus works.
+# The source is chosen from the fields OpenAlex returns, before any count is seen:
+#   1. `concepts` (legacy concept tags) if the first page of corpus works carries the field;
+#   2. otherwise `topics`.
+source_preference = ["concepts", "topics"]
+min_score = 0.3          # a tag counts on a work only at this score or higher (concepts and topics)
+min_level = 2            # concepts only: level 0-1 tags ("Computer science", "Economics") are too broad
+min_works = 20           # a tag becomes a node only if it is on at least this many corpus works by the cutoff
+max_nodes = 500          # keep the most frequent; ties broken by OpenAlex id
+node_prefix = "oa:"      # context node ids look like "oa:C2779345533", so they cannot clash with v1 ids
+
+[edges]
+# A work links every pair among (v1 concepts it matches) and (context tags it carries that are nodes).
+# Dated by publication year, as in v1.
+
+[evaluation]
+# Forecaster quality, measured only on pre-cutoff literature, so nothing from after 2016 is used.
+train = [2010, 2013]     # graph at end of 2010 -> pairs newly linked by end of 2013
+test = [2013, 2016]      # graph at end of 2013 -> pairs newly linked by end of 2016
+candidates = "all unlinked pairs among nodes present at the graph year"
+methods = "gffs.models.MODELS + frequency + random (unchanged code)"
+primary = "logreg_all and structural_rank_mean beat frequency on the test window (95% paired-bootstrap lower bound > 0)"
+also_report = "the same metrics restricted to pairs with at least one Elliptic-expressible v1 concept"
+
+[scenarios]
+# Which ranking picks the scenario pairs at T = 2016, fixed now:
+# if `primary` holds for logreg_all, rank with logreg_all trained on 2013 -> 2016; otherwise rank with frequency.
+# Candidate scenario pairs: unlinked at 2016, with both endpoints Elliptic-expressible v1 concepts.
+rule = "logreg_all if primary holds, else frequency"
