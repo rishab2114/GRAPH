@@ -1,0 +1,28 @@
+# Pre-registered study design (fixed before the multi-split results were seen).
+# Rolling 2-year windows; October releases. Dates are filled in from the bundles at run time.
+k = 100
+n_boot = 1000
+n_strata = 10
+
+[edge_sets]
+all = ["intrusion-set", "malware", "tool", "campaign"]
+groups = ["intrusion-set", "campaign"]
+software = ["malware", "tool"]
+
+[[splits]]
+name = "S1"
+train_from = "ATT&CK-v8.0"
+t = "ATT&CK-v12.0"
+test_to = "ATT&CK-v16.0"
+
+[[splits]]
+name = "S2"
+train_from = "ATT&CK-v10.0"
+t = "ATT&CK-v14.0"
+test_to = "ATT&CK-v18.0"
+
+[[splits]]
+name = "S3"
+train_from = "ATT&CK-v12.0"
+t = "ATT&CK-v16.0"
+test_to = "ATT&CK-v20.0"
