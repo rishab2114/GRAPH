@@ -35,7 +35,8 @@ def _labels(pairs, positives) -> np.ndarray:
 
 
 def run_split(sets_before: Sets, sets_t: Sets, sets_after: Sets, *, k: int = 100,
-              n_boot: int = 1000, n_strata: int = 10, seed: int = 0) -> dict:
+              n_boot: int = 1000, n_strata: int = 10, seed: int = 0, focus=None) -> dict:
+    """`focus(u, v) -> bool`, if given, adds AUC and precision@k on that subset of candidate pairs."""
     g_b, g_t, g_a = build_graph(sets_before), build_graph(sets_t), build_graph(sets_after)
 
     train_pairs = candidate_pairs(g_b)
@@ -63,7 +64,19 @@ def run_split(sets_before: Sets, sets_t: Sets, sets_after: Sets, *, k: int = 100
         m["vs_frequency"] = paired_bootstrap_diff(s, scores["frequency"], y, n_boot, seed)
         methods[name] = m
 
+    out_focus = None
+    if focus is not None:
+        mask = np.array([bool(focus(u, v)) for u, v in pairs])
+        yf = y[mask]
+        fm = {}
+        if 0 < yf.sum() < len(yf):
+            for name, s in scores.items():
+                e = evaluate(s[mask], yf, min(k, int(mask.sum())))
+                fm[name] = {"auc": e["auc"], "precision_at_k": e["precision_at_k"], "k": e["k"]}
+        out_focus = {"n_candidates": int(mask.sum()), "n_positive": int(yf.sum()), "methods": fm}
+
     return {
+        "focus": out_focus,
         "graph": {
             "nodes_t": g_t.number_of_nodes(), "entities_t": len(sets_t),
             "density_t": nx.density(g_t), "n_candidates": len(pairs),

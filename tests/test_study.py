@@ -24,3 +24,17 @@ def test_run_split_reports_every_method_with_ci_and_strata(make_bundle):
         assert {"auc", "precision_at_k", "strat_auc", "vs_frequency"} <= set(m)
     assert r["methods"]["frequency"]["vs_frequency"] == {"diff": 0.0, "lo": 0.0, "hi": 0.0}
     assert r["graph"]["n_positive"] > 0 and 0 < r["graph"]["density_t"] <= 1
+
+
+def test_run_split_focus_reports_metrics_on_the_subset(make_bundle):
+    names = [f"T{i}" for i in range(12)]
+
+    def sets(offsets, extra=()):
+        return _sets(make_bundle, {f"G{i}": [names[(i + d) % 12] for d in offsets + ([4] if i in extra else [])]
+                                   for i in range(12)})
+
+    r = run_split(sets([0, 1, 3]), sets([0, 1, 3, 6]), sets([0, 1, 3, 6], extra={0, 1, 2, 5, 7}), k=5, n_boot=10,
+                  n_strata=2, focus=lambda u, v: "T0" in (u, v) or "T1" in (u, v))
+    f = r["focus"]
+    assert f["n_candidates"] > 0 and 0 < f["n_positive"] < f["n_candidates"]
+    assert set(f["methods"]) == set(r["methods"])
