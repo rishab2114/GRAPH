@@ -198,3 +198,22 @@ literature run). That way no result can be seen before every input is fixed.
   in the design file.
 
 **Next:** review the new code with fresh eyes (bugs, leakage paths), then wait for the 00:10 UTC literature run.
+
+---
+
+## 2026-11-18 20:05 — Step E: leakage review of the E3/E4 harness
+
+I read `e3e4.py` line by line, asking "can anything from steps 35–49 reach a choice?":
+- **Thresholds:** from models fitted on steps 1–28 and scored on licit steps 29–34. ✓
+- **Final models:** fitted on labelled steps 1–34 only. ✓
+- **Scenario sizes:** drawn from labelled steps 1–34. Scenarios are injected into the step 29–34 graph. ✓
+- **S2's 10 pairs:** a fixed seed (0), so they don't depend on results. ✓
+- **S1's 10 pairs:** the top of the frozen v2 ranking, built from pre-2017 literature only. ✓
+- **Holdout features:** computed from the step 35–49 graph alone. Elliptic has no edges between time steps, so
+  nothing leaks across the cutoff through the graph. ✓
+- **Synthetic transactions** are never used in training. ✓
+- **Edge cases:** if every detector has the same recall on a set, Spearman is undefined. The harness reports NaN
+  instead of crashing, and the comparisons skip those bootstrap draws.
+
+No leak found. **Waiting on:** the 00:10 UTC literature run, which produces S1. After that, one run of
+`python -m gffs.e3e4` gives the core result.
