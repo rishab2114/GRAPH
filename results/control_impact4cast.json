@@ -1,0 +1,122 @@
+{
+ "graph": {
+  "nodes_t": 37901,
+  "edges_t": 22841349,
+  "density_t": 0.03180254431782733,
+  "n_pairs": 200000,
+  "train_positive": 765,
+  "test_positive": 928
+ },
+ "methods": {
+  "frequency": {
+   "auc": 0.8730081527641705,
+   "precision_at_k": 0.101,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.6104266212710873,
+   "vs_frequency": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0
+   }
+  },
+  "random": {
+   "auc": 0.5297042068300362,
+   "precision_at_k": 0.004,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.5293150836420367,
+   "vs_frequency": {
+    "diff": -0.3433039459341344,
+    "lo": -0.3649175884595162,
+    "hi": -0.32142968270962774
+   }
+  },
+  "logreg_all": {
+   "auc": 0.9215339780027604,
+   "precision_at_k": 0.126,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.8056177469277792,
+   "vs_frequency": {
+    "diff": 0.04852582523858984,
+    "lo": 0.040009770606997994,
+    "hi": 0.058201433760174746
+   }
+  },
+  "logreg_popularity": {
+   "auc": 0.8707414742768514,
+   "precision_at_k": 0.095,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.6353578864760945,
+   "vs_frequency": {
+    "diff": -0.002266678487319096,
+    "lo": -0.0064725488169785845,
+    "hi": 0.0017336579520309473
+   }
+  },
+  "hgb_all": {
+   "auc": 0.9274114515273282,
+   "precision_at_k": 0.121,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.8113559247134278,
+   "vs_frequency": {
+    "diff": 0.05440329876315764,
+    "lo": 0.04598395386430991,
+    "hi": 0.06332792280590764
+   }
+  },
+  "train_best_single": {
+   "auc": 0.9217281981497597,
+   "precision_at_k": 0.134,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.8020968028632984,
+   "vs_frequency": {
+    "diff": 0.04872004538558916,
+    "lo": 0.042527293963538645,
+    "hi": 0.055724415403739985
+   }
+  },
+  "structural_rank_mean": {
+   "auc": 0.9011834686652967,
+   "precision_at_k": 0.119,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.7399498962341214,
+   "vs_frequency": {
+    "diff": 0.028175315901126208,
+    "lo": 0.021675176293099695,
+    "hi": 0.034382719407423684
+   }
+  },
+  "hybrid_rank_exploratory": {
+   "auc": 0.8950601372263856,
+   "precision_at_k": 0.112,
+   "k": 1000,
+   "n_candidates": 200000,
+   "n_positive": 928,
+   "strat_auc": 0.7316815491747153,
+   "vs_frequency": {
+    "diff": 0.022051984462215013,
+    "lo": 0.01886601108124216,
+    "hi": 0.02501467787498353
+   }
+  }
+ },
+ "design": {
+  "train": "graph 2016 -> new links by 2019",
+  "test": "graph 2019 -> new links by 2022",
+  "n_pairs": 200000,
+  "sampling": "uniform unlinked pairs among nodes with degree >= 1"
+ }
+}

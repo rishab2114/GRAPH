@@ -24,7 +24,7 @@ def _attack_id(obj: dict) -> str | None:
     return None
 
 
-def technique_sets(bundle: dict) -> dict[str, frozenset[str]]:
+def technique_sets(bundle: dict, entity_types: tuple[str, ...] = ENTITY_TYPES) -> dict[str, frozenset[str]]:
     """Map each active entity's STIX id to the parent technique IDs it `uses`.
 
     Revoked/deprecated techniques, entities and relationships are ignored.
@@ -40,7 +40,7 @@ def technique_sets(bundle: dict) -> dict[str, frozenset[str]]:
             tid = _attack_id(obj)
             if tid:
                 techniques[obj["id"]] = parent_id(tid)
-        elif obj.get("type") in ENTITY_TYPES:
+        elif obj.get("type") in entity_types:
             entities.add(obj["id"])
 
     uses: dict[str, set[str]] = defaultdict(set)

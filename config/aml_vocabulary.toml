@@ -1,0 +1,167 @@
+# AML / crypto-crime red-flag vocabulary for the literature graph (Option 1, graph source A).
+#
+# FROZEN BEFORE COUNTING. Committed before any OpenAlex query was run. Do not add, drop or edit
+# concepts or synonyms after seeing counts; a change means a new versioned file (aml_vocabulary_v2.toml)
+# and a note in docs/ saying why, and every result must name the version it used.
+#
+# Nodes = concepts below. An edge (a, b, year) = a work published in `year` that matches the scope
+# and at least one synonym of a and one synonym of b in its title or abstract. Graph frozen at `cutoff`.
+#
+# Inclusion rule: a red flag that can be observed in a transaction graph (who pays whom, when, how
+# much). Actor- or document-level flags (shell companies, high-risk jurisdictions, KYC gaps, tax
+# havens) are excluded because they cannot become a transaction-subgraph motif.
+#
+# `elliptic` = can the concept be written as a motif on elliptic_txs_edgelist.csv alone? That file
+# gives transaction -> transaction payment flows, with no edges between time steps (each step is about
+# three hours of activity; Weber et al. 2019 §2.1; checked in docs/phase0-decision.md). No addresses,
+# no entity labels, and no amounts (the anonymised features are off limits). So only within-step
+# topology is observable. Concepts marked false stay in the literature graph but any forecast pair
+# containing one counts as "not expressible" in E2. Motif thresholds (k, path length) are fixed in
+# step 4 from pre-cutoff data, not here.
+#
+# Known leak (docs/design-option1.md): the *choice* of concepts is made in 2026. To limit it, each
+# concept names pre-2017 evidence that the idea already existed. Only sources we are sure of are cited.
+
+version = 1
+cutoff = "2016-12-31"
+match = "phrase, case-insensitive, OpenAlex title_and_abstract.search (stemmed)"
+
+[scope]
+# A work counts only if its title or abstract also matches one of these. This keeps out the
+# electronics sense of "fan-out", the chemistry sense of "mixing", and so on. No concept synonym may
+# appear here.
+anchor_terms = [
+  "money laundering", "anti-money laundering", "terrorist financing", "financial crime",
+  "fraud", "illicit", "bitcoin", "cryptocurrency", "crypto-currency", "virtual currency",
+  "digital currency", "suspicious transaction", "suspicious activity",
+]
+
+# ---------------------------------------------------------------- observable on Elliptic edge list
+
+[[concept]]
+id = "fan_in"
+label = "Fan-in"
+definition = "Funds from many sources converge on one account or transaction."
+synonyms = ["fan-in", "funnel account", "many-to-one", "consolidation of funds", "pooling of funds"]
+elliptic = true
+motif = "A transaction with in-degree >= k within its time step."
+evidence = "Funnel accounts: FinCEN advisory FIN-2014-A005 (2014)."
+
+[[concept]]
+id = "fan_out"
+label = "Fan-out"
+definition = "Funds from one account or transaction are split out to many recipients."
+synonyms = ["fan-out", "one-to-many", "dispersal of funds", "splitting of funds"]
+elliptic = true
+motif = "A transaction with out-degree >= k within its time step."
+evidence = ""
+
+[[concept]]
+id = "peel_chain"
+label = "Peel chain"
+definition = "A long chain where each hop peels a small amount off and passes the remainder on."
+synonyms = ["peel chain", "peeling chain", "peel-off"]
+elliptic = true
+motif = "A directed path of length >= k where every inner transaction has out-degree 1-2 and in-degree 1."
+evidence = "Meiklejohn et al. 2013, 'A Fistful of Bitcoins' (IMC)."
+
+[[concept]]
+id = "mixing_service"
+label = "Mixing service"
+definition = "A third-party service that pools many users' coins and pays them back out to break the trail."
+synonyms = ["mixing service", "coin mixer", "mixer", "tumbler", "tumbling", "laundry service"]
+elliptic = true
+motif = "A dense many-to-many subgraph: several transactions with both in- and out-degree >= k feeding each other within one step."
+evidence = "Moeser, Boehme & Breuker 2013, 'An inquiry into money laundering tools in the Bitcoin ecosystem' (eCrime)."
+
+[[concept]]
+id = "coinjoin"
+label = "CoinJoin"
+definition = "A single transaction combining inputs from many owners into many outputs."
+synonyms = ["coinjoin", "coin join", "shared send", "joint transaction"]
+elliptic = true
+motif = "A single transaction with in-degree >= k and out-degree >= k."
+evidence = "Proposed by G. Maxwell on bitcointalk, 2013."
+
+[[concept]]
+id = "pass_through"
+label = "Rapid pass-through"
+definition = "Funds arrive and leave again almost at once through an intermediary (often a money mule)."
+synonyms = ["pass-through account", "flow-through account", "rapid movement of funds", "money mule", "mule account"]
+elliptic = true
+motif = "A transaction with in-degree 1 and out-degree 1 on a path; rapid is implied because all edges lie within one ~3 h step."
+evidence = "Money mules feature in FATF and Europol typology reports well before 2017."
+
+[[concept]]
+id = "layering"
+label = "Layering (multi-hop)"
+definition = "Funds pass through many successive hops to distance them from their source."
+synonyms = ["layering", "multiple hops", "chain of transactions", "transaction chain"]
+elliptic = true
+motif = "A directed path of length >= k between an illicit-labelled source and its descendants, without the peel-chain degree limits."
+evidence = "Placement-layering-integration model, standard in FATF material for decades."
+
+[[concept]]
+id = "smurfing"
+label = "Smurfing (scatter-gather)"
+definition = "Funds are split across many intermediaries and later recombined."
+synonyms = ["smurfing", "smurf", "scatter-gather", "split and merge"]
+elliptic = true
+motif = "A fan-out to >= k transactions whose paths reconverge on one transaction within the step."
+evidence = "Classic cash-deposit typology, long predating 2017."
+
+# ---------------------------------------------------------------- not observable on Elliptic edge list
+
+[[concept]]
+id = "structuring"
+label = "Structuring"
+definition = "Breaking amounts into pieces just below a reporting threshold."
+synonyms = ["structuring", "below the reporting threshold", "below reporting threshold", "threshold avoidance"]
+elliptic = false
+motif = "Needs amounts, which Elliptic only has inside the anonymised features."
+evidence = "Criminalised in the US by 31 U.S.C. 5324 (1986)."
+
+[[concept]]
+id = "dusting"
+label = "Dust / micro-transactions"
+definition = "Very small transfers, used to probe, tag or spread funds."
+synonyms = ["dust transaction", "dusting", "micro-transaction", "microtransaction", "micropayment"]
+elliptic = false
+motif = "Needs amounts."
+evidence = "Bitcoin Core dust-output rule (2013)."
+
+[[concept]]
+id = "round_tripping"
+label = "Round-tripping"
+definition = "Funds leave and return to the same owner, possibly via several hops."
+synonyms = ["round-tripping", "round tripping", "round-trip transaction", "circular transaction", "cycle of transactions"]
+elliptic = false
+motif = "Needs owner identity; Elliptic's transaction graph is acyclic and has no addresses."
+evidence = ""
+
+[[concept]]
+id = "dormancy"
+label = "Dormant then active"
+definition = "An account inactive for a long time suddenly moves funds."
+synonyms = ["dormant account", "dormant accounts", "sudden activity", "reactivated account"]
+elliptic = false
+motif = "Needs links across time steps, which Elliptic does not have."
+evidence = ""
+
+[[concept]]
+id = "velocity"
+label = "High velocity / bursts"
+definition = "An unusual number of transfers in a short period."
+synonyms = ["transaction velocity", "high velocity", "burst of transactions", "high-frequency transactions"]
+elliptic = false
+motif = "Needs owner identity across transactions; one Elliptic step is a single short window."
+evidence = ""
+
+[[concept]]
+id = "cash_out"
+label = "Cash-out via exchange"
+definition = "Converting illicit crypto funds to fiat or another asset through an exchange or exchanger."
+synonyms = ["cash-out", "cash out", "cashing out", "exchanger", "currency exchange service"]
+elliptic = false
+motif = "Needs entity labels (which node is an exchange); Elliptic has none."
+evidence = "FATF 2014, 'Virtual Currencies: Key Definitions and Potential AML/CFT Risks'."

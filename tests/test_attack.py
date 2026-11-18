@@ -21,3 +21,12 @@ def test_ignores_revoked_and_deprecated(make_bundle):
     b = make_bundle({"APT-A": ["T1059", "T1078", "T1003"]},
                     revoked={"T1003"}, deprecated_rels={("APT-A", "T1078")})
     assert list(technique_sets(b).values()) == [frozenset({"T1059"})]
+
+
+def test_entity_type_filter(make_bundle):
+    b = make_bundle({"APT-A": ["T1059", "T1078"]})
+    b["objects"].append({"type": "malware", "id": "malware--m1"})
+    b["objects"].append({"type": "relationship", "id": "relationship--m1", "relationship_type": "uses",
+                         "source_ref": "malware--m1", "target_ref": "attack-pattern--T1059"})
+    assert set(technique_sets(b, entity_types=("malware",))) == {"malware--m1"}
+    assert set(technique_sets(b, entity_types=("intrusion-set",))) == {"intrusion-set--APT-A"}
