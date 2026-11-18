@@ -43,12 +43,21 @@ def _rank_mean(X: pd.DataFrame, y: np.ndarray) -> Scorer:
     return lambda Z: Z[cols].rank(pct=True).mean(axis=1).to_numpy()
 
 
+def _hybrid(X: pd.DataFrame, y: np.ndarray) -> Scorer:
+    # EXPLORATORY (designed after the multi-split results were seen; see PREREGISTRATION.md).
+    # Unsupervised: mean of the popularity rank (freq(u)*freq(v) = freq_min*freq_max) and the
+    # structural rank mean.
+    structural = _rank_mean(X, y)
+    return lambda Z: ((Z["freq_min"] * Z["freq_max"]).rank(pct=True).to_numpy() + structural(Z)) / 2
+
+
 MODELS: dict[str, Callable[[pd.DataFrame, np.ndarray], Scorer]] = {
     "logreg_all": _logreg(FEATURES),
     "logreg_popularity": _logreg(POPULARITY),
     "hgb_all": _hgb,
     "train_best_single": _best_single,
     "structural_rank_mean": _rank_mean,
+    "hybrid_rank_exploratory": _hybrid,
 }
 
 
