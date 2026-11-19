@@ -254,3 +254,40 @@ layering **73**. The motif concepts that Elliptic can express barely appear in t
 - **Not changing anything now.** The design is frozen, and this gets reported as a result: *a literature-based
   forecaster cannot rank crypto-laundering motifs before 2017, because the literature hardly mentions them.* That is
   itself evidence on whether the method can work for a new attack domain.
+
+---
+
+## 2026-11-19 00:35 — Step F, second attempt: OpenAlex now requires a key for paging
+
+**What happened.** The rerun cached 13 of 14 concepts. It then stopped on the last one, `cash_out`, which has more
+than 200 matching works, with **401 "API key required for cursor paging."** OpenAlex has changed its terms: without
+a key, only the **first page (200 works)** of any query can be read. Probes right after this returned 429
+("anonymous search is temporarily rate-limited… retry in 37s") for every request style.
+
+**Counts so far** (pre-2017 works matching a concept and a scope anchor):
+
+| Elliptic-expressible | Works | | Not expressible | Works |
+|---|---|---|---|---|
+| peel_chain | 0 | | structuring | 131 |
+| fan_in | 1 | | dusting | 186 |
+| coinjoin | 2 | | round_tripping | 9 |
+| pass_through | 6 | | dormancy | 9 |
+| smurfing | 9 | | velocity | 5 |
+| fan_out | 11 | | cash_out | >200 (not fetched) |
+| mixing_service | 45 | | | |
+| layering | 73 | | | |
+
+**Consequence.** v2 needs the *whole* scope corpus: every pre-2017 AML, crypto and fraud work with its tags.
+That is thousands of works, so many pages. **Without a key, the v2 design cannot run from any machine.** Running
+from the owner's Mac would not help, because the paging rule applies to every anonymous request.
+
+**Options for the owner** (I am not choosing for them; the design is frozen):
+1. **A free OpenAlex key.** The v2 design runs exactly as frozen.
+2. **A new v3 design** using only one-page and count queries (OpenAlex `group_by`). Count the co-occurring tags for
+   each target concept's works instead of downloading the corpus. This is fewer requests, but it changes the graph
+   definition and needs its own frozen file before running. *Being checked now: whether `group_by` still works anonymously.*
+3. **Stop the literature arm here** and report: *the 8 motif concepts appear in 0–73 pre-2017 works, so a literature
+   graph cannot rank them.* Run E3/E4 with S2 and S3 only, which needs no literature, and keep S1 out.
+
+**Retry reminder:** the 00:10 reminder told me to retry nightly if the *allowance* ran out. This is a different
+block, a policy that won't reset overnight, so I am **not** scheduling a nightly retry. The owner has to choose.
