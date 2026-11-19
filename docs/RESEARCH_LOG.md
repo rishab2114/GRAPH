@@ -322,3 +322,24 @@ arrives, so if the key's daily allowance runs out, the next run resumes. Nothing
 - **Scheduled:** a resume at 00:10 UTC on 2026-11-20 (a stored reminder, outside the container). Each night
   re-schedules the next until the corpus is complete, or until 2026-11-25. When the corpus completes, the reminder
   also runs the frozen core experiment.
+
+---
+
+## 2026-11-19 02:10 — Loop 2 start: the owner asked for the write-up draft and the seed check
+
+**Plan, in order of value while the literature download waits for 00:10 UTC Nov 20:**
+1. **Control seed check (running).** The control's random baseline scored AUC 0.530, about 3 standard errors from
+   0.5. Rebuild the exact test pairs (same rng and draw order as `run_control`), confirm seed 0 gives 0.530, then
+   score seeds 1–20. *Why:* a random scorer above 0.5 would mean a bug, such as score order linked to labels through
+   sorted pairs. If seeds 1–20 centre on 0.5, seed 0 was chance.
+2. **Write-up draft** (`docs/paper/draft.md`): what is known now, with the core result left as a clearly marked
+   placeholder. *Why:* writing exposes gaps in the argument early, and the draft can be finished quickly once E3/E4 runs.
+3. **Dashboard:** add the motif findings and the prior-work context.
+4. **Then:** a review pass over everything new.
+
+**02:25 — write-up draft written** (`docs/paper/draft.md`). Every number cites its source file; the core result
+(§4.5) is a marked placeholder.
+*Gaps the draft exposed, now on the to-do list:*
+1. The abstract's headline result is still pending.
+2. §4.4's lesson (a percentile threshold) should become a rule written in advance for any future motif work.
+3. The related-work search was a web search, not a systematic review. A citation-trail check is needed before submission.
