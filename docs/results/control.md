@@ -51,7 +51,7 @@ the decision recorded in `docs/HANDOFF.md`: report a saturated graph as a result
 
 **Caveats:**
 - One time split only.
-- The random baseline scored AUC 0.530, about 3 standard errors above 0.5. This is probably chance in one draw. Rerunning with other seeds would confirm it.
+- The random baseline scored AUC 0.530, about 3 standard errors above 0.5. **Checked (2026-11-19, `results/control_seed_check.json`):** seeds 1–20 on the same pairs and labels give a mean AUC of 0.501 (standard deviation 0.0089, against a theoretical 0.0095). The random scorer is unbiased, and seed 0 was an unlucky draw.
 - Pairs are sampled uniformly. Impact4Cast's own evaluation restricted pairs by degree and measured impact, not just
   whether a link appears, so these AUCs are not comparable to their published figures.
 - Precision@1000 is low for every method because the base rate is under 0.5%. Relative to that base rate, the structural methods' top 1,000 are 24–29× richer in positives, and popularity's are 22×.

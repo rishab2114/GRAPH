@@ -343,3 +343,19 @@ arrives, so if the key's daily allowance runs out, the next run resumes. Nothing
 1. The abstract's headline result is still pending.
 2. §4.4's lesson (a percentile threshold) should become a rule written in advance for any future motif work.
 3. The related-work search was a web search, not a systematic review. A citation-trail check is needed before submission.
+
+**02:40 — control seed check done** (`scripts/control_seed_check.py`, `results/control_seed_check.json`).
+
+| | Value |
+|---|---|
+| Seed 0 (rebuilt pairs and labels) | 0.5297, matching the logged 0.530, so the rebuild is exact |
+| Seeds 1–20, mean | 0.501 |
+| Seeds 1–20, standard deviation | 0.0089 |
+| Theoretical null standard error | 0.0095 (928 positives) |
+
+**Conclusion:** the random scorer is unbiased, and seed 0 was a draw about 3.1 standard deviations high. This is not
+a bug: the pair order (sorted by id) does not correlate with the labels through the scores. `control.md` and the
+draft are updated. The control's conclusions are unchanged, since every method beat random by far more than this.
+
+**02:40 — dashboard:** added "What illicit transactions look like" (8 motifs, illicit vs licit share, from
+`results/motifs_elliptic.json`). The page is now version 3. Its built-in check is read below.

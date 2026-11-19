@@ -91,7 +91,8 @@ All designs were frozen in the repository before the data they test was read.
 - **The popularity-only model gains nothing** (−0.002).
 - **Within-popularity AUC** is 0.74–0.81, against 0.61 for popularity.
 - **The prediction was committed before the run.**
-- **Seed check of the random baseline:** [pending, `results/control_seed_check.json`].
+- **Seed check of the random baseline:** seed 0 scored 0.530. Seeds 1–20 on the same pairs average 0.501
+  (standard deviation 0.009), so that one draw was chance, not a bug (`results/control_seed_check.json`).
 
 ### 4.3 Elliptic: a real holdout with a shift (`docs/phase0-decision.md`)
 

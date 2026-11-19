@@ -86,6 +86,12 @@
         <div class="gf-chart" id="shutdown" data-draw="shutdown" data-source="elliptic_detectors"></div>
         <p class="gf-cap">Only Naive Bayes keeps catching illicit transactions after the shutdown, and it flags many innocent ones on the way.</p>
       </div>
+      <div class="gf-card" id="motif-card">
+        <h3>What illicit transactions look like</h3>
+        <div class="gf-legend"><span><i class="gf-sw" data-color="0"></i>Illicit</span><span><i class="gf-sw" data-color="1"></i>Licit</span></div>
+        <div class="gf-chart" id="motifs" data-draw="motifs" data-source="elliptic_motifs"></div>
+        <p class="gf-cap">Share of labelled transactions in time steps 1–34 showing each payment-graph shape. Illicit activity here looks like chains (pass-through), not hubs (fan-in, mixing, CoinJoin), which is the opposite of the textbook laundering shapes.</p>
+      </div>
     </div>
   </section>
 
@@ -406,6 +412,31 @@ dash.draw('control', (el) => {
   g.append('circle').attr('cx', (r) => x(r.a)).attr('cy', -5).attr('r', 5).style('fill', dash.colors[0]).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
   g.append('rect').attr('x', left).attr('y', -rowH / 2).attr('width', W - left - right).attr('height', rowH).style('fill', 'transparent')
     .on('pointermove', (ev, r) => tip.show(ev, [r.label, `ATT&CK median: ${GF.signed(r.a)}`, `Impact4Cast: ${GF.signed(r.d)} [${GF.signed(r.lo)}, ${GF.signed(r.hi)}]`, `Impact4Cast AUC ${GF.f3(r.auc)}, within-popularity ${GF.f3(r.strat)}`]))
+    .on('pointerleave', () => tip.hide());
+});
+
+dash.draw('motifs', (el) => {
+  const got = GF.status(el, 'elliptic_motifs'); if (!got) return;
+  const label = { fan_in: 'Fan-in', fan_out: 'Fan-out', peel_chain: 'Peel chain', mixing_service: 'Mixing', coinjoin: 'CoinJoin', pass_through: 'Pass-through', layering: 'Layering', smurfing: 'Smurfing' };
+  const rows = got[0].map((r) => ({ m: label[r.motif] || r.motif, i: +r.rate_illicit, l: +r.rate_licit, lift: r.lift === '' ? NaN : +r.lift })).sort((a, b) => b.i - a.i);
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth), rowH = 28;
+  const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', 'Share of illicit and licit transactions showing each of eight payment-graph motifs');
+  const left = GF.textWidth(svg, rows.map((r) => r.m)) + 12, right = GF.textWidth(svg, ['100%']) + 10, top = 6, bottom = 26;
+  const H = top + rowH * rows.length + bottom;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  const x = d3.scaleLinear().domain([0, Math.max(0.4, d3.max(rows, (r) => Math.max(r.i, r.l)))]).nice().range([left, W - right]);
+  svg.append('g').selectAll('line').data(x.ticks(4)).join('line').attr('x1', x).attr('x2', x).attr('y1', top).attr('y2', H - bottom).style('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(x.ticks(4)).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text(GF.pct);
+  const tip = GF.tooltip(el);
+  const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, k) => `translate(0,${top + rowH * k + rowH / 2})`);
+  g.append('text').attr('class', 'gf-lab').attr('dy', '0.35em').text((r) => r.m);
+  g.append('line').attr('x1', (r) => x(r.i)).attr('x2', (r) => x(r.l)).style('stroke', 'var(--cds-chart-muted)').style('stroke-width', 2);
+  g.append('circle').attr('cx', (r) => x(r.l)).attr('r', 5).style('fill', dash.colors[1]).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
+  g.append('circle').attr('cx', (r) => x(r.i)).attr('r', 5).style('fill', dash.colors[0]).style('stroke', 'var(--color-panel)').style('stroke-width', 2);
+  g.append('text').attr('x', (r) => x(Math.max(r.i, r.l)) + 9).attr('dy', '0.35em').text((r) => GF.pct(r.i));
+  g.append('rect').attr('x', 0).attr('y', -rowH / 2).attr('width', W).attr('height', rowH).style('fill', 'transparent')
+    .on('pointermove', (ev, r) => tip.show(ev, [r.m, `Illicit ${d3.format('.1%')(r.i)}`, `Licit ${d3.format('.1%')(r.l)}`, isNaN(r.lift) ? 'Lift: n/a' : `Illicit ÷ licit: ${d3.format('.2f')(r.lift)}×`]))
     .on('pointerleave', () => tip.hide());
 });
 
