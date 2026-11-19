@@ -295,3 +295,16 @@ block, a policy that won't reset overnight, so I am **not** scheduling a nightly
 **00:40 — group_by probe:** still 429 (anonymous search rate-limited under load, "retry in 32s"). Whether
 count-only queries work without a key is **unknown**. The loop is paused: the next step depends on the owner's
 choice between options 1–3.
+
+---
+
+## 2026-11-19 01:00 — Step F, third attempt: with the owner's OpenAlex key
+
+**Decision (owner):** add a free OpenAlex key so v2 runs exactly as frozen. Two other options were considered and
+recorded: a smaller v3 using the OpenAlex connector's count queries, or dropping the literature arm. The key is
+stored as a network secret on the cloud environment and injected by the proxy only into requests to
+api.openalex.org. It is not in the code, the logs or git.
+
+**Checks:** cursor paging now works ("money laundering" alone has 7,321 pre-2017 works). The full v2 corpus
+(every pre-2017 work matching any v1 scope anchor) is **105,469 works = 528 pages**. Each page is cached as it
+arrives, so if the key's daily allowance runs out, the next run resumes. Nothing in the design changes.
