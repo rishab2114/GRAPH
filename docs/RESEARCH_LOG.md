@@ -415,3 +415,20 @@ S2's pairs are unchanged (same seed and order). New test: `test_run_cutoff_on_ti
 
 **Not a design change:** this implements what the design already lists. It is noted here so the record shows the
 cutoffs were fixed before any result existed.
+
+---
+
+## 2026-11-19 03:20 — Loop 2 ends: everything that doesn't need the literature data is done
+
+**Done this loop:**
+- **Control seed check:** seed 0's 0.530 was chance (seeds 1–20 average 0.501).
+- **Write-up draft:** `docs/paper/draft.md`.
+- **Dashboard:** a motif card.
+- **Citation-trail search:** Maganti 2026 confirms our random-forest result, and warns about graph-only features.
+- **Harness:** robustness cutoffs built in.
+- **Handoff refreshed.**
+
+**What remains is driven by data, not by more work here.** The stored reminder resumes the corpus download at
+00:10 UTC each night. When it completes, it builds the graph, runs the frozen core experiment once, logs, pushes
+and reports. The hourly timer is stopped, because ticking while the only remaining input is rate-limited would
+change nothing.
