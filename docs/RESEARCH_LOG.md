@@ -394,3 +394,24 @@ trail from the two anchor papers is the cheapest way to find the most relevant l
 calibration against a later real period, against a recent-data baseline) still appears unaddressed. Maganti 2026
 becomes a key citation, both as a check on our Elliptic numbers and as a warning about graph-only detectors.
 `docs/paper/draft.md` §2 is updated.
+
+---
+
+## 2026-11-19 03:10 — Harness: robustness cutoffs built in (still not run on the holdout)
+
+**Why:** the frozen design says the rolling cutoffs (24, 29, 39) are "a robustness check, reported with the main
+result". Building them now means the single real run produces everything, so there is no second look at the
+holdout and no temptation to pick a cutoff afterwards.
+
+**Change:** `e3e4.run_cutoff(d, cutoff, holdout_end, …)` does one frozen run per cutoff:
+- **Thresholds:** fitted on steps up to cutoff − 6, set at a 5% false-positive rate on licit steps cutoff − 5 to cutoff.
+- **Models:** refitted on steps up to the cutoff.
+- **Scenarios:** injected into the graph of steps cutoff − 5 to cutoff.
+- **Holdout:** steps cutoff + 1 to holdout_end, split into before and after the shutdown when the window contains step 43.
+
+`main()` runs the main result (cutoff 34, holdout 35–49) plus cutoffs 24, 29 and 39 (each with the next 10 steps).
+S2's pairs are unchanged (same seed and order). New test: `test_run_cutoff_on_tiny_data_produces_every_stress_test`.
+94 tests pass.
+
+**Not a design change:** this implements what the design already lists. It is noted here so the record shows the
+cutoffs were fixed before any result existed.

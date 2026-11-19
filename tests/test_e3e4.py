@@ -27,3 +27,28 @@ def test_compare_detects_the_better_stress_test():
 
 def test_ten_graph_detectors():
     assert len(GRAPH_DETECTORS) == 10 and "lr_lf" not in GRAPH_DETECTORS and "rf_balanced" in GRAPH_DETECTORS
+
+
+def test_run_cutoff_on_tiny_data_produces_every_stress_test(tmp_path):
+    import numpy as np
+    import pandas as pd
+    from gffs.e3e4 import run_cutoff
+    from gffs.elliptic import load
+    rng = np.random.default_rng(0)
+    rows, classes, edges, tx = [], [], [], 1
+    for step in range(1, 9):
+        for j in range(12):
+            label = "1" if j < 3 else ("2" if j < 10 else "unknown")
+            f = rng.normal(0, 0.1, 165); rows.append([tx, step, *f]); classes.append((tx, label))
+            if j % 3:                                    # small chains within each step
+                edges.append((tx - 1, tx))
+            if j == 11:
+                edges.append((tx - 11, tx)); edges.append((tx - 10, tx))   # a fan-in hub
+            tx += 1
+    pd.DataFrame(rows).to_csv(tmp_path / "elliptic_txs_features.csv", header=False, index=False)
+    pd.DataFrame(classes, columns=["txId", "class"]).to_csv(tmp_path / "elliptic_txs_classes.csv", index=False)
+    pd.DataFrame(edges, columns=["txId1", "txId2"]).to_csv(tmp_path / "elliptic_txs_edgelist.csv", index=False)
+    r = run_cutoff(load(tmp_path), cutoff=6, holdout_end=8, val_len=2, shutdown_step=8, s1_pairs=[("fan_in", "pass_through")],
+                   instances_per_pair=3, n_boot=5, detectors=["lr", "tree", "nb"], sampler=lambda g: (2, 3))
+    assert {"S0_recent_data", "S1_graph_forecast", "S2_uniform_pairs", "S3_single_motifs"} <= set(r["agreement"]["all"])
+    assert r["windows"]["all"] == [7, 8] and r["cutoff"] == 6

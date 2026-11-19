@@ -98,6 +98,69 @@ def _flags(model, thr: float, X) -> np.ndarray:
     return model.predict_proba(X)[:, 1] >= thr
 
 
+ALL_PAIRS = [tuple(p) for p in combinations(sorted(MOTIFS), 2)]
+
+
+def run_cutoff(d, cutoff: int, holdout_end: int, val_len: int = 6, shutdown_step: int | None = None,
+               s1_pairs: list | None = None, instances_per_pair: int = INSTANCES_PER_PAIR, n_boot: int = 1000,
+               detectors: list[str] | None = None, sampler=None, seed: int = 0) -> dict:
+    """One frozen E3/E4 run at `cutoff` (docs/e3e4-design.md). Training uses steps <= cutoff only;
+    steps cutoff+1..holdout_end are read only to score the frozen detectors at their frozen thresholds."""
+    names = detectors or list(GRAPH_DETECTORS)
+    rng = np.random.default_rng(seed)
+    step = d.X["time_step"]
+    f_train = graph_features(_graph(d, 1, cutoff))
+    y_train = d.y.reindex(f_train.index)
+    st = step.reindex(f_train.index)
+    val_start = cutoff - val_len + 1
+    early = y_train.notna() & (st < val_start)
+    val_licit = (y_train == 0) & (st >= val_start)
+    val_illicit = (y_train == 1) & (st >= val_start)
+    full = y_train.notna()
+
+    models, thresholds, s0 = {}, {}, {}
+    for name in names:
+        m0 = GRAPH_DETECTORS[name]().fit(f_train[early], y_train[early].astype(int))
+        thresholds[name] = float(np.quantile(m0.predict_proba(f_train[val_licit])[:, 1], 1 - FPR_TARGET))
+        s0[name] = _flags(m0, thresholds[name], f_train[val_illicit])
+        models[name] = GRAPH_DETECTORS[name]().fit(f_train[full], y_train[full].astype(int))
+
+    base = _graph(d, val_start, cutoff)
+    sampler = sampler or size_sampler_from(f_train[y_train.notna()], y_train[y_train.notna()])
+    sets = {"S2_uniform_pairs": [ALL_PAIRS[i] for i in np.random.default_rng(0).choice(len(ALL_PAIRS), 10, replace=False)],
+            "S3_single_motifs": [(m,) for m in MOTIFS]}
+    if s1_pairs:
+        sets["S1_graph_forecast"] = [tuple(p) for p in s1_pairs]
+    stress = {"S0_recent_data": s0}
+    for sname, pairs in sets.items():
+        g, syn = inject(base, [p for p in pairs for _ in range(instances_per_pair)], rng, sampler)
+        fs = graph_features(g).loc[syn]
+        stress[sname] = {n: _flags(models[n], thresholds[n], fs) for n in names}
+
+    f_hold = graph_features(_graph(d, cutoff + 1, holdout_end))
+    y_hold = d.y.reindex(f_hold.index); sh = step.reindex(f_hold.index)
+    windows = {"all": (cutoff + 1, holdout_end)}
+    if shutdown_step and cutoff + 1 < shutdown_step <= holdout_end:
+        windows["pre_shutdown"] = (cutoff + 1, shutdown_step - 1)
+        windows["post_shutdown"] = (shutdown_step, holdout_end)
+    hold = {}
+    for w, (lo, hi) in windows.items():
+        mask = (y_hold == 1) & (sh >= lo) & (sh <= hi)
+        if mask.sum():
+            hold[w] = {n: _flags(models[n], thresholds[n], f_hold[mask]) for n in names}
+    e5 = {n: float(_flags(models[n], thresholds[n], f_hold[y_hold == 0]).mean()) for n in names} if (y_hold == 0).any() else {}
+    res = {"cutoff": cutoff, "windows": {w: list(v) for w, v in windows.items()}, "thresholds": thresholds,
+           "e5_fpr_licit": e5, "stress_pairs": {k: [list(p) for p in v] for k, v in sets.items()},
+           "stress_recall": {s: {n: float(v[n].mean()) for n in names} for s, v in stress.items()},
+           "agreement": {w: {s: agreement(stress[s], hold[w], n_boot) for s in stress} for w in hold},
+           "comparisons": {}}
+    if "S1_graph_forecast" in stress:
+        for w in hold:
+            res["comparisons"][w] = {f"S1_vs_{b}": compare_stress_tests(stress["S1_graph_forecast"], stress[b], hold[w], n_boot)
+                                     for b in ("S0_recent_data", "S2_uniform_pairs", "S3_single_motifs")}
+    return res
+
+
 def main(argv: list[str] | None = None) -> None:
     from gffs.elliptic import SHUTDOWN_STEP, load
 
@@ -107,64 +170,24 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--out", type=Path, default=Path("results"))
     ap.add_argument("--n-boot", type=int, default=1000)
     args = ap.parse_args(argv)
-    rng = np.random.default_rng(0)
     d = load(args.data)
-    step = d.X["time_step"]
-
-    f_train = graph_features(_graph(d, 1, 34))
-    y_train = d.y.reindex(f_train.index)
-    st = step.reindex(f_train.index)
-    early = y_train.notna() & (st <= 28)
-    val_licit = (y_train == 0) & (st >= 29)
-    val_illicit = (y_train == 1) & (st >= 29)
-    full = y_train.notna()
-
-    models, thresholds, s0 = {}, {}, {}
-    for name, make in GRAPH_DETECTORS.items():
-        m0 = make().fit(f_train[early], y_train[early].astype(int))
-        thresholds[name] = float(np.quantile(m0.predict_proba(f_train[val_licit])[:, 1], 1 - FPR_TARGET))
-        s0[name] = _flags(m0, thresholds[name], f_train[val_illicit])
-        models[name] = make().fit(f_train[full], y_train[full].astype(int))
-
-    base = _graph(d, 29, 34)
-    sampler = size_sampler_from(f_train[y_train.notna()], y_train[y_train.notna()])
-    pairs_all = [tuple(p) for p in combinations(sorted({"fan_in", "fan_out", "peel_chain", "mixing_service", "coinjoin",
-                                                         "pass_through", "layering", "smurfing"}), 2)]
-    stress_sets = {"S2_uniform_pairs": [pairs_all[i] for i in np.random.default_rng(0).choice(len(pairs_all), 10, replace=False)],
-                   "S3_single_motifs": [(m,) for m in MOTIFS]}
-    lit_note = "missing"
+    s1, lit_note = None, "missing"
     if args.literature.exists():
         lit = json.loads(args.literature.read_text())
-        top = [tuple(s["pair"]) for s in lit.get("scenarios", [])][:10]
-        if top:
-            stress_sets["S1_graph_forecast"] = top
-            lit_note = f"{len(top)} pairs, method {lit.get('scenario_method')}"
-    stress = {"S0_recent_data": s0}
-    for sname, pairs in stress_sets.items():
-        g, syn = inject(base, [p for p in pairs for _ in range(INSTANCES_PER_PAIR)], rng, sampler)
-        fs = graph_features(g).loc[syn]
-        stress[sname] = {n: _flags(models[n], thresholds[n], fs) for n in models}
-
-    f_hold = graph_features(_graph(d, 35, 49))
-    y_hold = d.y.reindex(f_hold.index); sh = step.reindex(f_hold.index)
-    windows = {"35-49": sh >= 35, "35-42": sh < SHUTDOWN_STEP, "43-49": sh >= SHUTDOWN_STEP}
-    hold = {w: {n: _flags(models[n], thresholds[n], f_hold[(y_hold == 1) & m]) for n in models} for w, m in windows.items()}
-    e5 = {n: float(_flags(models[n], thresholds[n], f_hold[y_hold == 0]).mean()) for n in models}
-
-    res = {"design": "docs/e3e4-design.md", "literature": lit_note, "thresholds": thresholds, "e5_fpr_licit_35_49": e5,
-           "stress_pairs": {k: [list(p) for p in v] for k, v in stress_sets.items()},
-           "agreement": {w: {s: agreement(stress[s], hold[w], args.n_boot) for s in stress} for w in hold},
-           "comparisons": {}}
-    if "S1_graph_forecast" in stress:
-        for w in hold:
-            res["comparisons"][w] = {f"S1_vs_{b}": compare_stress_tests(stress["S1_graph_forecast"], stress[b], hold[w], args.n_boot)
-                                     for b in ("S0_recent_data", "S2_uniform_pairs", "S3_single_motifs")}
+        s1 = [tuple(x["pair"]) for x in lit.get("scenarios", [])][:10] or None
+        lit_note = f"{len(s1 or [])} pairs, method {lit.get('scenario_method')}"
+    # Main result: cutoff 34, holdout 35-49 (and 35-42 / 43-49). Robustness: cutoffs 24, 29, 39, next 10 steps.
+    runs = {"main_34": run_cutoff(d, 34, 49, shutdown_step=SHUTDOWN_STEP, s1_pairs=s1, n_boot=args.n_boot)}
+    for t in (24, 29, 39):
+        runs[f"robust_{t}"] = run_cutoff(d, t, min(t + 10, 49), shutdown_step=SHUTDOWN_STEP, s1_pairs=s1, n_boot=args.n_boot)
+    out = {"design": "docs/e3e4-design.md", "literature": lit_note, "runs": runs}
     args.out.mkdir(parents=True, exist_ok=True)
-    (args.out / "e3e4_elliptic.json").write_text(json.dumps(res, indent=1))
-    for w, a in res["agreement"].items():
-        for s, r in a.items():
-            print(f"{w:6s} {s:20s} rho {r['spearman']:+.2f} [{r['ci'][0]:+.2f},{r['ci'][1]:+.2f}] "
-                  f"abs err {r['mean_abs_error']:.3f} signed {r['mean_signed_error']:+.3f}")
+    (args.out / "e3e4_elliptic.json").write_text(json.dumps(out, indent=1))
+    for rname, r in runs.items():
+        for w, a in r["agreement"].items():
+            for s, x in a.items():
+                print(f"{rname:10s} {w:13s} {s:20s} rho {x['spearman']:+.2f} [{x['ci'][0]:+.2f},{x['ci'][1]:+.2f}] "
+                      f"abs err {x['mean_abs_error']:.3f} signed {x['mean_signed_error']:+.3f}")
 
 
 if __name__ == "__main__":
