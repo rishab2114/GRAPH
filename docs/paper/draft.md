@@ -45,6 +45,10 @@ All designs were frozen in the repository before the data they test was read.
   (the authors call this "target leakage"), and only one split is used. IBM AMLworld (Altman et al., 2023), Tide (2026)
   and TransXion (2026) offer synthetic data and stress tests, but none tests whether the stress test *predicts later
   real performance*.
+- **Leakage-free Elliptic evaluation:** Maganti (2026) shows that, under a strictly inductive protocol, random
+  forest on raw features (F1 0.821) beats GNNs. Exposure to test-period adjacency inflates F1 by 39.5 points, and
+  randomly rewired graphs beat the real one under temporal shift. Our random-forest reproduction (0.815) agrees.
+  Their graph result is a warning for our graph-only detectors.
 - **Why explicit motifs:** row-independent tabular generators provably cannot reproduce multi-account graph motifs
   (Sajja, 2026). We therefore write scenarios as explicit transaction subgraphs.
 - **Threat knowledge graphs:** link prediction and embeddings over ATT&CK, CAPEC and CVE infer techniques from evidence

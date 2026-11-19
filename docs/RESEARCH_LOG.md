@@ -359,3 +359,38 @@ draft are updated. The control's conclusions are unchanged, since every method b
 
 **02:40 — dashboard:** added "What illicit transactions look like" (8 motifs, illicit vs licit share, from
 `results/motifs_elliptic.json`). The page is now version 3. Its built-in check is read below.
+
+---
+
+## 2026-11-19 02:55 — Citation-trail search (through the OpenAlex connector)
+
+**Why:** the draft flagged that the prior-work search was a web search, not a systematic check. A citation
+trail from the two anchor papers is the cheapest way to find the most relevant later work.
+
+**Done:**
+- **All 45 works citing SynthAML,** listed in full.
+- **The 124 works citing Weber et al. 2019 that mention stress tests, drift, shift, synthetic data or unseen
+  typologies** (top 40 read).
+- **A targeted search** for "stress test / synthetic" × "fraud / AML / intrusion" × "predict future performance /
+  out-of-time / temporal holdout" since 2018: 3 hits, none relevant.
+
+**Relevant finds:**
+1. **Maganti 2026, *When Graph Structure Becomes a Liability*** ([arXiv 2604.19514](https://arxiv.org/abs/2604.19514)).
+   - **Leakage-free Elliptic evaluation:** random forest on raw features scores **F1 = 0.821**. This independently
+     confirms our reproduction (0.815, Phase 0).
+   - **Graph features fail under shift:** "randomly wired graphs outperform the real transaction graph" under
+     temporal shift. **This bears directly on E3/E4:** our detectors are graph-only, so they may be weak on 35–49.
+     That raises the chance that E3 is uninformative, as already predicted in the design.
+   - **Test-period adjacency leakage:** they report a 39.5-point F1 gap from training-time exposure to test-period
+     edges. Our design already avoids this: holdout features come from the step 35–49 graph alone, and models are fitted on 1–34.
+2. **Graph-only Elliptic detectors exist:** "FT-TDGCL … unlike approaches that depend on the 166 anonymized Elliptic
+   attributes" (2024). This is precedent for a graph-only detector family.
+3. **Drift reviews:** "Money Laundering and Fraud detection under concept drift: A Systematic Review" (2025);
+   "Explainability … in Concept and Data Drift" (2025). Both are general, with no predictive stress-test check.
+4. **Generators and benchmarks citing SynthAML:** AMLgentex (2025), Tide (2026), TransXion (KDD 2026). None tests
+   whether a stress test predicts later real performance.
+
+**Conclusion:** the specific claim (a leakage-free pre-cutoff stress test, checked for both ranking and
+calibration against a later real period, against a recent-data baseline) still appears unaddressed. Maganti 2026
+becomes a key citation, both as a check on our Elliptic numbers and as a warning about graph-only detectors.
+`docs/paper/draft.md` §2 is updated.
