@@ -308,3 +308,17 @@ api.openalex.org. It is not in the code, the logs or git.
 **Checks:** cursor paging now works ("money laundering" alone has 7,321 pre-2017 works). The full v2 corpus
 (every pre-2017 work matching any v1 scope anchor) is **105,469 works = 528 pages**. Each page is cached as it
 arrives, so if the key's daily allowance runs out, the next run resumes. Nothing in the design changes.
+
+---
+
+## 2026-11-19 01:30 — Step F: night 1 progress
+
+- **v1 concepts:** all 14 fetched. `cash_out` has 3,866 pre-2017 works, far more than any other concept. That is
+  likely because "cash out" is common in ordinary finance text. It is not Elliptic-expressible, so it doesn't
+  affect the scenario pairs, but it will be a hub in the graph.
+- **Corpus:** **135 of 528 pages** (about 26%, 79 MB cached) before the key's daily *search* allowance ran out.
+  Plain filter queries still work; only search-based ones are capped. That is about 155 search pages per day, so
+  about 3 nights remain.
+- **Scheduled:** a resume at 00:10 UTC on 2026-11-20 (a stored reminder, outside the container). Each night
+  re-schedules the next until the corpus is complete, or until 2026-11-25. When the corpus completes, the reminder
+  also runs the frozen core experiment.
