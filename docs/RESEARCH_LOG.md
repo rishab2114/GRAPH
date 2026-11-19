@@ -217,3 +217,17 @@ I read `e3e4.py` line by line, asking "can anything from steps 35–49 reach a c
 
 No leak found. **Waiting on:** the 00:10 UTC literature run, which produces S1. After that, one run of
 `python -m gffs.e3e4` gives the core result.
+
+---
+
+## 2026-11-19 00:12 — Step F: v2 literature run (the scheduled reminder fired)
+
+**Checks before running.** The container survived the night: environment, Elliptic data and git all intact. The
+first OpenAlex probe at 00:11 returned *"Anonymous search is paused while the search cluster recovers from heavy
+load"*, a temporary outage on their side, not our allowance. A minute later the same query returned 200.
+OpenAlex now states its limits: without a key, this server's address shares **$0.10/day**; a free key gives $1/day.
+The response also invites agents to request a key using the user's email address. **Not done:** the owner declined
+a key, and their email is private.
+
+**Run:** `python -m gffs.literature_v2 --out results/`, started 00:12 UTC in the background. Every corpus page is
+cached with its cursor, so a run cut off by the limit continues on the next one.
