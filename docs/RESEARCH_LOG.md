@@ -231,3 +231,26 @@ a key, and their email is private.
 
 **Run:** `python -m gffs.literature_v2 --out results/`, started 00:12 UTC in the background. Every corpus page is
 cached with its cursor, so a run cut off by the limit continues on the next one.
+
+---
+
+## 2026-11-19 00:25 — Step F, first attempt stopped by an OpenAlex outage; early finding
+
+**What happened.** The run fetched 7 of the 14 v1 concept queries, then OpenAlex's search outage returned
+(503, "Anonymous search is paused…"). The client gave up after about 30 s of retries. **Fix:** retry this specific
+outage for up to about 25 minutes, with waits of 1 to 5 minutes (test first, red then green). The 7 finished queries
+are cached, so the rerun does not repeat them.
+
+**Early finding, already important.** Pre-2017 works matching both a v1 concept and an AML/crypto scope term:
+peel_chain **0**, fan_in **1**, coinjoin **2**, pass_through **6**, fan_out **11**, mixing_service **45**,
+layering **73**. The motif concepts that Elliptic can express barely appear in the pre-2017 literature.
+
+**What this implies, before the run finishes:**
+- In the v2 graph, most of the 8 target concepts will be **isolated or nearly isolated nodes.** Many of their 28
+  pairs will have no shared neighbours at all, and the scenario ranking among them will rest on almost no data.
+- **v2's design anticipated part of this.** Context nodes give the graph structure, and forecasting skill is measured
+  on the whole graph. But the *scenario* ranking still only uses target pairs. If most targets have 0–2 works, S1's
+  ranking will be close to arbitrary, and E3 will mostly test "motif scenarios in general", not "forecast-chosen" ones.
+- **Not changing anything now.** The design is frozen, and this gets reported as a result: *a literature-based
+  forecaster cannot rank crypto-laundering motifs before 2017, because the literature hardly mentions them.* That is
+  itself evidence on whether the method can work for a new attack domain.

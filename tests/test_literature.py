@@ -98,3 +98,20 @@ def test_budget_exhausted_is_reported_clearly():
             return FakeResp({"error": "Rate limit exceeded", "message": "Insufficient budget"}, 429)
     with pytest.raises(RuntimeError, match="OPENALEX_API_KEY"):
         lit.Client(None, session=S({}), pause=0).count("x")
+
+
+def test_temporary_outage_is_retried_patiently(monkeypatch):
+    waits = []
+    monkeypatch.setattr(lit.time, "sleep", lambda s: waits.append(s))
+
+    class Flaky:
+        headers = {}
+        def __init__(self): self.n = 0
+        def get(self, url, params, timeout):
+            self.n += 1
+            if self.n <= 7:
+                return FakeResp({"error": "Search temporarily unavailable", "message": "Anonymous search is paused"}, status=503)
+            return FakeResp({"meta": {"count": 5}, "results": []})
+
+    assert lit.Client(None, session=Flaky(), pause=0).count("F") == 5
+    assert sum(waits) >= 300          # waited minutes, not seconds, for the cluster to recover

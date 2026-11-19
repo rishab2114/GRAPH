@@ -71,11 +71,14 @@ class Client:
         self.pause = pause
 
     def _get(self, params: dict) -> dict:
-        for attempt in range(6):
+        for attempt in range(12):
             r = self.s.get(API, params=params, timeout=60)
             if r.status_code == 200:
                 time.sleep(self.pause)
                 return r.json()
+            if r.status_code == 503 and "temporarily unavailable" in r.text.lower() and attempt < 11:
+                time.sleep(min(60 * (attempt + 1), 300))   # search cluster outage: wait minutes, up to ~25 min in all
+                continue
             if r.status_code in (429, 500, 502, 503, 504) and attempt < 5:
                 if r.status_code == 429 and "budget" in r.text.lower():
                     raise RuntimeError("OpenAlex budget exhausted: set OPENALEX_API_KEY (free key) or wait for reset")
