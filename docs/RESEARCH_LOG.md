@@ -291,3 +291,7 @@ from the owner's Mac would not help, because the paging rule applies to every an
 
 **Retry reminder:** the 00:10 reminder told me to retry nightly if the *allowance* ran out. This is a different
 block, a policy that won't reset overnight, so I am **not** scheduling a nightly retry. The owner has to choose.
+
+**00:40 — group_by probe:** still 429 (anonymous search rate-limited under load, "retry in 32s"). Whether
+count-only queries work without a key is **unknown**. The loop is paused: the next step depends on the owner's
+choice between options 1–3.
