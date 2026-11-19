@@ -20,19 +20,24 @@ Read this first if you are a new Claude Code session, local or cloud. Then read 
 - Graph source: **research literature**, meaning how often a fixed set of AML and crypto-crime concepts
   co-occur in pre-2017 paper titles and abstracts via OpenAlex. See `docs/design-option1.md`.
 
-## Next steps
+## Next steps (updated 2026-11-19 03:15 UTC)
 
-1. ~~Write the vocabulary~~ **Done** (v1). Do not edit it: any change goes in a new versioned file,
-   with a note saying why. Risk: with only 14 nodes, the 2016 graph may already be nearly complete,
-   leaving few unseen pairs to forecast. If so, report that as a result; don't add concepts to fix it.
-2. **Build the literature graph:** query the OpenAlex API (`api.openalex.org/works`, filtered by
-   `to_publication_date`) for works mentioning each concept. Nodes are concepts. An edge means the two
-   concepts appear in the same work, dated by publication year. Freeze the graph at end of 2016.
-   OpenAlex needs a free API key once the shared allowance is used up. Add it as
-   `?api_key=` or `Authorization: Bearer`. Never commit it.
-3. **Forecast unseen concept pairs** with the existing models and the popularity baseline.
-4. **Write scenarios as transaction-subgraph motifs** on `elliptic_txs_edgelist.csv`. Do not use the anonymised features.
-5. **Run E3/E4 against the Phase 0 baseline:** detectors use graph features computed the same way for real and synthetic transactions.
+Read `docs/RESEARCH_LOG.md` (the full decision record) before acting.
+
+1. **Literature graph v2:** `python -m gffs.literature_v2 --out results/` (frozen design: `config/aml_vocabulary_v2.toml`).
+   - **Progress:** 135 of 528 corpus pages cached in `data/openalex/v2/` (git-ignored, 79 MB). The OpenAlex key's
+     daily *search* allowance is about 155 pages, so about 3 nights remain.
+   - **Scheduled:** a stored reminder resumes it at 00:10 UTC each night until done (by 2026-11-25).
+   - **If the container was replaced,** the cache is gone and the run restarts from page 0. That costs one extra
+     night; nothing else is lost.
+   - **The key** is a network secret on the cloud environment, injected by the proxy for api.openalex.org. Nothing to set.
+2. **Core experiment, once `results/literature_graph_v2.json` exists:**
+   `python -m gffs.e3e4 --data data/elliptic --literature results/literature_graph_v2.json --out results/`.
+   It runs the main result (cutoff 34) plus the robustness cutoffs 24, 29 and 39, as frozen in `docs/e3e4-design.md`.
+   Run it **once**, then log and report.
+3. **Write-up:** `docs/paper/draft.md`. Fill §4.5 and the abstract from the core result.
+4. **Dashboard:** https://claude.ai/artifact/QFnriSAbKFtGtcaYWdmFaV. Add the core result when it exists
+   (source CSVs are in `reports/dashboard/`).
 
 ## Set-up on a Mac
 
