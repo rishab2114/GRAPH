@@ -432,3 +432,13 @@ cutoffs were fixed before any result existed.
 00:10 UTC each night. When it completes, it builds the graph, runs the frozen core experiment once, logs, pushes
 and reports. The hourly timer is stopped, because ticking while the only remaining input is rate-limited would
 change nothing.
+
+---
+
+## 2026-11-20 13:22 — Night 2 resume (the reminder reached the session 13 h late)
+
+The stored reminder fired at 00:10 UTC but reached this session at 13:21. The container survived: the environment,
+the Elliptic data and the 135 cached corpus pages are all intact. Today's search allowance was untouched, so the resume
+started at 13:22. The late delivery costs nothing except wall-clock time, because the allowance is daily. **Lesson for the
+remaining nights:** the reminder can arrive hours late, so each night's run may start late. That doesn't affect the
+result, only the finish date.
