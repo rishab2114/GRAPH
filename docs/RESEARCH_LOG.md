@@ -442,3 +442,6 @@ the Elliptic data and the 135 cached corpus pages are all intact. Today's search
 started at 13:22. The late delivery costs nothing except wall-clock time, because the allowance is daily. **Lesson for the
 remaining nights:** the reminder can arrive hours late, so each night's run may start late. That doesn't affect the
 result, only the finish date.
+
+**13:24 — night 2 done:** the corpus reached **296 of 528 pages** (161 today) before the daily search allowance ran
+out. About 232 pages remain, so about 2 more nights. A night-3 resume is scheduled for 00:10 UTC on 2026-11-21.
