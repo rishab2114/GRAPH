@@ -600,3 +600,28 @@ coverage. On Elliptic, though, the literature forecast didn't beat random pairs 
 
 **Next (stage 2):** Tornado Cash sanctions dataset. It needs Ethereum chain data (BigQuery public dataset) and labels.
 Billing needs the owner's confirmation before any setup.
+
+---
+
+## 2026-11-22 — Stage 2 scoping: Tornado Cash dataset (owner chose "scope it down first")
+
+**Problem:** BigQuery needs a Google service-account key inside the environment. There are no credentials here,
+and even free dry runs need authentication.
+
+**Alternative found:** the AWS Public Blockchain Data open bucket. Ethereum daily Parquet files, anonymous reads,
+no billing.
+
+**Measured:**
+- **Transactions:** 3.9 s per day for 4 columns.
+- **Logs:** 50 s per day.
+- **Traces:** not needed.
+- **Tornado router transactions:** 739 (1 Jul) → 828 (8 Aug, sanctions day) → 65 (1 Sep), a **−91% collapse**. A clear,
+  dated shift.
+
+**Full scope** (`docs/tornado-scoping.md`): ±6 months around 2022-08-08, mixer-associated labels plus OFAC SDN addresses,
+weekly address graphs, the same pipeline. About 5.5 h of one-time reading, at no cost.
+
+**Risks written down before building:** the label-population change at the shift, the account-vs-UTXO difference,
+the sparse post-sanction positives, and the contract hubs.
+
+**Next:** the owner approves the scope. Then I freeze the analysis design, then build.
