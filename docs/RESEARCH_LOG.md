@@ -578,3 +578,25 @@ sanctions in March 2025**. That would be a second, opposite shift. To confirm wi
 - **Timing:** about 10 s per world, so 120 runs (20 worlds × 3 types × 2 family splits) take about 20 minutes.
 - **One-world smoke run (W1, seed 0):** SB ρ 0.93, SC ρ −0.71, S0 ρ 0.02. *Not evidence:* one world, logged only so the
   record shows what was seen before the full batch.
+
+---
+
+## 2026-11-21 20:35 — Mechanism check results (`docs/results/mechanism.md`)
+
+**Against the frozen predictions:**
+- **W0 no shift:** recent data wins. ✓ (SC wins 0/40.)
+- **H-match:** matching scenarios beat recent data after a plain shift. ✓ (40/40, on both error and ranking.)
+- **H-gen:** unfamiliar scenarios beat recent data after a plain shift (≥14/20). ✗ (Ranking wins 2/20 and 6/20; error
+  wins 8/20 and 20/20, depending on the split.)
+- **SA ≈ S0** (no injection artefact). ✓
+
+**Not predicted:** under shift *with camouflage* (W2), unfamiliar scenarios beat recent data in 38–40 of 40 worlds on
+both metrics, and out-rank the matching scenarios.
+
+**Consequence for the Elliptic lead:** "any synthetic scenarios beat recent data after a shift" is too strong. The
+supported version is: scenarios that *cover the future attack shapes* beat recent data after a shift, and unfamiliar
+shapes add value when attackers camouflage. That makes the forecasting step matter in principle, because it is what aims
+coverage. On Elliptic, though, the literature forecast didn't beat random pairs (§4.5).
+
+**Next (stage 2):** Tornado Cash sanctions dataset. It needs Ethereum chain data (BigQuery public dataset) and labels.
+Billing needs the owner's confirmation before any setup.
