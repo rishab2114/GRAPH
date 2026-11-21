@@ -150,6 +150,20 @@ peel-chain signal. We report this as a lesson, not a corrected result.
 - **E5:** thresholds fixed at a 5% false-positive rate held near target after cutoff 34 (0.2–9%), drifted up at
   cutoff 29 (up to 15%), and fell to about 0.5% after the shift.
 
+### 4.6 Mechanism check on synthetic worlds (`docs/results/mechanism.md`)
+
+- **Setup:** 120 Elliptic-like synthetic worlds. Attackers switch motif families at the cutoff. Three stress tests are
+  compared against recent data: one built from the *new* attack shapes (matching), one from shapes no attacker uses
+  (unfamiliar), and one from the old shapes (familiar).
+- **No shift:** recent data wins in all 40 worlds.
+- **Plain shift:** only the **matching** stress test reliably beats recent data (40/40). Unfamiliar shapes rank detectors
+  worse than recent data.
+- **Shift with camouflage** (attackers add licit-looking outflows): the **unfamiliar** stress test beats recent data in
+  38–40 of 40 worlds, and ranks detectors better than the matching one.
+- **So the Elliptic pattern can arise either way.** "Any synthetic scenario beats recent data after a shift" is too
+  strong. Coverage of the future attack shapes is what counts in a plain shift, and robustness to unfamiliar shapes
+  counts under camouflage.
+
 ## 5. Discussion and limits
 
 - **Density decides whether the method works.** Shared-neighbour forecasting needs a large, sparse graph. Small
