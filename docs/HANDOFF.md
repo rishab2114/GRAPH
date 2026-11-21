@@ -20,24 +20,20 @@ Read this first if you are a new Claude Code session, local or cloud. Then read 
 - Graph source: **research literature**, meaning how often a fixed set of AML and crypto-crime concepts
   co-occur in pre-2017 paper titles and abstracts via OpenAlex. See `docs/design-option1.md`.
 
-## Next steps (updated 2026-11-19 03:15 UTC)
+## Status (updated 2026-11-21 01:30 UTC): core experiment done
 
-Read `docs/RESEARCH_LOG.md` (the full decision record) before acting.
+- **Literature graph v2:** complete (`results/literature_graph_v2.json`). Structure beats popularity by +0.241 AUC.
+- **Core experiment:** run once (`results/e3e4_elliptic.json`, `docs/results/e3e4.md`). The graph-forecast stress test
+  does **not** meet the frozen success criteria. Lead: synthetic motif stress tests beat recent data *after a shift*.
+- **Write-up:** `docs/paper/draft.md` has all results filled in.
 
-1. **Literature graph v2:** `python -m gffs.literature_v2 --out results/` (frozen design: `config/aml_vocabulary_v2.toml`).
-   - **Progress:** 135 of 528 corpus pages cached in `data/openalex/v2/` (git-ignored, 79 MB). The OpenAlex key's
-     daily *search* allowance is about 155 pages, so about 3 nights remain.
-   - **Scheduled:** a stored reminder resumes it at 00:10 UTC each night until done (by 2026-11-25).
-   - **If the container was replaced,** the cache is gone and the run restarts from page 0. That costs one extra
-     night; nothing else is lost.
-   - **The key** is a network secret on the cloud environment, injected by the proxy for api.openalex.org. Nothing to set.
-2. **Core experiment, once `results/literature_graph_v2.json` exists:**
-   `python -m gffs.e3e4 --data data/elliptic --literature results/literature_graph_v2.json --out results/`.
-   It runs the main result (cutoff 34) plus the robustness cutoffs 24, 29 and 39, as frozen in `docs/e3e4-design.md`.
-   Run it **once**, then log and report.
-3. **Write-up:** `docs/paper/draft.md`. Fill §4.5 and the abstract from the core result.
-4. **Dashboard:** https://claude.ai/artifact/QFnriSAbKFtGtcaYWdmFaV. Add the core result when it exists
-   (source CSVs are in `reports/dashboard/`).
+## Suggested next steps (none started)
+
+1. **Confirm the after-shift lead** on a second shift event: another dataset with a dated, labelled shift
+   (e.g. Elliptic2, or a cyber dataset). It needs its own frozen design first.
+2. **Add the core result to the dashboard:** https://claude.ai/artifact/QFnriSAbKFtGtcaYWdmFaV
+3. **Pre-registered ATT&CK test:** run `PREREGISTRATION.md` when the first ATT&CK release dated on or after 2027-10-01 appears.
+4. **Polish the draft:** tighten it, then do a final citation check before sharing.
 
 ## Set-up on a Mac
 
