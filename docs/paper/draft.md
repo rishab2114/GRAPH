@@ -1,6 +1,6 @@
 # Can a graph-forecast stress test predict how fraud detectors will fail?
 
-*Working draft, 2026-11-19. Section 4.5 (the core result) is a placeholder until the frozen E3/E4 experiment runs.
+*Working draft, updated 2026-11-21 with the core result (§4.5).
 Every number here comes from a file in `results/` or `docs/results/`; each section names its source.*
 
 ## Abstract (draft)
@@ -19,8 +19,11 @@ attack techniques.
    recall by 24 percentage points.
 3. **Illicit transactions on Elliptic look like chains, not hubs.** Most textbook laundering motifs are *rarer* among
    illicit transactions than licit ones.
-4. **[Core result pending]:** whether motif scenarios chosen by a literature-graph forecast predict later detector
-   recall better than recent data, random motif pairs or single motifs.
+4. **The core hypothesis is not supported.** Motif scenarios chosen by a literature-graph forecast (which itself beats
+   popularity by +0.241 AUC on pre-2017 AML literature) predict later detector recall no better than randomly chosen motif
+   pairs, and worse than recent data in normal periods. **But after a documented market shift** (a dark-market
+   shutdown), synthetic motif stress tests of any kind predicted detectors' post-shift recall better than recent data
+   (mean error 0.047 vs 0.120). This lead was not pre-registered and needs a second shift to confirm.
 
 All designs were frozen in the repository before the data they test was read.
 
@@ -121,19 +124,31 @@ Steps 1–34 only:
 A rule fixed in advance, a percentile over all transactions, was dominated by unlabelled ones and missed the
 peel-chain signal. We report this as a lesson, not a corrected result.
 
-### 4.5 Core result: does the graph-forecast stress test predict later recall? [PENDING]
+### 4.5 Core result: does the graph-forecast stress test predict later recall? (`docs/results/e3e4.md`)
 
-- **Status:** the design is frozen in `docs/e3e4-design.md`.
-- **Stress tests compared:** S1 graph forecast (top 10 expressible motif pairs from the pre-2017 AML literature
-  graph), S0 recent data, S2 uniform pairs, S3 single motifs.
-- **Holdout:** real illicit transactions in steps 35–49, and 43–49 separately.
-- **Detectors:** 10 graph-only detectors.
-- **Metrics:** Spearman ρ with a bootstrap CI, recall error, and paired comparisons.
-- **Waiting on:** the literature corpus download (105,469 pre-2017 works; 135 of 528 pages done).
-- **Expected weakness, written down in advance:** in a training-only dry run, detectors flagged only 0.2% of synthetic
-  hub scenarios. The ranking may be uninformative.
-- **Literature sparsity, already observed:** the 8 drawable motifs appear in only 0–73 pre-2017 works each
-  (peel chain 0, fan-in 1, CoinJoin 2).
+**The literature graph** (§3, frozen in `config/aml_vocabulary_v2.toml`):
+- **Size:** 105,533 pre-2017 AML, crypto and fraud works, 500 OpenAlex concept tags plus the 14 target concepts;
+  density 0.37 at 2013.
+- **Forecasting (2013 → 2016):** logistic regression AUC 0.818 against popularity 0.576 (+0.241, 95% CI [+0.234, +0.249]).
+- **Result:** the pre-registered hypothesis holds, so scenarios were ranked with this model. The top 10 of the 25 unlinked
+  drawable motif pairs form stress test S1.
+
+**The stress-test comparison** (10 graph-only detectors; recall on real illicit transactions after the cutoff):
+
+| Window | Best at ranking detectors (Spearman ρ) | Recall error: recent data vs S1 |
+|---|---|---|
+| Cutoff 34, steps 35–42 (no shift) | recent data, ρ 0.88 (S1: 0.57) | 0.045 vs 0.106 |
+| Cutoffs 24 and 29 (no shift) | recent data, ρ 0.62 and 0.81 (S1: about 0) | recent data better |
+| Cutoff 34, steps 43–49 (after the shutdown) | S1, ρ 0.91 (recent data: 0.77, difference CI includes 0) | **0.120 vs 0.047** (CI of difference excludes 0) |
+| Cutoff 39, steps 43–49 (after the shutdown) | synthetic sets, ρ 0.49–0.53 (recent data: 0.31; S1 − S0 +0.18 [+0.08, +0.58]) | 0.090 vs 0.031 |
+
+- **The frozen success criterion is not met:** S1 must beat both recent data and random motif pairs.
+- **S1 against random pairs:** S1 is not reliably better.
+- **After a shift, any synthetic motif set beats recent data at predicting detector recall, and loses to it otherwise.**
+- **The mechanism visible in per-detector recalls:** linear detectors flag unfamiliar synthetic shapes and also survive the
+  shift. Tree ensembles do neither, consistent with Maganti (2026).
+- **E5:** thresholds fixed at a 5% false-positive rate held near target after cutoff 34 (0.2–9%), drifted up at
+  cutoff 29 (up to 15%), and fell to about 0.5% after the shift.
 
 ## 5. Discussion and limits
 
