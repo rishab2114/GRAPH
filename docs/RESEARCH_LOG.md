@@ -511,7 +511,9 @@ go into S1:
 Full write-up: `docs/results/e3e4.md`.
 
 **Against the frozen success criteria: not met.** S1 (the graph forecast) never beats both S0 (recent data) and S2
-(random pairs). It is statistically indistinguishable from S2 everywhere. The forecast picks motif pairs well as a
+(random pairs). Against S2 alone, S1 ranks better in 2 of 7 windows, both where all synthetic sets rank poorly. It is no
+better in the post-shift windows, and never better on calibration. *(Corrected 01:15: an earlier version of this entry
+said "indistinguishable from S2 everywhere". The comparison table shows that overstated it.)* The forecast picks motif pairs well as a
 forecaster, but the chosen pairs are not a better stress test than random ones.
 
 **Pattern found within the pre-specified windows:**
