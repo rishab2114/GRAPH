@@ -109,7 +109,11 @@ def run_contracts(addresses: set[str], end: date = CUTOFF, fs=None, start: date 
             if pc.any(m).as_py():
                 found.append(pa.table({"address": a.filter(m), "created": pc.cast(t["block_timestamp"].filter(m), pa.string())}))
         d += timedelta(days=1)
-    return pa.concat_tables(found) if found else pa.table({"address": pa.array([], pa.string()), "created": pa.array([], pa.string())})
+    if not found:
+        return pa.table({"address": pa.array([], pa.string()), "created": pa.array([], pa.string())})
+    # Some addresses appear more than once (e.g. redeployed at the same address): keep the earliest creation.
+    reg = pa.concat_tables(found).group_by("address").aggregate([("created", "min")])
+    return reg.rename_columns(["address", "created"])
 
 
 def main(argv=None):
