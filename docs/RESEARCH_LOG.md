@@ -646,3 +646,23 @@ The owner shared an external review. Checked claim by claim against git and the 
 
 **Note on this log's timestamps:** entries before this one give approximate times written from memory. Where they
 differ from `git log`, git is correct.
+
+---
+
+## 2026-11-22 — Tornado pilot started (owner approved; `docs/tornado-pilot-plan.md`)
+
+**Built, test-first** (107 tests pass):
+- **`gffs.ethereum`:** anonymous reads of AWS open data; decoding of Tornado Deposit and Withdrawal events.
+- **`gffs.tornado_pilot`:** a resumable per-day extractor. A check in the code makes it impossible to read any date on or
+  after 2022-08-08.
+
+**Checks on the method:**
+- **Event identifiers verified independently:** the keccak hashes of `Deposit(bytes32,uint32,uint256)` and
+  `Withdrawal(address,bytes32,address,uint256)` equal the topic0 values seen in the 2022-07-01 logs. *I caught and fixed
+  a vacuous version of this test,* which compared a constant with itself.
+- **Plain transfer vs contract call:** a plain ETH transfer between accounts uses exactly 21,000 gas. This splits the
+  interaction graph from the value-transfer graph (P4), and flags contract callees (P3), without reading contract code.
+- **Sampling frame (P5):** transaction *senders* in January 2022, before the window. Senders are always externally owned
+  accounts, and no label enters the frame's definition.
+
+**Running:** the frame (31 days), then 2022-02-08 to 2022-08-07 (181 days), about 3 h, in the background.
