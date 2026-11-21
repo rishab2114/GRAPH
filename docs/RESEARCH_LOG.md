@@ -552,3 +552,16 @@ is independent of Elliptic's dark-market shutdown. That is the minimum for a tes
 **Assessment:** no off-the-shelf dataset gives a clean, independent confirmation. Asking the owner to choose between
 (a) building the Tornado Cash sanctions dataset (best evidence, biggest effort), (b) a mechanism check on synthetic
 AMLworld with a designed shift (fast, but not real-world confirmation), and (c) reporting the lead as unconfirmed.
+
+---
+
+## 2026-11-21 19:45 — Owner's choice: mechanism check → Tornado Cash dataset → later crypto events
+
+**Reasoning before building:** a naive synthetic check would be circular. If the world's new attacks use the same
+motifs as the stress test, the test sees the future by construction. So the check separates two explanations:
+H-gen (unfamiliar shapes expose over-specialised detectors) and H-match (scenarios resemble the new attacks). It does
+this by keeping a motif family (C) out of both the training and the post-shift attacks. Predictions and thresholds are
+frozen in `docs/mechanism-design.md`, which was committed before any generator code was written.
+
+**Stage 3 note:** "recent crypto updates" is read as later dated shocks, for example the **lifting of the Tornado Cash
+sanctions in March 2025**. That would be a second, opposite shift. To confirm with the owner before stage 3.
