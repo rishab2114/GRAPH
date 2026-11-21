@@ -529,3 +529,26 @@ on one shift event at two overlapping cutoffs, so it is a lead for a prospective
 detectors kept the ranking informative.
 
 **Next:** update the draft (§4.5 and abstract), the dashboard and the handoff, then push.
+
+---
+
+## 2026-11-21 19:30 — Option 1 scoping: a second dataset to confirm the after-shift lead
+
+**Requirement:** a money-flow graph (so motifs can be injected), labels, timestamps, and a *dated, documented* shift that
+is independent of Elliptic's dark-market shutdown. That is the minimum for a test that isn't circular or post hoc.
+
+**What I found (two web searches):**
+- **Elliptic2 (2024):** 122K labelled subgraphs. The search turned up no timestamp field for a temporal split, so no shift can be tested.
+- **Elliptic++:** the same 49 steps and the same shutdown, so not independent.
+- **IBM AMLworld:** synthetic, and its laundering is *generated from motifs*. Testing motif stress tests on it is circular.
+  It could only check the mechanism, under a designed shift.
+- **Ethereum phishing graphs:** timestamps and labels, but no documented shift event.
+- **Ethereum around the Tornado Cash sanctions (OFAC, 8 Aug 2022):** a real, dated regulatory shock to laundering
+  behaviour (NY Fed Staff Report 1112; arXiv 2510.09443). But there is no labelled illicit dataset. Labels would have to
+  be built from sanctions lists and on-chain heuristics, and "labelled mixing addresses are exceptionally scarce"
+  (arXiv 2505.09892). It needs public chain data (e.g. BigQuery `crypto_ethereum`) and weeks of work.
+- **DGraph-Fin:** a contact graph, not money flows, so motifs don't apply.
+
+**Assessment:** no off-the-shelf dataset gives a clean, independent confirmation. Asking the owner to choose between
+(a) building the Tornado Cash sanctions dataset (best evidence, biggest effort), (b) a mechanism check on synthetic
+AMLworld with a designed shift (fast, but not real-world confirmation), and (c) reporting the lead as unconfirmed.
