@@ -35,25 +35,46 @@ def categorize(gas: int, value: float, status: int) -> str:
 
 
 def match_withdrawals(withdrawals: list[dict], traces: list[dict]) -> dict:
-    out = [t for t in traces if t["status"] == 1 and t["from"] in eth.POOL_DENOMINATION_WEI and t["value"] > 0]
+    """Independent withdrawal completeness from traces, in both directions.
+
+    Only real value-moving calls count (`call_type == "call"`): delegatecalls carry the context value but move no ETH.
+    - events -> traces: each decoded Withdrawal should have pool outflows `denomination - fee` to the recipient and
+      `fee` to the relayer (exact_match); a match where a trace is marked failed is a `status_anomaly`.
+    - traces -> events: a transaction with a successful real pool outflow but no decoded Withdrawal would be a
+      missed event (`outflow_tx_without_event`, should be 0).
+    """
+    real = [t for t in traces if t.get("call_type", "call") == "call" and t["from"] in eth.POOL_DENOMINATION_WEI
+            and t["value"] > 0]
     by_tx: dict = {}
-    for i, t in enumerate(out):
+    for i, t in enumerate(real):
         by_tx.setdefault(t["tx"], []).append(i)
-    used, matched = set(), 0
+    used, exact, anomaly, no_outflow = set(), 0, 0, 0
     for w in withdrawals:
+        idx = by_tx.get(w["tx"], [])
+        if not idx:
+            no_outflow += 1
+            continue
         denom = eth.POOL_DENOMINATION_WEI[w["pool"]]
         expected = [(w["recipient"], denom - w["fee_wei"])] + ([(w["relayer"], w["fee_wei"])] if w["fee_wei"] > 0 else [])
         found = []
         for to, amount in expected:
-            hit = next((i for i in by_tx.get(w["tx"], []) if i not in used and i not in found
-                        and out[i]["from"] == w["pool"] and out[i]["to"] == to and abs(out[i]["value"] - amount) <= WEI_TOL), None)
+            hit = next((i for i in idx if i not in used and i not in found and real[i]["from"] == w["pool"]
+                        and real[i]["to"] == to and abs(real[i]["value"] - amount) <= WEI_TOL), None)
             if hit is None:
                 break
             found.append(hit)
         if len(found) == len(expected):
-            matched += 1; used.update(found)
-    return {"withdrawals": len(withdrawals), "matched": matched, "unmatched": len(withdrawals) - matched,
-            "pool_outflows": len(out), "explained_outflows": len(used), "orphan_outflows": len(out) - len(used),
+            used.update(found)
+            if all(real[i]["status"] == 1 for i in found):
+                exact += 1
+            else:
+                anomaly += 1
+    event_tx = {w["tx"] for w in withdrawals}
+    ok_tx = {t["tx"] for t in real if t["status"] == 1}
+    return {"withdrawals": len(withdrawals), "exact_match": exact, "status_anomaly": anomaly,
+            "amount_mismatch": len(withdrawals) - exact - anomaly - no_outflow, "events_without_outflow": no_outflow,
+            "real_pool_outflows": sum(1 for t in real if t["status"] == 1),
+            "outflow_tx_without_event": len(ok_tx - event_tx),
             "self_withdrawals": sum(1 for w in withdrawals if w["relayer"] == ZERO)}
 
 
@@ -74,12 +95,13 @@ def aux_day(fs, d: date) -> dict:
         (AUX / "edges").mkdir(parents=True, exist_ok=True)
         pq.write_table(pa.table({"src": pc.utf8_lower(tx["from_address"]), "dst": pc.utf8_lower(tx["to_address"]),
                                  "category": pa.array(cats).dictionary_encode()}), AUX / "edges" / f"{d}.parquet")
-    tr = eth.read_day(fs, "traces", d.isoformat(), ["transaction_hash", "from_address", "to_address", "value", "status"])
+    tr = eth.read_day(fs, "traces", d.isoformat(), ["transaction_hash", "from_address", "to_address", "value", "status", "call_type"])
     frm = pc.utf8_lower(tr["from_address"])
     m = pc.is_in(frm, value_set=pa.array(list(eth.POOL_DENOMINATION_WEI)))
     ptr = tr.filter(m)
-    traces = [{"tx": h.lower(), "from": f.lower(), "to": (t or "").lower(), "value": v or 0.0, "status": s}
-              for h, f, t, v, s in zip(*(ptr[c].to_pylist() for c in ("transaction_hash", "from_address", "to_address", "value", "status")))]
+    traces = [{"tx": h.lower(), "from": f.lower(), "to": (t or "").lower(), "value": v or 0.0, "status": s, "call_type": ct}
+              for h, f, t, v, s, ct in zip(*(ptr[c].to_pylist() for c in
+                                             ("transaction_hash", "from_address", "to_address", "value", "status", "call_type")))]
     from collections import Counter
     return {"day": d.isoformat(), "category_counts": dict(Counter(cats)),
             "event_tx_status": {"n": len(event_tx), "found": len(st), "success": sum(1 for s in st.values() if s == 1)},

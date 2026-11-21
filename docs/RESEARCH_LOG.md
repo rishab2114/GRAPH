@@ -750,3 +750,20 @@ successful `create` traces (0 missing either way). So it includes factory-create
 *earliest* creation.
 
 **Costs measured:** contracts ≈ 0.7 s per day; traces ≈ 3.4 s per day (6 columns).
+
+**Withdrawal check corrected (2026-11-22).** The first trace check on 2022-02-08 reported 6,481 "unexplained" pool
+outflows. Investigated rather than accepted: **6,480 were `delegatecall`s** (the pool delegating into its hasher during
+Merkle insertion). In these traces a delegatecall carries the transaction's value in its `value` field but moves no ETH.
+With only real `call`s on that day:
+- **317 outflows, 314 explained;** every withdrawal transaction has a real outflow.
+- **2 withdrawals had a payment trace marked failed (status 0)** inside a successful transaction with an emitted event.
+  Tornado's pool requires both payments to succeed, so this is most likely a status-labelling quirk in the ETL. These are
+  counted as `status_anomaly`, not as missing events.
+
+The check is restructured into **two directions**:
+- **events → traces:** exact matches, status anomalies, amount mismatches, events without any outflow;
+- **traces → events:** transactions with a successful real pool outflow but **no decoded Withdrawal**. This is the
+  completeness measure; it should be 0.
+
+The 7 add-on outputs computed with the flawed filter were deleted and are being recomputed. The main extractor's daily
+files were not touched. 110 tests pass.
