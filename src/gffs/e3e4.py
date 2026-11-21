@@ -103,7 +103,7 @@ ALL_PAIRS = [tuple(p) for p in combinations(sorted(MOTIFS), 2)]
 
 def run_cutoff(d, cutoff: int, holdout_end: int, val_len: int = 6, shutdown_step: int | None = None,
                s1_pairs: list | None = None, instances_per_pair: int = INSTANCES_PER_PAIR, n_boot: int = 1000,
-               detectors: list[str] | None = None, sampler=None, seed: int = 0) -> dict:
+               detectors: list[str] | None = None, sampler=None, seed: int = 0, stress_sets: dict | None = None) -> dict:
     """One frozen E3/E4 run at `cutoff` (docs/e3e4-design.md). Training uses steps <= cutoff only;
     steps cutoff+1..holdout_end are read only to score the frozen detectors at their frozen thresholds."""
     names = detectors or list(GRAPH_DETECTORS)
@@ -127,10 +127,13 @@ def run_cutoff(d, cutoff: int, holdout_end: int, val_len: int = 6, shutdown_step
 
     base = _graph(d, val_start, cutoff)
     sampler = sampler or size_sampler_from(f_train[y_train.notna()], y_train[y_train.notna()])
-    sets = {"S2_uniform_pairs": [ALL_PAIRS[i] for i in np.random.default_rng(0).choice(len(ALL_PAIRS), 10, replace=False)],
-            "S3_single_motifs": [(m,) for m in MOTIFS]}
-    if s1_pairs:
-        sets["S1_graph_forecast"] = [tuple(p) for p in s1_pairs]
+    if stress_sets is not None:                     # mechanism check: caller-defined synthetic sets
+        sets = {k: [tuple(p) for p in v] for k, v in stress_sets.items()}
+    else:
+        sets = {"S2_uniform_pairs": [ALL_PAIRS[i] for i in np.random.default_rng(0).choice(len(ALL_PAIRS), 10, replace=False)],
+                "S3_single_motifs": [(m,) for m in MOTIFS]}
+        if s1_pairs:
+            sets["S1_graph_forecast"] = [tuple(p) for p in s1_pairs]
     stress = {"S0_recent_data": s0}
     for sname, pairs in sets.items():
         g, syn = inject(base, [p for p in pairs for _ in range(instances_per_pair)], rng, sampler)

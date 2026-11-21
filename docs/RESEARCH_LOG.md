@@ -565,3 +565,16 @@ frozen in `docs/mechanism-design.md`, which was committed before any generator c
 
 **Stage 3 note:** "recent crypto updates" is read as later dated shocks, for example the **lifting of the Tornado Cash
 sanctions in March 2025**. That would be a second, opposite shift. To confirm with the owner before stage 3.
+
+---
+
+## 2026-11-21 20:10 — Mechanism check built (`gffs.synthworld`, `gffs.mechanism`)
+
+- **Generator:** 40-step Elliptic-like worlds. Licit flows are chains and trees with some fan-in. Illicit activity is
+  motif instances from a family. Labelled shares: 30% of licit, 80% of illicit. The training period is identical across
+  W0, W1 and W2 for a given seed (tested).
+- **Harness:** `run_cutoff` now accepts caller-defined stress sets (SA, SB, SC). The defaults are unchanged.
+- **Tests:** 101 pass.
+- **Timing:** about 10 s per world, so 120 runs (20 worlds × 3 types × 2 family splits) take about 20 minutes.
+- **One-world smoke run (W1, seed 0):** SB ρ 0.93, SC ρ −0.71, S0 ρ 0.02. *Not evidence:* one world, logged only so the
+  record shows what was seen before the full batch.
