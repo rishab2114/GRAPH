@@ -1,0 +1,2385 @@
+{
+ "config": "config/aml_vocabulary_v2.toml",
+ "source": "concepts",
+ "corpus_works": 105533,
+ "n_context_nodes": 500,
+ "context_nodes": [
+  {
+   "id": "C2780035454",
+   "name": "Drug"
+  },
+  {
+   "id": "C2780005421",
+   "name": "Money laundering"
+  },
+  {
+   "id": "C2778137410",
+   "name": "Government (linguistics)"
+  },
+  {
+   "id": "C199521495",
+   "name": "Audit"
+  },
+  {
+   "id": "C3020689752",
+   "name": "Illicit drug"
+  },
+  {
+   "id": "C40010229",
+   "name": "Substance abuse"
+  },
+  {
+   "id": "C94625758",
+   "name": "Politics"
+  },
+  {
+   "id": "C2908647359",
+   "name": "Population"
+  },
+  {
+   "id": "C2779343474",
+   "name": "Context (archaeology)"
+  },
+  {
+   "id": "C48103436",
+   "name": "State (computer science)"
+  },
+  {
+   "id": "C110875604",
+   "name": "The Internet"
+  },
+  {
+   "id": "C2779777834",
+   "name": "Enforcement"
+  },
+  {
+   "id": "C182306322",
+   "name": "Order (exchange)"
+  },
+  {
+   "id": "C145097563",
+   "name": "Payment"
+  },
+  {
+   "id": "C2780027415",
+   "name": "Language change"
+  },
+  {
+   "id": "C2777351106",
+   "name": "Legislation"
+  },
+  {
+   "id": "C203133693",
+   "name": "Terrorism"
+  },
+  {
+   "id": "C2775924081",
+   "name": "Control (management)"
+  },
+  {
+   "id": "C2778903686",
+   "name": "Heroin"
+  },
+  {
+   "id": "C2777056318",
+   "name": "Cannabis"
+  },
+  {
+   "id": "C3017944768",
+   "name": "Poison control"
+  },
+  {
+   "id": "C48856860",
+   "name": "Addiction"
+  },
+  {
+   "id": "C39389867",
+   "name": "Corporate governance"
+  },
+  {
+   "id": "C2780262971",
+   "name": "Law enforcement"
+  },
+  {
+   "id": "C160735492",
+   "name": "Health care"
+  },
+  {
+   "id": "C18762648",
+   "name": "Work (physics)"
+  },
+  {
+   "id": "C138816342",
+   "name": "Public health"
+  },
+  {
+   "id": "C75949130",
+   "name": "Database transaction"
+  },
+  {
+   "id": "C98045186",
+   "name": "Process (computing)"
+  },
+  {
+   "id": "C17319257",
+   "name": "Statute"
+  },
+  {
+   "id": "C2991912374",
+   "name": "Substance use"
+  },
+  {
+   "id": "C2426938",
+   "name": "Medical prescription"
+  },
+  {
+   "id": "C2776291640",
+   "name": "Value (mathematics)"
+  },
+  {
+   "id": "C2776034101",
+   "name": "Commission"
+  },
+  {
+   "id": "C190385971",
+   "name": "Injury prevention"
+  },
+  {
+   "id": "C116834253",
+   "name": "Identification (biology)"
+  },
+  {
+   "id": "C27415008",
+   "name": "Psychological intervention"
+  },
+  {
+   "id": "C2778767360",
+   "name": "Methadone"
+  },
+  {
+   "id": "C2777834853",
+   "name": "Liability"
+  },
+  {
+   "id": "C3013748606",
+   "name": "Human immunodeficiency virus (HIV)"
+  },
+  {
+   "id": "C2777363581",
+   "name": "Harm"
+  },
+  {
+   "id": "C2779530757",
+   "name": "Quality (philosophy)"
+  },
+  {
+   "id": "C2780378061",
+   "name": "Service (business)"
+  },
+  {
+   "id": "C191935318",
+   "name": "China"
+  },
+  {
+   "id": "C141121606",
+   "name": "Currency"
+  },
+  {
+   "id": "C180706569",
+   "name": "Cryptocurrency"
+  },
+  {
+   "id": "C202565627",
+   "name": "Criminal law"
+  },
+  {
+   "id": "C2983355114",
+   "name": "Credit card"
+  },
+  {
+   "id": "C2781063702",
+   "name": "Opioid"
+  },
+  {
+   "id": "C2779234561",
+   "name": "Pregnancy"
+  },
+  {
+   "id": "C83009810",
+   "name": "Legislature"
+  },
+  {
+   "id": "C2780791683",
+   "name": "Action (physics)"
+  },
+  {
+   "id": "C2778355321",
+   "name": "Identity (music)"
+  },
+  {
+   "id": "C195487862",
+   "name": "Revenue"
+  },
+  {
+   "id": "C526869908",
+   "name": "Suicide prevention"
+  },
+  {
+   "id": "C29122968",
+   "name": "Incentive"
+  },
+  {
+   "id": "C163258240",
+   "name": "Power (physics)"
+  },
+  {
+   "id": "C27219730",
+   "name": "Organised crime"
+  },
+  {
+   "id": "C2776801101",
+   "name": "Securities fraud"
+  },
+  {
+   "id": "C2780665704",
+   "name": "Intervention (counseling)"
+  },
+  {
+   "id": "C151956035",
+   "name": "Logistic regression"
+  },
+  {
+   "id": "C134362201",
+   "name": "Mental health"
+  },
+  {
+   "id": "C12713177",
+   "name": "Perspective (graphical)"
+  },
+  {
+   "id": "C555826173",
+   "name": "Democracy"
+  },
+  {
+   "id": "C108170787",
+   "name": "Agency (philosophy)"
+  },
+  {
+   "id": "C198531522",
+   "name": "Sample (material)"
+  },
+  {
+   "id": "C177264268",
+   "name": "Set (abstract data type)"
+  },
+  {
+   "id": "C153180980",
+   "name": "Commit"
+  },
+  {
+   "id": "C2780587575",
+   "name": "Misconduct"
+  },
+  {
+   "id": "C2992106988",
+   "name": "Drug trafficking"
+  },
+  {
+   "id": "C170856484",
+   "name": "Internal audit"
+  },
+  {
+   "id": "C139621336",
+   "name": "Economic Justice"
+  },
+  {
+   "id": "C2910001868",
+   "name": "European union"
+  },
+  {
+   "id": "C2778272461",
+   "name": "Supreme court"
+  },
+  {
+   "id": "C30772137",
+   "name": "Consumption (sociology)"
+  },
+  {
+   "id": "C26517878",
+   "name": "Key (lock)"
+  },
+  {
+   "id": "C2781066024",
+   "name": "Alcohol"
+  },
+  {
+   "id": "C522325796",
+   "name": "Identity theft"
+  },
+  {
+   "id": "C2779488553",
+   "name": "Ecstasy"
+  },
+  {
+   "id": "C2780233690",
+   "name": "Transparency (behavior)"
+  },
+  {
+   "id": "C2781027943",
+   "name": "Financial statement"
+  },
+  {
+   "id": "C26760741",
+   "name": "Perception"
+  },
+  {
+   "id": "C2781460075",
+   "name": "Compliance (psychology)"
+  },
+  {
+   "id": "C102587632",
+   "name": "Criminal justice"
+  },
+  {
+   "id": "C2778083465",
+   "name": "Cash"
+  },
+  {
+   "id": "C148417208",
+   "name": "Authentication (law)"
+  },
+  {
+   "id": "C153180895",
+   "name": "Pattern recognition (psychology)"
+  },
+  {
+   "id": "C2777855551",
+   "name": "Subject (documents)"
+  },
+  {
+   "id": "C2778069335",
+   "name": "Sanctions"
+  },
+  {
+   "id": "C2985140798",
+   "name": "Financial fraud"
+  },
+  {
+   "id": "C2778012447",
+   "name": "Scope (computer science)"
+  },
+  {
+   "id": "C2776007630",
+   "name": "Accountability"
+  },
+  {
+   "id": "C48220719",
+   "name": "Digital currency"
+  },
+  {
+   "id": "C2780747020",
+   "name": "Credit card fraud"
+  },
+  {
+   "id": "C92956704",
+   "name": "Constructive fraud"
+  },
+  {
+   "id": "C136197465",
+   "name": "Variety (cybernetics)"
+  },
+  {
+   "id": "C2778903061",
+   "name": "Methadone maintenance"
+  },
+  {
+   "id": "C529928208",
+   "name": "Harm reduction"
+  },
+  {
+   "id": "C120757647",
+   "name": "Shareholder"
+  },
+  {
+   "id": "C2780608745",
+   "name": "Convention"
+  },
+  {
+   "id": "C162356407",
+   "name": "Mass spectrometry"
+  },
+  {
+   "id": "C107130276",
+   "name": "Epidemiology"
+  },
+  {
+   "id": "C2776867660",
+   "name": "Depression (economics)"
+  },
+  {
+   "id": "C72563966",
+   "name": "Cohort"
+  },
+  {
+   "id": "C2777267654",
+   "name": "Test (biology)"
+  },
+  {
+   "id": "C156957248",
+   "name": "Odds ratio"
+  },
+  {
+   "id": "C95121780",
+   "name": "Scientific misconduct"
+  },
+  {
+   "id": "C2780376393",
+   "name": "Methamphetamine"
+  },
+  {
+   "id": "C199450454",
+   "name": "Internal control"
+  },
+  {
+   "id": "C189950617",
+   "name": "Property (philosophy)"
+  },
+  {
+   "id": "C97460637",
+   "name": "Plaintiff"
+  },
+  {
+   "id": "C187155963",
+   "name": "Occupational safety and health"
+  },
+  {
+   "id": "C48798503",
+   "name": "Reputation"
+  },
+  {
+   "id": "C90673727",
+   "name": "Product (mathematics)"
+  },
+  {
+   "id": "C27548731",
+   "name": "Investment (military)"
+  },
+  {
+   "id": "C50335755",
+   "name": "Phenomenon"
+  },
+  {
+   "id": "C47487560",
+   "name": "Virtual currency"
+  },
+  {
+   "id": "C2779267917",
+   "name": "Deception"
+  },
+  {
+   "id": "C139043278",
+   "name": "Financial services"
+  },
+  {
+   "id": "C166735990",
+   "name": "Human factors and ergonomics"
+  },
+  {
+   "id": "C558461103",
+   "name": "Anxiety"
+  },
+  {
+   "id": "C2777381055",
+   "name": "Damages"
+  },
+  {
+   "id": "C198082294",
+   "name": "Position (finance)"
+  },
+  {
+   "id": "C2780026642",
+   "name": "Urine"
+  },
+  {
+   "id": "C2780656516",
+   "name": "Prison"
+  },
+  {
+   "id": "C739882",
+   "name": "Anomaly detection"
+  },
+  {
+   "id": "C2776534028",
+   "name": "Medicaid"
+  },
+  {
+   "id": "C32896092",
+   "name": "Risk management"
+  },
+  {
+   "id": "C137403100",
+   "name": "Ethnic group"
+  },
+  {
+   "id": "C56273599",
+   "name": "White (mutation)"
+  },
+  {
+   "id": "C150966472",
+   "name": "Psychosocial"
+  },
+  {
+   "id": "C2779103253",
+   "name": "Duty"
+  },
+  {
+   "id": "C9652623",
+   "name": "Field (mathematics)"
+  },
+  {
+   "id": "C91306197",
+   "name": "Competition (biology)"
+  },
+  {
+   "id": "C2778805511",
+   "name": "Citation"
+  },
+  {
+   "id": "C2778976927",
+   "name": "Insurance fraud"
+  },
+  {
+   "id": "C199033989",
+   "name": "Narrative"
+  },
+  {
+   "id": "C83646750",
+   "name": "Capital (architecture)"
+  },
+  {
+   "id": "C2778348171",
+   "name": "Corporation"
+  },
+  {
+   "id": "C158129432",
+   "name": "Statutory law"
+  },
+  {
+   "id": "C2776949292",
+   "name": "Jurisdiction"
+  },
+  {
+   "id": "C2780876324",
+   "name": "MDMA"
+  },
+  {
+   "id": "C28719098",
+   "name": "Point (geometry)"
+  },
+  {
+   "id": "C2780385302",
+   "name": "Protocol (science)"
+  },
+  {
+   "id": "C2779390178",
+   "name": "Cybercrime"
+  },
+  {
+   "id": "C504631918",
+   "name": "Bankruptcy"
+  },
+  {
+   "id": "C71745522",
+   "name": "Confidentiality"
+  },
+  {
+   "id": "C3018481051",
+   "name": "Drugs of abuse"
+  },
+  {
+   "id": "C2780687700",
+   "name": "Abstinence"
+  },
+  {
+   "id": "C2778140631",
+   "name": "Opiate"
+  },
+  {
+   "id": "C2779295839",
+   "name": "Punishment (psychology)"
+  },
+  {
+   "id": "C2778949969",
+   "name": "Buprenorphine"
+  },
+  {
+   "id": "C2776950860",
+   "name": "Originality"
+  },
+  {
+   "id": "C2777193897",
+   "name": "Amphetamine"
+  },
+  {
+   "id": "C520049643",
+   "name": "Voting"
+  },
+  {
+   "id": "C2776035688",
+   "name": "Affect (linguistics)"
+  },
+  {
+   "id": "C2779304628",
+   "name": "Face (sociological concept)"
+  },
+  {
+   "id": "C2778971194",
+   "name": "Insider"
+  },
+  {
+   "id": "C2779134260",
+   "name": "Disease"
+  },
+  {
+   "id": "C120527767",
+   "name": "Debt"
+  },
+  {
+   "id": "C46304622",
+   "name": "Certification"
+  },
+  {
+   "id": "C98184364",
+   "name": "Argument (complex analysis)"
+  },
+  {
+   "id": "C44249647",
+   "name": "Confidence interval"
+  },
+  {
+   "id": "C178489894",
+   "name": "Cryptography"
+  },
+  {
+   "id": "C163867264",
+   "name": "Accounting information system"
+  },
+  {
+   "id": "C2780451532",
+   "name": "Task (project management)"
+  },
+  {
+   "id": "C2119116",
+   "name": "Globalization"
+  },
+  {
+   "id": "C2778024590",
+   "name": "Cheating"
+  },
+  {
+   "id": "C189326681",
+   "name": "Poverty"
+  },
+  {
+   "id": "C184297639",
+   "name": "Biometrics"
+  },
+  {
+   "id": "C151719136",
+   "name": "Publishing"
+  },
+  {
+   "id": "C2780073145",
+   "name": "Forensic accounting"
+  },
+  {
+   "id": "C205545832",
+   "name": "Young adult"
+  },
+  {
+   "id": "C2989421709",
+   "name": "Tax evasion"
+  },
+  {
+   "id": "C2776394362",
+   "name": "White-collar crime"
+  },
+  {
+   "id": "C61511704",
+   "name": "Incidence (geometry)"
+  },
+  {
+   "id": "C35525427",
+   "name": "Intrusion detection system"
+  },
+  {
+   "id": "C86844869",
+   "name": "Hacker"
+  },
+  {
+   "id": "C2777212361",
+   "name": "Class (philosophy)"
+  },
+  {
+   "id": "C147007100",
+   "name": "External auditor"
+  },
+  {
+   "id": "C83860907",
+   "name": "Phishing"
+  },
+  {
+   "id": "C2779602731",
+   "name": "Misrepresentation"
+  },
+  {
+   "id": "C2780765947",
+   "name": "Administration (probate law)"
+  },
+  {
+   "id": "C192209626",
+   "name": "Focus (optics)"
+  },
+  {
+   "id": "C76178495",
+   "name": "Asset (computer security)"
+  },
+  {
+   "id": "C2779473830",
+   "name": "MEDLINE"
+  },
+  {
+   "id": "C113196181",
+   "name": "Analytical Chemistry (journal)"
+  },
+  {
+   "id": "C169437150",
+   "name": "Human rights"
+  },
+  {
+   "id": "C2777026412",
+   "name": "Statement (logic)"
+  },
+  {
+   "id": "C2780724011",
+   "name": "Emergency department"
+  },
+  {
+   "id": "C181622380",
+   "name": "Profit (economics)"
+  },
+  {
+   "id": "C164516710",
+   "name": "Financial transaction"
+  },
+  {
+   "id": "C204036174",
+   "name": "Stock (firearms)"
+  },
+  {
+   "id": "C2777904410",
+   "name": "Software"
+  },
+  {
+   "id": "C527412718",
+   "name": "Interpretation (philosophy)"
+  },
+  {
+   "id": "C14036430",
+   "name": "Function (biology)"
+  },
+  {
+   "id": "C191602146",
+   "name": "Joint audit"
+  },
+  {
+   "id": "C2776211767",
+   "name": "Doctrine"
+  },
+  {
+   "id": "C2778300220",
+   "name": "Financial crisis"
+  },
+  {
+   "id": "C169900460",
+   "name": "Cognition"
+  },
+  {
+   "id": "C2777063073",
+   "name": "Settlement (finance)"
+  },
+  {
+   "id": "C2781426361",
+   "name": "Earnings"
+  },
+  {
+   "id": "C2780876879",
+   "name": "Meaning (existential)"
+  },
+  {
+   "id": "C70036468",
+   "name": "Immigration"
+  },
+  {
+   "id": "C2992844032",
+   "name": "Drug control"
+  },
+  {
+   "id": "C190248442",
+   "name": "Qualitative research"
+  },
+  {
+   "id": "C2776050585",
+   "name": "Scrutiny"
+  },
+  {
+   "id": "C2780557958",
+   "name": "Stimulant"
+  },
+  {
+   "id": "C199728807",
+   "name": "Equity (law)"
+  },
+  {
+   "id": "C168563851",
+   "name": "Randomized controlled trial"
+  },
+  {
+   "id": "C100243477",
+   "name": "Welfare"
+  },
+  {
+   "id": "C4445939",
+   "name": "Islam"
+  },
+  {
+   "id": "C178005623",
+   "name": "Anonymity"
+  },
+  {
+   "id": "C2775849661",
+   "name": "Narcotic"
+  },
+  {
+   "id": "C2776529561",
+   "name": "Embezzlement"
+  },
+  {
+   "id": "C143095724",
+   "name": "Odds"
+  },
+  {
+   "id": "C2778348673",
+   "name": "Production (economics)"
+  },
+  {
+   "id": "C52592926",
+   "name": "Computer fraud"
+  },
+  {
+   "id": "C119232533",
+   "name": "Business ethics"
+  },
+  {
+   "id": "C19244329",
+   "name": "Financial market"
+  },
+  {
+   "id": "C95713431",
+   "name": "Vulnerability (computing)"
+  },
+  {
+   "id": "C2780224610",
+   "name": "Credibility"
+  },
+  {
+   "id": "C73555534",
+   "name": "Cluster analysis"
+  },
+  {
+   "id": "C25343380",
+   "name": "Relation (database)"
+  },
+  {
+   "id": "C158071213",
+   "name": "Ideology"
+  },
+  {
+   "id": "C2776455275",
+   "name": "Hepatitis C"
+  },
+  {
+   "id": "C2778449503",
+   "name": "Appeal"
+  },
+  {
+   "id": "C2780510313",
+   "name": "Institution"
+  },
+  {
+   "id": "C50644808",
+   "name": "Artificial neural network"
+  },
+  {
+   "id": "C56666940",
+   "name": "Documentation"
+  },
+  {
+   "id": "C201650216",
+   "name": "Procurement"
+  },
+  {
+   "id": "C2780931562",
+   "name": "Alcohol abuse"
+  },
+  {
+   "id": "C79337645",
+   "name": "Outlier"
+  },
+  {
+   "id": "C147077947",
+   "name": "Socioeconomic status"
+  },
+  {
+   "id": "C201903717",
+   "name": "Cohort study"
+  },
+  {
+   "id": "C2909347786",
+   "name": "Narcotic drugs"
+  },
+  {
+   "id": "C2777764128",
+   "name": "Loan"
+  },
+  {
+   "id": "C2779913896",
+   "name": "Notice"
+  },
+  {
+   "id": "C199776023",
+   "name": "Negotiation"
+  },
+  {
+   "id": "C2778755073",
+   "name": "Scale (ratio)"
+  },
+  {
+   "id": "C3019635848",
+   "name": "Alcohol consumption"
+  },
+  {
+   "id": "C2780129039",
+   "name": "Section (typography)"
+  },
+  {
+   "id": "C2780193096",
+   "name": "Possession (linguistics)"
+  },
+  {
+   "id": "C518677369",
+   "name": "Social media"
+  },
+  {
+   "id": "C2781251061",
+   "name": "Evasion (ethics)"
+  },
+  {
+   "id": "C2780586970",
+   "name": "Popularity"
+  },
+  {
+   "id": "C2776687834",
+   "name": "Class action"
+  },
+  {
+   "id": "C34974158",
+   "name": "Intellectual property"
+  },
+  {
+   "id": "C201280247",
+   "name": "Newspaper"
+  },
+  {
+   "id": "C187288502",
+   "name": "Personality"
+  },
+  {
+   "id": "C2779153319",
+   "name": "Opium"
+  },
+  {
+   "id": "C35651441",
+   "name": "Independence (probability theory)"
+  },
+  {
+   "id": "C144559511",
+   "name": "Principal (computer security)"
+  },
+  {
+   "id": "C44725695",
+   "name": "Normative"
+  },
+  {
+   "id": "C68799949",
+   "name": "Insurance policy"
+  },
+  {
+   "id": "C2985871740",
+   "name": "Task force"
+  },
+  {
+   "id": "C2776412080",
+   "name": "Schizophrenia (object-oriented programming)"
+  },
+  {
+   "id": "C140505726",
+   "name": "Forensic science"
+  },
+  {
+   "id": "C46295352",
+   "name": "Legitimacy"
+  },
+  {
+   "id": "C83864248",
+   "name": "Developing country"
+  },
+  {
+   "id": "C2776154427",
+   "name": "Constitution"
+  },
+  {
+   "id": "C2779687700",
+   "name": "Blockchain"
+  },
+  {
+   "id": "C761482",
+   "name": "Transmission (telecommunications)"
+  },
+  {
+   "id": "C77618280",
+   "name": "Scheme (mathematics)"
+  },
+  {
+   "id": "C120936955",
+   "name": "Empirical research"
+  },
+  {
+   "id": "C158154518",
+   "name": "Relevance (law)"
+  },
+  {
+   "id": "C200635333",
+   "name": "Tort"
+  },
+  {
+   "id": "C2780668109",
+   "name": "Opposition (politics)"
+  },
+  {
+   "id": "C2778707766",
+   "name": "Phone"
+  },
+  {
+   "id": "C75684735",
+   "name": "Big data"
+  },
+  {
+   "id": "C109297577",
+   "name": "Password"
+  },
+  {
+   "id": "C104863432",
+   "name": "Pharmacy"
+  },
+  {
+   "id": "C2777189325",
+   "name": "Officer"
+  },
+  {
+   "id": "C2778223634",
+   "name": "Suspect"
+  },
+  {
+   "id": "C2778447849",
+   "name": "Obligation"
+  },
+  {
+   "id": "C158342456",
+   "name": "Forensic toxicology"
+  },
+  {
+   "id": "C2779356469",
+   "name": "Counterfeit"
+  },
+  {
+   "id": "C2776760102",
+   "name": "Code (set theory)"
+  },
+  {
+   "id": "C2776679223",
+   "name": "Binge drinking"
+  },
+  {
+   "id": "C2780023022",
+   "name": "Compensation (psychology)"
+  },
+  {
+   "id": "C541664917",
+   "name": "Malware"
+  },
+  {
+   "id": "C110269972",
+   "name": "Recreation"
+  },
+  {
+   "id": "C2779547435",
+   "name": "Directive"
+  },
+  {
+   "id": "C2777382242",
+   "name": "Index (typography)"
+  },
+  {
+   "id": "C122980154",
+   "name": "Feeling"
+  },
+  {
+   "id": "C147859227",
+   "name": "Public sector"
+  },
+  {
+   "id": "C159091798",
+   "name": "Creditor"
+  },
+  {
+   "id": "C55447825",
+   "name": "International law"
+  },
+  {
+   "id": "C81631423",
+   "name": "Spanish Civil War"
+  },
+  {
+   "id": "C2780858551",
+   "name": "Misappropriation"
+  },
+  {
+   "id": "C554936623",
+   "name": "Reading (process)"
+  },
+  {
+   "id": "C15241564",
+   "name": "Investment banking"
+  },
+  {
+   "id": "C154775046",
+   "name": "German"
+  },
+  {
+   "id": "C41282006",
+   "name": "Auditor's report"
+  },
+  {
+   "id": "C2984309518",
+   "name": "Human trafficking"
+  },
+  {
+   "id": "C142052008",
+   "name": "Cross-sectional study"
+  },
+  {
+   "id": "C114104786",
+   "name": "Statute of limitations"
+  },
+  {
+   "id": "C165696696",
+   "name": "Exploit"
+  },
+  {
+   "id": "C2776452267",
+   "name": "Secrecy"
+  },
+  {
+   "id": "C531593650",
+   "name": "Colonialism"
+  },
+  {
+   "id": "C136815107",
+   "name": "Nothing"
+  },
+  {
+   "id": "C2781078320",
+   "name": "Insider trading"
+  },
+  {
+   "id": "C79158427",
+   "name": "Analytics"
+  },
+  {
+   "id": "C149071572",
+   "name": "Card security code"
+  },
+  {
+   "id": "C2777601897",
+   "name": "Presentation (obstetrics)"
+  },
+  {
+   "id": "C36503486",
+   "name": "Domain (mathematical analysis)"
+  },
+  {
+   "id": "C137725906",
+   "name": "Audit committee"
+  },
+  {
+   "id": "C158886217",
+   "name": "Latin Americans"
+  },
+  {
+   "id": "C2779547902",
+   "name": "Nicotine"
+  },
+  {
+   "id": "C110406131",
+   "name": "Smart card"
+  },
+  {
+   "id": "C2779010840",
+   "name": "Treaty"
+  },
+  {
+   "id": "C2777278149",
+   "name": "Conviction"
+  },
+  {
+   "id": "C2778061430",
+   "name": "Scholarship"
+  },
+  {
+   "id": "C2781291010",
+   "name": "Period (music)"
+  },
+  {
+   "id": "C2910136099",
+   "name": "Driving under the influence"
+  },
+  {
+   "id": "C89611455",
+   "name": "Mechanism (biology)"
+  },
+  {
+   "id": "C121426985",
+   "name": "Private sector"
+  },
+  {
+   "id": "C124315065",
+   "name": "Hallucinogen"
+  },
+  {
+   "id": "C143910263",
+   "name": "Capital market"
+  },
+  {
+   "id": "C200113983",
+   "name": "Morality"
+  },
+  {
+   "id": "C197487636",
+   "name": "Presidential system"
+  },
+  {
+   "id": "C2777179996",
+   "name": "Mistake"
+  },
+  {
+   "id": "C2778955637",
+   "name": "False Claims Act"
+  },
+  {
+   "id": "C200288055",
+   "name": "Element (criminal law)"
+  },
+  {
+   "id": "C2910365214",
+   "name": "Street drugs"
+  },
+  {
+   "id": "C200870193",
+   "name": "Stock exchange"
+  },
+  {
+   "id": "C2781394664",
+   "name": "Criminal code"
+  },
+  {
+   "id": "C2781016034",
+   "name": "Due diligence"
+  },
+  {
+   "id": "C2781118164",
+   "name": "Chronic pain"
+  },
+  {
+   "id": "C527648132",
+   "name": "Information security"
+  },
+  {
+   "id": "C2910738821",
+   "name": "Recreational Drug"
+  },
+  {
+   "id": "C187191949",
+   "name": "Profiling (computer programming)"
+  },
+  {
+   "id": "C123460561",
+   "name": "Gas chromatography"
+  },
+  {
+   "id": "C2781238097",
+   "name": "Object (grammar)"
+  },
+  {
+   "id": "C2779662365",
+   "name": "Event (particle physics)"
+  },
+  {
+   "id": "C98147612",
+   "name": "Promotion (chess)"
+  },
+  {
+   "id": "C197934379",
+   "name": "Adverse effect"
+  },
+  {
+   "id": "C2778126366",
+   "name": "Unemployment"
+  },
+  {
+   "id": "C53813258",
+   "name": "Human sexuality"
+  },
+  {
+   "id": "C18296254",
+   "name": "Skepticism"
+  },
+  {
+   "id": "C2776697845",
+   "name": "Fiduciary"
+  },
+  {
+   "id": "C148730421",
+   "name": "Encryption"
+  },
+  {
+   "id": "C2777895361",
+   "name": "Longitudinal study"
+  },
+  {
+   "id": "C109168655",
+   "name": "Liberian dollar"
+  },
+  {
+   "id": "C2781440851",
+   "name": "Parliament"
+  },
+  {
+   "id": "C2776401178",
+   "name": "Feature (linguistics)"
+  },
+  {
+   "id": "C2778983918",
+   "name": "Wife"
+  },
+  {
+   "id": "C2776983043",
+   "name": "Payment system"
+  },
+  {
+   "id": "C2777846614",
+   "name": "Synthetic cannabinoids"
+  },
+  {
+   "id": "C2779159551",
+   "name": "Comorbidity"
+  },
+  {
+   "id": "C2781154743",
+   "name": "Cultural property"
+  },
+  {
+   "id": "C122637931",
+   "name": "Unit (ring theory)"
+  },
+  {
+   "id": "C206345919",
+   "name": "Resource (disambiguation)"
+  },
+  {
+   "id": "C2779066997",
+   "name": "Extortion"
+  },
+  {
+   "id": "C25253098",
+   "name": "Corporate law"
+  },
+  {
+   "id": "C2779418921",
+   "name": "Opioid use disorder"
+  },
+  {
+   "id": "C2779727114",
+   "name": "Psychosis"
+  },
+  {
+   "id": "C2777930997",
+   "name": "Wrongdoing"
+  },
+  {
+   "id": "C110121322",
+   "name": "Distribution (mathematics)"
+  },
+  {
+   "id": "C27504089",
+   "name": "Audit risk"
+  },
+  {
+   "id": "C2778961205",
+   "name": "Designer drug"
+  },
+  {
+   "id": "C2776505523",
+   "name": "Plan (archaeology)"
+  },
+  {
+   "id": "C2780652975",
+   "name": "Criminalization"
+  },
+  {
+   "id": "C2778770431",
+   "name": "Imprisonment"
+  },
+  {
+   "id": "C167135981",
+   "name": "Retrospective cohort study"
+  },
+  {
+   "id": "C2778627824",
+   "name": "Battle"
+  },
+  {
+   "id": "C118518473",
+   "name": "Agriculture"
+  },
+  {
+   "id": "C142853389",
+   "name": "Association (psychology)"
+  },
+  {
+   "id": "C2778585151",
+   "name": "Dishonesty"
+  },
+  {
+   "id": "C2780871563",
+   "name": "Cannabinoid"
+  },
+  {
+   "id": "C528167355",
+   "name": "National security"
+  },
+  {
+   "id": "C2776359362",
+   "name": "Representation (politics)"
+  },
+  {
+   "id": "C2778692574",
+   "name": "Faith"
+  },
+  {
+   "id": "C2780733359",
+   "name": "Mood"
+  },
+  {
+   "id": "C108087509",
+   "name": "ATM card"
+  },
+  {
+   "id": "C3018364242",
+   "name": "Inspector general"
+  },
+  {
+   "id": "C2778813691",
+   "name": "Purchasing"
+  },
+  {
+   "id": "C62190432",
+   "name": "Audit plan"
+  },
+  {
+   "id": "C43214815",
+   "name": "Reliability (semiconductor)"
+  },
+  {
+   "id": "C122941539",
+   "name": "Electronic money"
+  },
+  {
+   "id": "C188816634",
+   "name": "Prospective cohort study"
+  },
+  {
+   "id": "C519517224",
+   "name": "Mythology"
+  },
+  {
+   "id": "C551662922",
+   "name": "Tax reform"
+  },
+  {
+   "id": "C119128265",
+   "name": "Detection limit"
+  },
+  {
+   "id": "C138170105",
+   "name": "Issuer"
+  },
+  {
+   "id": "C2776869918",
+   "name": "Confiscation"
+  },
+  {
+   "id": "C2778496695",
+   "name": "Dilemma"
+  },
+  {
+   "id": "C71376074",
+   "name": "Juvenile delinquency"
+  },
+  {
+   "id": "C186229450",
+   "name": "Sovereignty"
+  },
+  {
+   "id": "C2777389121",
+   "name": "Morphine"
+  },
+  {
+   "id": "C33566652",
+   "name": "Theme (computing)"
+  },
+  {
+   "id": "C205345274",
+   "name": "Gas chromatography\u2013mass spectrometry"
+  },
+  {
+   "id": "C7991579",
+   "name": "Criticism"
+  },
+  {
+   "id": "C169093310",
+   "name": "Personally identifiable information"
+  },
+  {
+   "id": "C2781054738",
+   "name": "Athletes"
+  },
+  {
+   "id": "C116537",
+   "name": "Service provider"
+  },
+  {
+   "id": "C204787440",
+   "name": "Alternative medicine"
+  },
+  {
+   "id": "C2780586882",
+   "name": "Simple (philosophy)"
+  },
+  {
+   "id": "C535046627",
+   "name": "Clinical trial"
+  },
+  {
+   "id": "C10390740",
+   "name": "Analyte"
+  },
+  {
+   "id": "C150130657",
+   "name": "Auditor independence"
+  },
+  {
+   "id": "C2781241145",
+   "name": "Cyberspace"
+  },
+  {
+   "id": "C194110935",
+   "name": "Nuclear weapon"
+  },
+  {
+   "id": "C2777293324",
+   "name": "Honesty"
+  },
+  {
+   "id": "C2779601481",
+   "name": "Financial institution"
+  },
+  {
+   "id": "C155164915",
+   "name": "Health psychology"
+  },
+  {
+   "id": "C2777617010",
+   "name": "Mainstream"
+  },
+  {
+   "id": "C2778506969",
+   "name": "Legalization"
+  },
+  {
+   "id": "C83645499",
+   "name": "Punitive damages"
+  },
+  {
+   "id": "C82279013",
+   "name": "Real estate"
+  },
+  {
+   "id": "C48044578",
+   "name": "Scalability"
+  },
+  {
+   "id": "C95623464",
+   "name": "Classifier (UML)"
+  },
+  {
+   "id": "C2777134139",
+   "name": "Lawsuit"
+  },
+  {
+   "id": "C2779379456",
+   "name": "Condom"
+  },
+  {
+   "id": "C2780299701",
+   "name": "Stock market"
+  },
+  {
+   "id": "C12267149",
+   "name": "Support vector machine"
+  },
+  {
+   "id": "C2776408679",
+   "name": "Hepatitis C virus"
+  },
+  {
+   "id": "C2781198186",
+   "name": "Collusion"
+  },
+  {
+   "id": "C71043370",
+   "name": "Jurisprudence"
+  },
+  {
+   "id": "C79974875",
+   "name": "Cloud computing"
+  },
+  {
+   "id": "C2781448223",
+   "name": "Collar"
+  },
+  {
+   "id": "C2777842544",
+   "name": "Czech"
+  },
+  {
+   "id": "C170706310",
+   "name": "Common law"
+  },
+  {
+   "id": "C2776315796",
+   "name": "Drug overdose"
+  },
+  {
+   "id": "C2780889827",
+   "name": "Treasury"
+  },
+  {
+   "id": "C77350462",
+   "name": "Confounding"
+  },
+  {
+   "id": "C108516343",
+   "name": "Otorhinolaryngology"
+  },
+  {
+   "id": "C60671577",
+   "name": "Cultural heritage"
+  },
+  {
+   "id": "C108713360",
+   "name": "Supply chain"
+  },
+  {
+   "id": "C164913051",
+   "name": "Poetry"
+  },
+  {
+   "id": "C2776360696",
+   "name": "Taxpayer"
+  },
+  {
+   "id": "C51575053",
+   "name": "Bureaucracy"
+  },
+  {
+   "id": "C2777866328",
+   "name": "Codeine"
+  },
+  {
+   "id": "C544937707",
+   "name": "Financial accounting"
+  },
+  {
+   "id": "C65414064",
+   "name": "Autonomy"
+  },
+  {
+   "id": "C2777826928",
+   "name": "Fingerprint (computing)"
+  },
+  {
+   "id": "C516717267",
+   "name": "Food safety"
+  },
+  {
+   "id": "C94915269",
+   "name": "Detector"
+  },
+  {
+   "id": "C60643870",
+   "name": "Deterrence theory"
+  },
+  {
+   "id": "C165609540",
+   "name": "Data breach"
+  },
+  {
+   "id": "C2775987171",
+   "name": "Elite"
+  },
+  {
+   "id": "C2776674806",
+   "name": "Mental illness"
+  },
+  {
+   "id": "C117797892",
+   "name": "Shadow (psychology)"
+  },
+  {
+   "id": "C2776029263",
+   "name": "Hepatitis"
+  },
+  {
+   "id": "C2780154274",
+   "name": "Download"
+  },
+  {
+   "id": "C2781313679",
+   "name": "Coca"
+  },
+  {
+   "id": "C39896193",
+   "name": "Descriptive statistics"
+  },
+  {
+   "id": "C41065033",
+   "name": "Adversary"
+  },
+  {
+   "id": "C109986646",
+   "name": "Public policy"
+  },
+  {
+   "id": "C2777537440",
+   "name": "Benzoylecgonine"
+  },
+  {
+   "id": "C2779703844",
+   "name": "Reimbursement"
+  },
+  {
+   "id": "C55958113",
+   "name": "Indigenous"
+  },
+  {
+   "id": "C127722929",
+   "name": "Transaction data"
+  },
+  {
+   "id": "C2776119841",
+   "name": "Jury"
+  },
+  {
+   "id": "C2780801425",
+   "name": "Construct (python library)"
+  },
+  {
+   "id": "C3020194580",
+   "name": "Cocaine use"
+  },
+  {
+   "id": "C47177190",
+   "name": "Curriculum"
+  },
+  {
+   "id": "C21021354",
+   "name": "Payment card"
+  },
+  {
+   "id": "C123657996",
+   "name": "Architecture"
+  },
+  {
+   "id": "C22735295",
+   "name": "Botnet"
+  },
+  {
+   "id": "C2778572836",
+   "name": "Space (punctuation)"
+  },
+  {
+   "id": "C2781176444",
+   "name": "Monitoring the Future"
+  },
+  {
+   "id": "C78597825",
+   "name": "E-commerce"
+  },
+  {
+   "id": "C13896816",
+   "name": "Chief audit executive"
+  },
+  {
+   "id": "C153083717",
+   "name": "Leverage (statistics)"
+  },
+  {
+   "id": "C3019422483",
+   "name": "Member states"
+  },
+  {
+   "id": "C84525736",
+   "name": "Decision tree"
+  },
+  {
+   "id": "C2776900844",
+   "name": "Witness"
+  },
+  {
+   "id": "C2911204551",
+   "name": "Prescription Drug Misuse"
+  },
+  {
+   "id": "C510755694",
+   "name": "Financial regulation"
+  },
+  {
+   "id": "C2777113389",
+   "name": "Pleasure"
+  },
+  {
+   "id": "C2778213722",
+   "name": "Securities Exchange Act of 1934"
+  },
+  {
+   "id": "C2780861071",
+   "name": "Character (mathematics)"
+  },
+  {
+   "id": "C2781009383",
+   "name": "Earnings management"
+  },
+  {
+   "id": "C156223087",
+   "name": "Audit evidence"
+  },
+  {
+   "id": "C182590292",
+   "name": "Network security"
+  },
+  {
+   "id": "C2779439359",
+   "name": "Commodity"
+  },
+  {
+   "id": "C2780838233",
+   "name": "Complaint"
+  },
+  {
+   "id": "C84418412",
+   "name": "Digital forensics"
+  },
+  {
+   "id": "C154238967",
+   "name": "Explosive material"
+  },
+  {
+   "id": "C2776135927",
+   "name": "Referral"
+  },
+  {
+   "id": "C2777094542",
+   "name": "Ballot"
+  },
+  {
+   "id": "C514928085",
+   "name": "Capitalism"
+  },
+  {
+   "id": "C177309310",
+   "name": "Information technology audit"
+  },
+  {
+   "id": "C2775899829",
+   "name": "Globe"
+  },
+  {
+   "id": "C2780982575",
+   "name": "Deterrence (psychology)"
+  },
+  {
+   "id": "C38822068",
+   "name": "Denial-of-service attack"
+  },
+  {
+   "id": "C2780313146",
+   "name": "Effects of cannabis"
+  },
+  {
+   "id": "C525541732",
+   "name": "Homicide"
+  },
+  {
+   "id": "C152636012",
+   "name": "Benford's law"
+  },
+  {
+   "id": "C94061648",
+   "name": "Wastewater"
+  },
+  {
+   "id": "C139676723",
+   "name": "Sign (mathematics)"
+  },
+  {
+   "id": "C2775884135",
+   "name": "Mandate"
+  },
+  {
+   "id": "C2780598303",
+   "name": "Flexibility (engineering)"
+  },
+  {
+   "id": "C2909138979",
+   "name": "Drug detection"
+  },
+  {
+   "id": "C179454799",
+   "name": "Ethnography"
+  },
+  {
+   "id": "C185822510",
+   "name": "Payment service provider"
+  },
+  {
+   "id": "C4163816",
+   "name": "Insolvency"
+  },
+  {
+   "id": "C67101536",
+   "name": "George (robot)"
+  },
+  {
+   "id": "C160151201",
+   "name": "Arbitration"
+  }
+ ],
+ "graph_works": 80689,
+ "evaluation": {
+  "focus": {
+   "n_candidates": 2871,
+   "n_positive": 60,
+   "methods": {
+    "frequency": {
+     "auc": 0.7235681252223407,
+     "precision_at_k": 0.11,
+     "k": 100
+    },
+    "random": {
+     "auc": 0.4782876793549152,
+     "precision_at_k": 0.02,
+     "k": 100
+    },
+    "logreg_all": {
+     "auc": 0.7740543104470532,
+     "precision_at_k": 0.16,
+     "k": 100
+    },
+    "logreg_popularity": {
+     "auc": 0.6947942606427131,
+     "precision_at_k": 0.14,
+     "k": 100
+    },
+    "hgb_all": {
+     "auc": 0.7671824973319104,
+     "precision_at_k": 0.17,
+     "k": 100
+    },
+    "train_best_single": {
+     "auc": 0.8136102217478951,
+     "precision_at_k": 0.16,
+     "k": 100
+    },
+    "structural_rank_mean": {
+     "auc": 0.8079568362385865,
+     "precision_at_k": 0.15,
+     "k": 100
+    },
+    "hybrid_rank_exploratory": {
+     "auc": 0.7984643661804814,
+     "precision_at_k": 0.15,
+     "k": 100
+    }
+   }
+  },
+  "graph": {
+   "nodes_t": 512,
+   "entities_t": 59016,
+   "density_t": 0.36773789138943247,
+   "n_candidates": 82710,
+   "n_positive": 6182,
+   "train_positive": 6824,
+   "n_niche": 27057,
+   "niche_positive": 1436
+  },
+  "methods": {
+   "frequency": {
+    "auc": 0.5761104473371093,
+    "precision_at_k": 0.05,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.5179999954125772,
+    "niche_auc": 0.5142391953240829,
+    "vs_frequency": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    }
+   },
+   "random": {
+    "auc": 0.5045823946093184,
+    "precision_at_k": 0.08,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.5043743624066486,
+    "niche_auc": 0.5003430116246694,
+    "vs_frequency": {
+     "diff": -0.07152805272779084,
+     "lo": -0.0825248594962112,
+     "hi": -0.06174485474972617
+    }
+   },
+   "logreg_all": {
+    "auc": 0.817580483690992,
+    "precision_at_k": 0.46,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.8138129294045343,
+    "niche_auc": 0.8098398456436817,
+    "vs_frequency": {
+     "diff": 0.24147003635388276,
+     "lo": 0.2338138041254021,
+     "hi": 0.24888691739455623
+    }
+   },
+   "logreg_popularity": {
+    "auc": 0.7291998896562443,
+    "precision_at_k": 0.44,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.7272817978585316,
+    "niche_auc": 0.6935763136720084,
+    "vs_frequency": {
+     "diff": 0.15308944231913502,
+     "lo": 0.14592253073701025,
+     "hi": 0.16087544733255596
+    }
+   },
+   "hgb_all": {
+    "auc": 0.8159072623165338,
+    "precision_at_k": 0.48,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.8112695751804461,
+    "niche_auc": 0.8084888364665171,
+    "vs_frequency": {
+     "diff": 0.2397968149794245,
+     "lo": 0.23227101832290648,
+     "hi": 0.24688698124985653
+    }
+   },
+   "train_best_single": {
+    "auc": 0.7942043840074301,
+    "precision_at_k": 0.55,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.801939798062502,
+    "niche_auc": 0.7830689434883183,
+    "vs_frequency": {
+     "diff": 0.21809393667032084,
+     "lo": 0.21202924728209632,
+     "hi": 0.22382310255899235
+    }
+   },
+   "structural_rank_mean": {
+    "auc": 0.7891648349175978,
+    "precision_at_k": 0.56,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.7921918646220977,
+    "niche_auc": 0.7768892846538774,
+    "vs_frequency": {
+     "diff": 0.21305438758048856,
+     "lo": 0.20676242220379873,
+     "hi": 0.21912330084114967
+    }
+   },
+   "hybrid_rank_exploratory": {
+    "auc": 0.7137601575135383,
+    "precision_at_k": 0.3,
+    "k": 100,
+    "n_candidates": 82710,
+    "n_positive": 6182,
+    "strat_auc": 0.7878115555563862,
+    "niche_auc": 0.7311118148315617,
+    "vs_frequency": {
+     "diff": 0.13764971017642902,
+     "lo": 0.13457902828138657,
+     "hi": 0.14072877893853059
+    }
+   }
+  }
+ },
+ "primary_holds": true,
+ "scenario_method": "logreg_all",
+ "scenarios": [
+  {
+   "pair": [
+    "mixing_service",
+    "smurfing"
+   ],
+   "score": 0.2619214514990553,
+   "rank": 1
+  },
+  {
+   "pair": [
+    "pass_through",
+    "smurfing"
+   ],
+   "score": 0.16848939578787211,
+   "rank": 2
+  },
+  {
+   "pair": [
+    "fan_out",
+    "layering"
+   ],
+   "score": 0.16385395128744726,
+   "rank": 3
+  },
+  {
+   "pair": [
+    "layering",
+    "pass_through"
+   ],
+   "score": 0.13924535029752635,
+   "rank": 4
+  },
+  {
+   "pair": [
+    "coinjoin",
+    "layering"
+   ],
+   "score": 0.11600341117826547,
+   "rank": 5
+  },
+  {
+   "pair": [
+    "fan_out",
+    "mixing_service"
+   ],
+   "score": 0.08472304797626279,
+   "rank": 6
+  },
+  {
+   "pair": [
+    "fan_in",
+    "layering"
+   ],
+   "score": 0.07739753876168175,
+   "rank": 7
+  },
+  {
+   "pair": [
+    "fan_in",
+    "mixing_service"
+   ],
+   "score": 0.07668998745877319,
+   "rank": 8
+  },
+  {
+   "pair": [
+    "layering",
+    "peel_chain"
+   ],
+   "score": 0.07186754644357958,
+   "rank": 9
+  },
+  {
+   "pair": [
+    "mixing_service",
+    "pass_through"
+   ],
+   "score": 0.07186049390826585,
+   "rank": 10
+  },
+  {
+   "pair": [
+    "fan_out",
+    "smurfing"
+   ],
+   "score": 0.07017412005167015,
+   "rank": 11
+  },
+  {
+   "pair": [
+    "coinjoin",
+    "fan_out"
+   ],
+   "score": 0.06732063932695882,
+   "rank": 12
+  },
+  {
+   "pair": [
+    "coinjoin",
+    "smurfing"
+   ],
+   "score": 0.06563022565211135,
+   "rank": 13
+  },
+  {
+   "pair": [
+    "mixing_service",
+    "peel_chain"
+   ],
+   "score": 0.05697852980321899,
+   "rank": 14
+  },
+  {
+   "pair": [
+    "fan_out",
+    "pass_through"
+   ],
+   "score": 0.0527656450464932,
+   "rank": 15
+  },
+  {
+   "pair": [
+    "pass_through",
+    "peel_chain"
+   ],
+   "score": 0.042704438489613104,
+   "rank": 16
+  },
+  {
+   "pair": [
+    "peel_chain",
+    "smurfing"
+   ],
+   "score": 0.04269179361382478,
+   "rank": 17
+  },
+  {
+   "pair": [
+    "fan_out",
+    "peel_chain"
+   ],
+   "score": 0.04217358355526273,
+   "rank": 18
+  },
+  {
+   "pair": [
+    "fan_in",
+    "pass_through"
+   ],
+   "score": 0.04211223031760725,
+   "rank": 19
+  },
+  {
+   "pair": [
+    "fan_in",
+    "smurfing"
+   ],
+   "score": 0.04209975308424024,
+   "rank": 20
+  },
+  {
+   "pair": [
+    "fan_in",
+    "fan_out"
+   ],
+   "score": 0.04158841724989472,
+   "rank": 21
+  },
+  {
+   "pair": [
+    "coinjoin",
+    "pass_through"
+   ],
+   "score": 0.041066843711722034,
+   "rank": 22
+  },
+  {
+   "pair": [
+    "coinjoin",
+    "peel_chain"
+   ],
+   "score": 0.03903407690018029,
+   "rank": 23
+  },
+  {
+   "pair": [
+    "coinjoin",
+    "fan_in"
+   ],
+   "score": 0.038490721303223334,
+   "rank": 24
+  },
+  {
+   "pair": [
+    "fan_in",
+    "peel_chain"
+   ],
+   "score": 0.03810733756141959,
+   "rank": 25
+  }
+ ]
+}

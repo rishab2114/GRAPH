@@ -445,3 +445,60 @@ result, only the finish date.
 
 **13:24 — night 2 done:** the corpus reached **296 of 528 pages** (161 today) before the daily search allowance ran
 out. About 232 pages remain, so about 2 more nights. A night-3 resume is scheduled for 00:10 UTC on 2026-11-21.
+
+---
+
+## 2026-11-21 00:55 — Step F complete: v2 literature graph built
+
+**Download:** finished on night 3. 529 pages and 105,533 pre-2017 works. The tag source is `concepts`, OpenAlex's
+legacy tags, which is first in the frozen preference order. **500 context nodes** passed the frozen filters. 80,689
+works link at least one node. Output: `results/literature_graph_v2.json`.
+
+**Forecasting test** (graph at 2013, pairs newly linked by 2016; trained on 2010 → 2013; all pre-cutoff literature):
+
+| | Value |
+|---|---|
+| Nodes at 2013 | 512 |
+| Density | **0.37** (between ATT&CK's 0.49–0.66 and the Impact4Cast control's 0.03) |
+| Candidates / positives | 82,710 / 6,182 |
+
+| Method | AUC | Gain over popularity [95% CI] | Within-popularity AUC | P@100 |
+|---|---|---|---|---|
+| frequency (popularity) | 0.576 | – | 0.518 | 0.05 |
+| random | 0.505 | −0.072 | 0.504 | 0.08 |
+| **logreg_all** | **0.818** | **+0.241 [+0.234, +0.249]** | 0.814 | 0.46 |
+| hgb_all | 0.816 | +0.240 [+0.232, +0.247] | 0.811 | 0.48 |
+| train_best_single | 0.794 | +0.218 | 0.802 | 0.55 |
+| structural_rank_mean | 0.789 | +0.213 [+0.207, +0.219] | 0.792 | 0.56 |
+| logreg_popularity | 0.729 | +0.153 | 0.727 | 0.44 |
+| hybrid (exploratory) | 0.714 | +0.138 | 0.788 | 0.30 |
+
+**Primary hypothesis: holds.** Both logreg_all and structural_rank_mean beat popularity, with intervals far above 0.
+So, by the frozen rule, **scenarios are ranked by logreg_all.**
+
+**On pairs involving an Elliptic-expressible concept** (2,871 candidates, only 60 positives): structural_rank_mean
+reaches AUC 0.808, against 0.724 for popularity. This is the same direction, but with few positives, so it is weaker evidence.
+
+**Why it works here but not on ATT&CK.** The density story holds again: 37% linked here, against 49–66% for ATT&CK.
+Unusually, the popularity baseline is weak here (0.58, against 0.72–0.79 on ATT&CK). In the research literature,
+popular concepts like "Money laundering" or "Internet" already link to almost everything, so the remaining unlinked
+pairs are not the popular ones.
+
+**Caveat (concept quality):** OpenAlex's legacy concept tagger assigns some nonsensical context nodes, for example
+"Government (linguistics)", "Context (archaeology)" and "State (computer science)". They passed the frozen filters,
+so they stay. They add noise, which works *against* finding structure, so the result is conservative in that respect.
+
+**Scenario ranking at 2016:** 25 of the 28 expressible pairs are still unlinked (3 were already co-mentioned). The top 10
+go into S1:
+1. mixing_service + smurfing
+2. pass_through + smurfing
+3. fan_out + layering
+4. layering + pass_through
+5. coinjoin + layering
+6. fan_out + mixing_service
+7. fan_in + layering
+8. fan_in + mixing_service
+9. layering + peel_chain
+10. mixing_service + pass_through
+
+**Next:** the frozen core experiment (`docs/e3e4-design.md`), run once.
