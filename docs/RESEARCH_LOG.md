@@ -502,3 +502,28 @@ go into S1:
 10. mixing_service + pass_through
 
 **Next:** the frozen core experiment (`docs/e3e4-design.md`), run once.
+
+---
+
+## 2026-11-21 01:05 — Step G: frozen core experiment run once (E3/E4/E5)
+
+**Run:** `python -m gffs.e3e4 …` (main cutoff 34 plus robustness cutoffs 24, 29, 39), about 4 minutes, run once.
+Full write-up: `docs/results/e3e4.md`.
+
+**Against the frozen success criteria: not met.** S1 (the graph forecast) never beats both S0 (recent data) and S2
+(random pairs). It is statistically indistinguishable from S2 everywhere. The forecast picks motif pairs well as a
+forecaster, but the chosen pairs are not a better stress test than random ones.
+
+**Pattern found within the pre-specified windows:**
+- *Before or without a shift,* recent data is the better stress test (ρ 0.62–0.99, against roughly 0 for synthetic sets).
+- *After the dark-market shutdown,* all synthetic motif sets beat recent data on calibration (cutoff 34: error 0.047 against
+  0.120, CI of the difference [−0.085, −0.056]). At cutoff 39 they also beat it on ranking (Δρ +0.18 [+0.08, +0.58]).
+- *Mechanism:* linear detectors both flag unfamiliar synthetic shapes and survive the shift. Tree ensembles do neither.
+
+**Status:** reported honestly as **not pre-registered** (the hypothesis was about S1, not "any synthetic set"). It rests
+on one shift event at two overlapping cutoffs, so it is a lead for a prospective test.
+
+**Pre-registered risk:** partly realised. Synthetic recall is low (about 8–10% on average), but the spread across
+detectors kept the ranking informative.
+
+**Next:** update the draft (§4.5 and abstract), the dashboard and the handoff, then push.
