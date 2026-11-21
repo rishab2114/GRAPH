@@ -666,3 +666,13 @@ differ from `git log`, git is correct.
   accounts, and no label enters the frame's definition.
 
 **Running:** the frame (31 days), then 2022-02-08 to 2022-08-07 (181 days), about 3 h, in the background.
+
+**P7 (historical OFAC records), answered from primary sources:** OFAC Recent Actions pages fetched and saved as
+dated snapshots in `config/ofac/`.
+- **2022-08-08:** 38 Ethereum addresses. **All 4 ETH pools and the router used in the pilot are on it** (checked
+  address by address).
+- **2022-11-08:** delisting and redesignation (with a DPRK basis), 91 addresses, including all 38 originals.
+- **2025-03-21:** Tornado Cash removed (relevant to stage 3).
+
+**Summary code:** `gffs.tornado_pilot_summary` answers P1–P6 and P8. Its key P1 check is **leaf-index continuity**:
+each pool numbers its deposits 0, 1, 2, …, so any gap reveals missed events. 108 tests pass.
