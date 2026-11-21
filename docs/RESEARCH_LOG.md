@@ -625,3 +625,24 @@ weekly address graphs, the same pipeline. About 5.5 h of one-time reading, at no
 the sparse post-sanction positives, and the contract hubs.
 
 **Next:** the owner approves the scope. Then I freeze the analysis design, then build.
+
+---
+
+## 2026-11-22 — External review evaluated (`docs/review-2026-11-22.md`)
+
+The owner shared an external review. Checked claim by claim against git and the data:
+- **Verified:** every factual claim, including all commit times.
+- **Rejected:** nothing.
+- **Accepted and fixed now:** the density-causation overstatement (draft, `control.md`, dashboard v4) and the "last rush"
+  wording.
+- **Accepted for stage 2:** a mixer-participation target only; Tornado edges removed from detector inputs;
+  label-independent sampling; unlabelled controls with alert rates instead of a false-positive rate; Ethereum-specific
+  graph and motifs; depositors and recipients reported separately; historical OFAC records; placebo dates.
+- **Added by the cross-check:** this log's clock times are approximate, and **git commit times are authoritative**;
+  post-shift n = 169; no multiplicity correction; the forecast arm was starved of literature; the mechanism worlds share
+  generators with the stress tests.
+
+**Next:** the Tornado pilot on pre-sanction data only (`docs/tornado-pilot-plan.md`), then a frozen design, then the full build.
+
+**Note on this log's timestamps:** entries before this one give approximate times written from memory. Where they
+differ from `git log`, git is correct.

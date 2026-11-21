@@ -45,7 +45,7 @@ methods reach a stratified AUC of 0.74–0.81, against 0.61 for popularity and 0
 Supervised models trained on 2016→2019 also **transfer** to 2019→2022 here, unlike on ATT&CK.
 
 **What this means:** the method and our code work where the method was designed to work. The ATT&CK failure is
-best explained by the graph: about 190 nodes with half of all pairs already linked. It is not a broken pipeline.
+consistent with a graph-level cause, most plausibly density: about 190 nodes with half of all pairs already linked. It also rules out a broken pipeline. *Qualification (external review, 2026-11-22):* ATT&CK and the physics graph differ in more than density (size, domain, how edges are defined), so this control supports the density explanation but cannot isolate it. A within-graph test, such as thinning edges at random to vary density, would.
 For the AML literature graph (14 concepts, 91 pairs), expect the same problem as ATT&CK, only worse. This supports
 the decision recorded in `docs/HANDOFF.md`: report a saturated graph as a result rather than enlarge the vocabulary.
 

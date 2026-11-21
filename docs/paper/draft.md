@@ -13,7 +13,7 @@ attack techniques.
 
 1. **On MITRE ATT&CK** (3 rolling splits × 3 edge definitions, 8 methods), the forecaster does **not** beat a
    popularity baseline. The same code on a sparse research-concept graph **does** (+0.049 AUC, 95% CI
-   [+0.040, +0.058]). So graph density, not the method, explains the failure.
+   [+0.040, +0.058]). This is consistent with graph density explaining the failure, but the two graphs also differ in size, domain and edge construction, so density is not isolated as the cause.
 2. **On the Elliptic Bitcoin dataset,** the simplest stress test (recent data) ranks detectors well on precision and F1,
    but not on recall (Spearman ρ between −0.07 and +0.14). Across a documented dark-market shutdown, it overstates
    recall by 24 percentage points.
