@@ -14,7 +14,7 @@ def test_process_day_links_deposits_to_senders_and_decodes_withdrawals():
         "hash": ["0xd1", "0xw1", "0xp1", "0xc1"],
         "from_address": ["0xAlice", "0xrelayer", "0xbob", "0xbob"],
         "to_address": [eth.ROUTER, eth.ROUTER, "0xCarol", "0xdex"],
-        "value": [str(10**18), "0", "5", "0"],
+        "value": [1e18, 0.0, 5.0, 0.0],   # AWS stores value as double
         "receipt_gas_used": [900000, 400000, 21000, 120000],
         "block_timestamp": ["2022-07-01 00:00:00"] * 4,
     })

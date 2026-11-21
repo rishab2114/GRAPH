@@ -94,12 +94,8 @@ def extract(fs=None) -> None:
         tx = eth.read_day(fs, "transactions", d.isoformat(), TX_COLS)
         logs = eth.read_day(fs, "logs", d.isoformat(), LOG_COLS)
         r = process_day(d.isoformat(), tx, logs)
+        # Destinations of non-simple transactions: type UNKNOWN (gas > 21000 does not prove a contract; see RESEARCH_LOG).
         pq.write_table(pa.table({"address": sorted(r.pop("contract_callees"))}), OUT / "days" / f"{d}.callees.parquet")
-        if _in_sample_week(d):
-            g = pa.compute.cast(tx["receipt_gas_used"], pa.int64())
-            vt = pc.and_(pc.equal(g, eth.PLAIN_TRANSFER_GAS), pc.not_equal(tx["value"], "0"))
-            pq.write_table(pa.table({"src": pc.utf8_lower(tx["from_address"]), "dst": pc.utf8_lower(tx["to_address"]),
-                                     "value_transfer": vt}), OUT / "edges" / f"{d}.parquet")
         tmp = out.with_suffix(".part"); tmp.write_text(json.dumps(r)); tmp.rename(out)
         s = r["stats"]; print(d, "deposits", len(r["deposits"]), "withdrawals", len(r["withdrawals"]), s, flush=True)
 

@@ -676,3 +676,77 @@ dated snapshots in `config/ofac/`.
 
 **Summary code:** `gffs.tornado_pilot_summary` answers P1–P6 and P8. Its key P1 check is **leaf-index continuity**:
 each pool numbers its deposits 0, 1, 2, …, so any gap reveals missed events. 108 tests pass.
+
+---
+
+## 2026-11-22 — Pilot corrections, planned before any code change (owner's review of P1–P8)
+
+**Bug found first:** the AWS `transactions.value` column is a **double**, but the extractor's sample-week code compared
+it with the string `"0"`. pyarrow raises `ArrowNotImplementedError`, so the run would have crashed on 2022-03-07. I
+stopped it after 20 completed days (2022-02-08 to 2022-02-27). Those files are kept and will not be redone. Separately,
+wei values above 2^53 lose precision as doubles. The pool denominations are exact (checked), and the pilot never relies
+on exact non-denomination amounts.
+
+**Corrections, and the reasoning for each:**
+
+1. **Contract evidence (P3).** `gas_used > 21000` does *not* prove that the recipient is a contract: calldata to an
+   ordinary account also costs gas. Replace it with **historical contract evidence**: the AWS `contracts` table, which
+   records every contract with its creation block and time. An address is classified **as of date d** as:
+   - **contract:** created before d;
+   - **EOA:** seen as a transaction sender on or before d (only externally owned accounts can send transactions in 2022);
+   - **unknown:** neither. This class is kept, never folded into either of the others.
+
+   The old `*.callees.parquet` files are relabelled "destinations of non-simple transactions (type unknown)" and are
+   **not used as contract evidence**.
+2. **Edge categories (P4).** `gas_used == 21000 ∧ value > 0` identifies only *simple transfers*: no calldata, and the
+   destination ran no code. It is **not** every ETH value transfer. Each successful transaction is put in **exactly one** of:
+   - **simple_transfer:** 21,000 gas, value > 0;
+   - **value_call:** value > 0 and more than 21,000 gas (ETH sent with calldata or to code);
+   - **call:** value = 0;
+   - failed transactions (`receipt_status = 0`) are excluded and counted separately.
+
+   Contract calls and value transfers are never mixed.
+3. **Withdrawal completeness (P1).** Leaf-index continuity covers deposits only. Independent checks for withdrawals:
+   - **(a)** nullifier uniqueness;
+   - **(b)** on sample days, the **traces** table: every successful ETH transfer out of a pool contract should correspond
+     to a decoded Withdrawal. The recipient should receive `denomination − fee`, and the relayer should receive `fee`;
+   - **(c)** every withdrawal and deposit transaction must have `receipt_status = 1`.
+4. **Role attribution (P2).** Four roles, kept apart:
+   - transaction sender;
+   - depositor (the sender of the deposit transaction);
+   - withdrawal recipient (the event's `to` field);
+   - relayer (the event's `relayer` field, zero address excluded).
+
+   Self-withdrawals (sender = recipient, fee 0, zero relayer) are counted separately.
+5. **No future information at an evaluation cutoff (P5/P6/P8).** For each cutoff c (placebos 2022-05-08 and 2022-06-08):
+   - **Relayer set:** only relayers seen *before* c.
+   - **Contract/EOA classification:** as of c.
+   - **Features:** the non-Tornado graph of the 7 days *before* c.
+   - **Outcome:** *first* Tornado participation in the 8 weeks *after* c, by frame addresses with no participation seen
+     between the window start and c. Nothing after c enters features or sampling.
+6. **Sampling frame (P5).** Measure how many eventual participants were already active in January, and how many are
+   **new addresses** that the frame cannot represent.
+7. **Feasibility of prospective detection.** At each placebo cutoff, compare *descriptive* pre-cutoff non-Tornado
+   activity between future participants and other frame addresses. This means shares and degree distributions, plus
+   one pre-specified univariate AUC (non-Tornado degree), on pre-sanction data only. **No model is fitted, no detector is
+   compared, and nothing after 2022-08-08 is read.**
+8. **Placebo pipeline (P8):** run steps 5–7 end to end at both placebo cutoffs, not only check that files exist.
+
+**Order:** fix the extractor and resume it (logs, about 2.5 h) → build the contracts registry and the add-on
+transactions pass (with status and edge categories) in parallel → trace checks on sample days → summary and report → go/no-go.
+
+**Corrections built** (`gffs.tornado_aux`, 110 tests pass):
+- Exclusive edge categories: `simple_transfer`, `value_call`, `call`, `failed`.
+- Independent withdrawal matching against traces: the recipient gets `denomination − fee`, the relayer gets `fee`, and
+  any unexplained pool outflow is counted as an orphan.
+- Event-transaction success status.
+- Feature-week edges, the 7 days before each placebo cutoff.
+- An as-of-date contract registry, built only from contracts created before 2022-08-08 and only for the addresses the
+  pilot uses.
+
+**Contract evidence validated:** on 2022-06-01, the contracts table holds 7,229 unique addresses, exactly the set of
+successful `create` traces (0 missing either way). So it includes factory-created contracts. There were 7,247 rows for
+7,229 addresses: a few addresses appear twice, likely redeployment at the same address. The registry keeps the
+*earliest* creation.
+
+**Costs measured:** contracts ≈ 0.7 s per day; traces ≈ 3.4 s per day (6 columns).
