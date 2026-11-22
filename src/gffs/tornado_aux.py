@@ -34,14 +34,19 @@ def categorize(gas: int, value: float, status: int) -> str:
     return "call"
 
 
-def match_withdrawals(withdrawals: list[dict], traces: list[dict]) -> dict:
+def match_withdrawals(withdrawals: list[dict], traces: list[dict], tx_ok: set | None = None) -> dict:
     """Independent withdrawal completeness from traces, in both directions.
 
     Only real value-moving calls count (`call_type == "call"`): delegatecalls carry the context value but move no ETH.
     - events -> traces: each decoded Withdrawal should have pool outflows `denomination - fee` to the recipient and
       `fee` to the relayer (exact_match); a match where a trace is marked failed is a `status_anomaly`.
     - traces -> events: a transaction with a successful real pool outflow but no decoded Withdrawal would be a
-      missed event (`outflow_tx_without_event`, should be 0).
+      missed event (`outflow_tx_without_event`, should be 0). `tx_ok` is the set of transactions whose receipt
+      succeeded: the traces table can mark a child call status=1 inside a reverted transaction (seen 2022-02-08), where
+      no ETH moved. Those are counted as `outflows_in_reverted_tx`, not as missed events.
+    - A matched withdrawal whose trace says status=0 in a successful transaction (`status_anomaly`) cannot be a failed
+      payment: the ETH instance `require`s both payments (tornado-core ETHTornado.sol `_processWithdraw`), so the event
+      would not exist. It is a status-field inconsistency in the traces table.
     """
     real = [t for t in traces if t.get("call_type", "call") == "call" and t["from"] in eth.POOL_DENOMINATION_WEI
             and t["value"] > 0]
@@ -71,10 +76,12 @@ def match_withdrawals(withdrawals: list[dict], traces: list[dict]) -> dict:
                 anomaly += 1
     event_tx = {w["tx"] for w in withdrawals}
     ok_tx = {t["tx"] for t in real if t["status"] == 1}
+    reverted = {h for h in ok_tx if tx_ok is not None and h not in tx_ok}
+    ok_tx -= reverted
     return {"withdrawals": len(withdrawals), "exact_match": exact, "status_anomaly": anomaly,
             "amount_mismatch": len(withdrawals) - exact - anomaly - no_outflow, "events_without_outflow": no_outflow,
             "real_pool_outflows": sum(1 for t in real if t["status"] == 1),
-            "outflow_tx_without_event": len(ok_tx - event_tx),
+            "outflow_tx_without_event": len(ok_tx - event_tx), "outflows_in_reverted_tx": len(reverted),
             "self_withdrawals": sum(1 for w in withdrawals if w["relayer"] == ZERO)}
 
 
@@ -105,7 +112,8 @@ def aux_day(fs, d: date) -> dict:
     from collections import Counter
     return {"day": d.isoformat(), "category_counts": dict(Counter(cats)),
             "event_tx_status": {"n": len(event_tx), "found": len(st), "success": sum(1 for s in st.values() if s == 1)},
-            "withdrawal_check": match_withdrawals(main["withdrawals"], traces)}
+            "withdrawal_check": match_withdrawals(main["withdrawals"], traces,
+                                                  tx_ok={h for h, s in zip(hashes, status) if s == 1})}
 
 
 def run_days(fs=None) -> None:
@@ -122,15 +130,25 @@ def run_days(fs=None) -> None:
 def run_contracts(addresses: set[str], end: date = CUTOFF, fs=None, start: date = date(2015, 7, 30)) -> pa.Table:
     """Creation evidence for `addresses`, from contracts created strictly before `end` (never after the cutoff)."""
     assert end <= CUTOFF
-    fs = fs or eth.filesystem(); vs = pa.array(sorted(addresses)); found = []
-    d = start
-    while d < end:
+    import pyarrow.fs as pafs
+    fs = fs or eth.filesystem(); addresses = set(addresses); found = []
+    present = {i.base_name.split("=", 1)[1] for i in fs.get_file_info(pafs.FileSelector(f"{eth.BUCKET}/contracts"))
+               if i.base_name.startswith("date=")}
+    wanted = [start + timedelta(days=k) for k in range((end - start).days)]
+    missing = [x.isoformat() for x in wanted if x.isoformat() not in present]
+    print(f"contracts partitions: {len(wanted) - len(missing)} present, {len(missing)} missing in [{start}, {end}):",
+          missing[:20], flush=True)
+    for d in wanted:
+        if d.isoformat() not in present:
+            continue
         t = eth.read_day(fs, "contracts", d.isoformat(), ["address", "block_timestamp"])
         if t is not None and t.num_rows:
-            a = pc.utf8_lower(t["address"]); m = pc.is_in(a, value_set=vs)
+            a = pc.utf8_lower(t["address"])
+            m = pa.array([x in addresses for x in a.to_pylist()])   # a Python set: millions of addresses, built once
             if pc.any(m).as_py():
                 found.append(pa.table({"address": a.filter(m), "created": pc.cast(t["block_timestamp"].filter(m), pa.string())}))
-        d += timedelta(days=1)
+        if d.day == 1:
+            print("contracts scanned through", d, "found so far", sum(f.num_rows for f in found), flush=True)
     if not found:
         return pa.table({"address": pa.array([], pa.string()), "created": pa.array([], pa.string())})
     # Some addresses appear more than once (e.g. redeployed at the same address): keep the earliest creation.
@@ -147,7 +165,7 @@ def main(argv=None):
         addrs = set()
         for f in (AUX / "edges").glob("*.parquet"):
             t = pq.read_table(f, columns=["src", "dst"])
-            addrs |= set(pd.unique(t["src"].to_pandas())) | set(pd.unique(t["dst"].dropna().to_pandas()))
+            addrs |= set(pd.unique(t["src"].to_pandas())) | set(pd.unique(t["dst"].to_pandas().dropna()))
         for f in (OUT / "days").glob("*.json"):
             j = json.loads(f.read_text())
             addrs |= {x["depositor"] for x in j["deposits"] if x["depositor"]} | {x["recipient"] for x in j["withdrawals"]} \

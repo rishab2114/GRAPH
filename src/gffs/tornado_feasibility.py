@@ -1,7 +1,9 @@
 """Pilot P1-P8 report on pre-sanction data (docs/tornado-pilot-plan.md, corrections in RESEARCH_LOG 2026-11-22).
 
 Everything at a placebo cutoff c uses only information dated before c for features, relayer exclusion, contract
-classification and sampling; outcomes are first Tornado participation in the horizon after c. No model is fitted.
+classification and sampling; outcomes are first Tornado participation in the horizon after c. No model is fitted and no
+discriminative metric (AUC, lift) is computed: the placebo cutoffs belong to the frozen study (pilot plan, P8). Only
+coverage is measured: how many positives exist and whether they have any non-Tornado activity at all.
 
     python -m gffs.tornado_feasibility      # writes results/tornado_pilot.json
 """
@@ -56,11 +58,6 @@ def classify_as_of(addresses, registry: dict, eoa_evidence: set, cutoff: date) -
     return out
 
 
-def _auc(scores: np.ndarray, y: np.ndarray) -> float:
-    from sklearn.metrics import roc_auc_score
-    return float(roc_auc_score(y, scores)) if 0 < y.sum() < len(y) else float("nan")
-
-
 def feasibility_at(cutoff: date, deps, wds, frame: set, registry: dict) -> dict:
     days = feature_days()[cutoff]
     frames = [pq.read_table(AUX / "edges" / f"{d}.parquet").to_pandas() for d in days]
@@ -80,6 +77,9 @@ def feasibility_at(cutoff: date, deps, wds, frame: set, registry: dict) -> dict:
                      clean[["dst", "src", "category"]].rename(columns={"dst": "a", "src": "b"})])
     und = und[und["a"].isin(frame)]
     deg = und.drop_duplicates(["a", "b"]).groupby("a").size()
+    raw = ok.drop_duplicates(["src", "dst"])   # P6: the same graph before Tornado edges are removed
+    raw_und = pd.concat([raw[["src", "dst"]].set_axis(["a", "b"], axis=1), raw[["dst", "src"]].set_axis(["a", "b"], axis=1)])
+    deg_raw = raw_und[raw_und["a"].isin(frame)].drop_duplicates().groupby("a").size()
     deg_cat = und.drop_duplicates(["a", "b", "category"]).groupby(["a", "category"]).size().unstack(fill_value=0)
     eoa_evidence = frame | set(ok["src"].unique())
     neighbours = pd.unique(und["b"])
@@ -87,6 +87,7 @@ def feasibility_at(cutoff: date, deps, wds, frame: set, registry: dict) -> dict:
     labels = prospective_labels(deps, wds, frame, cutoff, HORIZON_WEEKS * 7)
     frame_list = np.array(sorted(frame))
     d_all = deg.reindex(frame_list, fill_value=0).to_numpy()
+    d_raw = deg_raw.reindex(frame_list, fill_value=0).to_numpy()
     roles = {}
     for role, lab in labels.items():
         eligible = ~np.isin(frame_list, list(lab["prior_participants_excluded"]))
@@ -100,11 +101,13 @@ def feasibility_at(cutoff: date, deps, wds, frame: set, registry: dict) -> dict:
             "participants_outside_frame": lab["participants_outside_frame"],
             "frame_coverage": (int(pos.sum()) / lab["first_time_participants"]) if lab["first_time_participants"] else None,
             "positives_with_non_tornado_activity": int(((d_all > 0) & pos).sum()),
+            "positives_with_any_activity_incl_tornado": int(((d_raw > 0) & pos).sum()),
+            "positives_isolated_only_by_removal": int(((d_raw > 0) & (d_all == 0) & pos).sum()),
+            "share_active_eligible_population": float((d_all[eligible] > 0).mean()),
             "share_active_positives": float((d_all[pos] > 0).mean()) if pos.any() else None,
             "share_active_others": float((d_all[neg] > 0).mean()),
             "median_degree_active_positives": float(np.median(d_all[pos & (d_all > 0)])) if ((d_all > 0) & pos).any() else None,
             "median_degree_active_others": float(np.median(d_all[neg & (d_all > 0)])) if ((d_all > 0) & neg).any() else None,
-            "auc_degree_descriptive": _auc(d_all[eligible], y[eligible]),
         }
         cats = {}
         for c in deg_cat.columns:
@@ -145,9 +148,18 @@ def report(out_path: Path = Path("results/tornado_pilot.json")) -> dict:
                "self_withdrawals": sum(1 for w in wds if w["relayer"] == ZERO),
                "depositor_and_recipient": len(depositors & recipients), "recipients_that_are_relayers": len(recipients & relayers),
                "depositors_that_are_relayers": len(depositors & relayers),
-               "recipients_that_are_contracts_by_cutoff": sum(1 for r in recipients if r in registry)},
+               "recipients_that_are_contracts_by_cutoff": sum(1 for r in recipients if r in registry),
+               "depositors_that_are_contracts_by_cutoff": sum(1 for r in depositors if r in registry),
+               "withdrawal_sender_attribution": dict(Counter(
+                   "self (sender = recipient, no relayer)" if w["relayer"] == ZERO and w["tx_sender"] == w["recipient"]
+                   else "no relayer, sender != recipient" if w["relayer"] == ZERO
+                   else "relayed (sender = relayer)" if w["tx_sender"] == w["relayer"]
+                   else "relayed (sender != relayer)" for w in wds)),
+               "relayers_with_fee_zero": sum(1 for w in wds if w["relayer"] != ZERO and w["fee_wei"] == 0)},
         "P4_transaction_categories_all_days": dict(cats),
-        "P5_frame": {"frame_size": len(frame), "definition": "senders of any transaction 2022-01-01..2022-01-31"},
+        "P5_frame": {"frame_size": len(frame), "definition": "senders of any transaction 2022-01-01..2022-01-31",
+                     "depositors_in_frame": len(depositors & frame), "depositors_total": len(depositors),
+                     "recipients_in_frame": len(recipients & frame), "recipients_total": len(recipients)},
         "placebo_cutoffs": {},
     }
     for c in PLACEBO_CUTOFFS:

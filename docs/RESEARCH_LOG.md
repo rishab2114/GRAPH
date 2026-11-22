@@ -767,3 +767,64 @@ The check is restructured into **two directions**:
 
 The 7 add-on outputs computed with the flawed filter were deleted and are being recomputed. The main extractor's daily
 files were not touched. 110 tests pass.
+
+---
+
+### 2026-11-22 — Pilot run completed; three more corrections before the report
+
+**Container restart.** The session's container restarted while the extractor and the aux pass were running. The
+completed daily files had been written to disk, so nothing was lost: 174 of the 181 main days and 144 aux days were on
+disk. Both jobs are resumable and were restarted without redoing completed days. The main extraction is now
+**complete: 181 days, 2022-02-08 to 2022-08-07, 44,293 deposits, 42,334 withdrawals, 0 undecoded pool events,
+0 deposits without a sender.**
+
+**Deviation from the plan in item 7 above: no univariate AUC.** I had planned one descriptive AUC (non-Tornado degree)
+at each placebo cutoff. It was **removed before it was ever computed**, for two reasons:
+- the pilot plan (P8) says the placebo cutoffs' *results belong only to the frozen study*;
+- the owner's instruction says *no detector comparisons* yet.
+
+A degree score is a baseline detector, so computing its AUC at the placebo dates would leak study results into the
+design. **What I did see:** a dry run of the report printed coverage numbers that include the share of future
+participants with any non-Tornado activity in the feature week, alongside the same share for the rest of the frame
+(≈50% vs ≈10%). That contrast is a crude signal reading at the placebo dates. I disclose it here. It will not be used as
+evidence in the study, and the frozen design must not cite it.
+
+**Correction 1: the contract-registry step had never run.** The address-collection line used a pandas method on an
+Arrow array and crashed. This was found when the chain first reached it, so no registry was ever built with it. Two
+changes:
+- **Membership test.** The registry needs 3,393,824 addresses (feature-week edge nodes plus every depositor, recipient,
+  relayer and withdrawal sender). Rebuilding an Arrow lookup for that set for each of ~2,560 days was replaced by one
+  Python set, built once.
+- **Missing partitions are listed, never silently skipped.** The bucket has no `contracts` partition for 2015-07-30 to
+  2015-08-06, 8 days. That matches Frontier's thawing period: until about 7 Aug 2015 the gas limit allowed no
+  transactions, so no contracts can exist there. Every other day in [2015-07-30, 2022-08-08) is present.
+
+  A sanity run on 2019-12-14..21 found the 0.1, 1 and 10 ETH pools created on 2019-12-16, consistent with their known
+  deployment.
+
+**Correction 2: the "orphan" pool outflow was a reverted transaction.** With all days checked, exactly **1** transaction
+had a successful real pool outflow and no Withdrawal event (2022-02-08, `0x232b84…`). I inspected it rather than
+accepting it as a missed event:
+- the root call is marked `Reverted`, because a later subcall ran out of gas;
+- yet the traces table still marks the pool's child payment `status = 1`.
+
+In a reverted transaction no ETH moves and no logs survive, so this is not a missed event. The completeness check now
+uses the **receipt status of the transaction** (`tx_ok`), and outflows inside reverted transactions are counted
+separately (`outflows_in_reverted_tx`). There is a test for exactly this case (114 tests pass).
+
+The 181 aux outputs computed before the fix were moved aside (scratchpad, `aux_oldcode/`) and are being recomputed with
+the corrected check. The main daily files and the feature-week edge files are not affected.
+
+**Correction 3: the 44 `status_anomaly` withdrawals are explained, not just labelled.** All 44 are in transactions whose
+receipt succeeded and that emitted the Withdrawal event. The ETH pool source (tornado-core `ETHTornado.sol`,
+`_processWithdraw`) has `require(success)` on **both** the recipient payment and the relayer payment. A failed payment
+would revert the whole transaction, and the event would not exist. So status 0 on those traces is an inconsistency in
+the traces table's status field, not a failed withdrawal.
+
+Two cautions:
+- this argument rests on the repository source; the deployed bytecode was not compared here;
+- the same file has `require(msg.value == denomination)` for deposits. That is why a decoded Deposit implies the
+  denomination, and why deposit completeness is checked by leaf-index continuity rather than by amounts.
+
+**P6 measure added.** The report now counts future participants active in the feature week *before* Tornado edges are
+removed, and how many become isolated *only because of* the removal.

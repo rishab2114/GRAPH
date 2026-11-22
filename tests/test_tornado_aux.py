@@ -30,3 +30,13 @@ def test_match_withdrawals_both_directions_and_ignores_delegatecalls():
     assert m["events_without_outflow"] == 0
     assert m["outflow_tx_without_event"] == 1          # the completeness check: should be 0 on real data
     assert m["self_withdrawals"] == 1
+
+
+def test_outflows_inside_reverted_transactions_are_not_missed_events():
+    # Observed 2022-02-08 (tx 0x232b84...): the root call reverted (out of gas) but the traces table still marks the
+    # pool's child call status=1. No ETH moved and no event exists, so it must not count as a missed withdrawal.
+    traces = [_t("0xe", "0xv", 1e19)]
+    r = match_withdrawals([], traces, tx_ok=set())
+    assert r["outflow_tx_without_event"] == 0 and r["outflows_in_reverted_tx"] == 1
+    r = match_withdrawals([], traces, tx_ok={"0xe"})
+    assert r["outflow_tx_without_event"] == 1 and r["outflows_in_reverted_tx"] == 0
