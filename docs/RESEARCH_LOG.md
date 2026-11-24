@@ -828,3 +828,41 @@ Two cautions:
 
 **P6 measure added.** The report now counts future participants active in the feature week *before* Tornado edges are
 removed, and how many become isolated *only because of* the removal.
+
+---
+
+### 2026-11-24 — Pilot report P1–P8 and go/no-go: **Redesign (narrowing), not Stop**
+
+Full report: `docs/tornado-pilot.md`; numbers: `results/tornado_pilot.json`. All data are pre-2022-08-08. No model was
+fitted and no detector was compared.
+
+**What was run.**
+- The add-on pass was recomputed on all 181 days with the receipt-status completeness check.
+- The contract registry was built: 146,242 contracts among 3,393,824 addresses of interest. Validation: 0 January
+  senders in it, 0 creations after the cutoff, and the pools and router carry their known dates. The 100 ETH pool's
+  creation (2019-12-25) was confirmed separately, after a scan that started a week too late had missed it.
+- The feasibility report ran at both placebo cutoffs (P8).
+
+**Reasoning for the decision.**
+1. **Events are reliable (P1).** Deposit leaf indices are contiguous in all four pools. Withdrawal payments reconcile
+   exactly: 82,162 expected = 82,113 successful traces + 49 status-field errors. There is no missed event in either
+   direction. So this is not a Stop on label grounds.
+2. **Depositors have enough positives; recipients do not (P5).** At the two placebo cutoffs there are 698 and 621
+   depositor positives, 371 and 314 of them active. Recipients have 264 and 233, of which 130 and 97 are active. Only
+   4–7% of first-time recipients fall in any sender-based frame. They are fresh addresses, so a prospective,
+   label-free design cannot reach them. **Recipients are dropped as a primary target.**
+3. **The graph is usable after removal (P6).** Removal isolates 0–3 positives. Leakage is indirect (other OFAC
+   addresses, router calls, 128 relayer worker senders), and each route is small but real. **The removal set widens**
+   to the full 2022-08-08 OFAC list, created before c, plus as-of relayers and worker senders.
+4. **Power at the real cutoff is the main unmeasured risk.** It is inferred only from scoping's single-day router
+   counts and was not measured, because that would read post-cutoff labels. A **pre-registered power rule** handles it.
+
+**Measured to inform the population choice (counts only, no contrast):** a frame of January senders ∪ senders of the 7
+days before c captures 978 and 914 depositor positives, against 698 and 621 for January alone, still label-free.
+
+**Proposed redesign R1–R7** (in the report): depositor target; union frame; widened as-of removal set; whole-history
+"first-time"; typed three-layer graph; power rule; non-overlapping placebo horizons.
+
+**Not done, deliberately:**
+- `docs/tornado-design.md` is not drafted until the owner accepts or amends R1–R7.
+- No post-cutoff data is read until the design is frozen.

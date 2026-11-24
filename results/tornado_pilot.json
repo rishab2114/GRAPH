@@ -1,0 +1,309 @@
+{
+ "coverage": {
+  "days_main": 181,
+  "days_aux": 181,
+  "window": [
+   "2022-02-08",
+   "2022-08-07"
+  ],
+  "contracts_registry_rows": 146242
+ },
+ "P1": {
+  "deposits": 44293,
+  "withdrawals": 42334,
+  "undecoded_pool_events": 0,
+  "deposits_without_sender": 0,
+  "leaf_index_gaps": {
+   "0x910cbd523d972eb0a6f4cae4618ad62622b39dbf": {
+    "first": 31353,
+    "last": 44712,
+    "count": 13360,
+    "missing": 0,
+    "duplicates": 0
+   },
+   "0x12d66f87a04a9e220743712ce6d9bb1b5616b8fc": {
+    "first": 18439,
+    "last": 25380,
+    "count": 6942,
+    "missing": 0,
+    "duplicates": 0
+   },
+   "0x47ce0c6ed5b0ce3d3a51fdb1c52dc66a7c3c2936": {
+    "first": 35353,
+    "last": 51210,
+    "count": 15858,
+    "missing": 0,
+    "duplicates": 0
+   },
+   "0xa160cdab225685da1d56aa342ad8841c3b53f291": {
+    "first": 21743,
+    "last": 29875,
+    "count": 8133,
+    "missing": 0,
+    "duplicates": 0
+   }
+  },
+  "duplicate_nullifiers": 0,
+  "withdrawal_trace_check": {
+   "withdrawals": 42334,
+   "exact_match": 42285,
+   "status_anomaly": 49,
+   "amount_mismatch": 0,
+   "events_without_outflow": 0,
+   "real_pool_outflows": 82114,
+   "outflow_tx_without_event": 0,
+   "outflows_in_reverted_tx": 1,
+   "self_withdrawals": 253
+  },
+  "event_tx_status": {
+   "n": 86627,
+   "found": 86627,
+   "success": 86627
+  }
+ },
+ "P2": {
+  "depositors": 12862,
+  "recipients": 19358,
+  "relayers_nonzero": 640,
+  "self_withdrawals": 253,
+  "depositor_and_recipient": 1883,
+  "recipients_that_are_relayers": 579,
+  "depositors_that_are_relayers": 90,
+  "recipients_that_are_contracts_by_cutoff": 59,
+  "depositors_that_are_contracts_by_cutoff": 0,
+  "withdrawal_sender_attribution": {
+   "relayed (sender = relayer)": 37969,
+   "relayed (sender != relayer)": 4112,
+   "self (sender = recipient, no relayer)": 253
+  },
+  "relayers_with_fee_zero": 2253
+ },
+ "P4_transaction_categories_all_days": {
+  "call": 95843158,
+  "simple_transfer": 73763316,
+  "value_call": 29262560,
+  "failed": 7276940
+ },
+ "P5_frame": {
+  "frame_size": 5402274,
+  "definition": "senders of any transaction 2022-01-01..2022-01-31",
+  "depositors_in_frame": 3107,
+  "depositors_total": 12862,
+  "recipients_in_frame": 1153,
+  "recipients_total": 19358
+ },
+ "placebo_cutoffs": {
+  "2022-05-08": {
+   "cutoff": "2022-05-08",
+   "feature_days": [
+    "2022-05-01",
+    "2022-05-02",
+    "2022-05-03",
+    "2022-05-04",
+    "2022-05-05",
+    "2022-05-06",
+    "2022-05-07"
+   ],
+   "horizon_end": "2022-07-03",
+   "P4_graph_sizes_by_category": {
+    "call": {
+     "transactions": 3603368,
+     "distinct_edges": 1777132,
+     "nodes": 936438
+    },
+    "failed": {
+     "transactions": 260460,
+     "distinct_edges": 122959,
+     "nodes": 108618
+    },
+    "simple_transfer": {
+     "transactions": 2758066,
+     "distinct_edges": 2194469,
+     "nodes": 1690187
+    },
+    "value_call": {
+     "transactions": 1180573,
+     "distinct_edges": 567327,
+     "nodes": 413199
+    }
+   },
+   "P6_edges_removed_touching_tornado": 1051,
+   "tornado_addresses_excluded": 380,
+   "P3_neighbour_classes": {
+    "contract": 68749,
+    "eoa": 1018943,
+    "unknown": 250595
+   },
+   "roles": {
+    "depositor": {
+     "positives": 698,
+     "eligible_frame": 5400273,
+     "prior_participants_excluded": 2001,
+     "first_time_participants_total": 3380,
+     "participants_outside_frame": 2682,
+     "frame_coverage": 0.20650887573964496,
+     "positives_with_non_tornado_activity": 371,
+     "positives_with_any_activity_incl_tornado": 373,
+     "positives_isolated_only_by_removal": 2,
+     "share_active_eligible_population": 0.11180916224050154,
+     "share_active_positives": 0.5315186246418339,
+     "share_active_others": 0.11175490663617044,
+     "median_degree_active_positives": 4.0,
+     "median_degree_active_others": 2.0,
+     "by_category": {
+      "call": {
+       "share_positives_with_edges": 0.46131805157593125,
+       "share_others_with_edges": 0.06275753184278392
+      },
+      "simple_transfer": {
+       "share_positives_with_edges": 0.30945558739255014,
+       "share_others_with_edges": 0.0781315196103397
+      },
+      "value_call": {
+       "share_positives_with_edges": 0.30945558739255014,
+       "share_others_with_edges": 0.0356009500747744
+      }
+     }
+    },
+    "recipient": {
+     "positives": 264,
+     "eligible_frame": 5401525,
+     "prior_participants_excluded": 749,
+     "first_time_participants_total": 5260,
+     "participants_outside_frame": 4996,
+     "frame_coverage": 0.050190114068441066,
+     "positives_with_non_tornado_activity": 130,
+     "positives_with_any_activity_incl_tornado": 131,
+     "positives_isolated_only_by_removal": 1,
+     "share_active_eligible_population": 0.11188803162069971,
+     "share_active_positives": 0.49242424242424243,
+     "share_active_others": 0.11186943197153405,
+     "median_degree_active_positives": 3.0,
+     "median_degree_active_others": 2.0,
+     "by_category": {
+      "call": {
+       "share_positives_with_edges": 0.3939393939393939,
+       "share_others_with_edges": 0.0628666157773157
+      },
+      "simple_transfer": {
+       "share_positives_with_edges": 0.2840909090909091,
+       "share_others_with_edges": 0.07819137049663033
+      },
+      "value_call": {
+       "share_positives_with_edges": 0.22348484848484848,
+       "share_others_with_edges": 0.03567685397909858
+      }
+     }
+    }
+   }
+  },
+  "2022-06-08": {
+   "cutoff": "2022-06-08",
+   "feature_days": [
+    "2022-06-01",
+    "2022-06-02",
+    "2022-06-03",
+    "2022-06-04",
+    "2022-06-05",
+    "2022-06-06",
+    "2022-06-07"
+   ],
+   "horizon_end": "2022-08-03",
+   "P4_graph_sizes_by_category": {
+    "call": {
+     "transactions": 3502934,
+     "distinct_edges": 1866385,
+     "nodes": 776341
+    },
+    "failed": {
+     "transactions": 411478,
+     "distinct_edges": 218796,
+     "nodes": 133660
+    },
+    "simple_transfer": {
+     "transactions": 2267182,
+     "distinct_edges": 1763384,
+     "nodes": 1369467
+    },
+    "value_call": {
+     "transactions": 1201483,
+     "distinct_edges": 590558,
+     "nodes": 394038
+    }
+   },
+   "P6_edges_removed_touching_tornado": 869,
+   "tornado_addresses_excluded": 460,
+   "P3_neighbour_classes": {
+    "contract": 59166,
+    "eoa": 802681,
+    "unknown": 223256
+   },
+   "roles": {
+    "depositor": {
+     "positives": 621,
+     "eligible_frame": 5399866,
+     "prior_participants_excluded": 2408,
+     "first_time_participants_total": 3718,
+     "participants_outside_frame": 3097,
+     "frame_coverage": 0.1670252824098978,
+     "positives_with_non_tornado_activity": 314,
+     "positives_with_any_activity_incl_tornado": 317,
+     "positives_isolated_only_by_removal": 3,
+     "share_active_eligible_population": 0.08628028917754625,
+     "share_active_positives": 0.5056360708534622,
+     "share_active_others": 0.0862320565190133,
+     "median_degree_active_positives": 3.0,
+     "median_degree_active_others": 2.0,
+     "by_category": {
+      "call": {
+       "share_positives_with_edges": 0.4251207729468599,
+       "share_others_with_edges": 0.04622312934493619
+      },
+      "simple_transfer": {
+       "share_positives_with_edges": 0.24154589371980675,
+       "share_others_with_edges": 0.05855114928105689
+      },
+      "value_call": {
+       "share_positives_with_edges": 0.3059581320450886,
+       "share_others_with_edges": 0.030779118191524926
+      }
+     }
+    },
+    "recipient": {
+     "positives": 233,
+     "eligible_frame": 5401373,
+     "prior_participants_excluded": 901,
+     "first_time_participants_total": 5674,
+     "participants_outside_frame": 5441,
+     "frame_coverage": 0.04106450475854776,
+     "positives_with_non_tornado_activity": 97,
+     "positives_with_any_activity_incl_tornado": 97,
+     "positives_isolated_only_by_removal": 0,
+     "share_active_eligible_population": 0.08635859808237646,
+     "share_active_positives": 0.41630901287553645,
+     "share_active_others": 0.08634436433789903,
+     "median_degree_active_positives": 3.0,
+     "median_degree_active_others": 2.0,
+     "by_category": {
+      "call": {
+       "share_positives_with_edges": 0.27896995708154504,
+       "share_others_with_edges": 0.04632318362419786
+      },
+      "simple_transfer": {
+       "share_positives_with_edges": 0.26609442060085836,
+       "share_others_with_edges": 0.05859318588298026
+      },
+      "value_call": {
+       "share_positives_with_edges": 0.21030042918454936,
+       "share_others_with_edges": 0.030848857833716586
+      }
+     }
+    }
+   }
+  }
+ },
+ "P8_pipeline_ran_at": [
+  "2022-05-08",
+  "2022-06-08"
+ ]
+}
