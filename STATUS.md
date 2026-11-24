@@ -12,13 +12,14 @@
 | Stage 2 design | **Frozen** 2026-11-24 (commit `5f8757c`), with one dated deviation (label source) | `docs/tornado-design.md` |
 | Stage 2 data build (pre-cutoff only) | **Running**: history from 2019-12-16, 7 monthly frames, 15 feature weeks | `src/gffs/tornado_study_data.py` |
 | Stage 2 run (reads post-2022-08-08 data) | **Waiting for owner approval** of the frozen design | — |
+| S4 "alien scenarios" (exploratory, from Artiles et al. 2026) | Their code inspected; prototype built; **pre-registered** 2026-11-24 (`1589a64`) before any score; author data being fetched | `docs/s4-alien-prereg.md` |
 | Stage 3: recent crypto events (e.g. the 2025-03-21 delisting) | Not started; to confirm with the owner | — |
 
 ## Recent decisions
 
-- **"The Alien Space of Science" (NeurIPS 2026): read, not adopted now.** Stage 2 is frozen. Our space has only 28
-  motif pairs. There is a dual-use caution. It is proposed as a later, separately pre-registered "S4" experiment.
-  See `docs/alien-space-evaluation.md`.
+- **"The Alien Space of Science" (NeurIPS 2026):** not adopted into the frozen Stage 2. At the owner's request its
+  code was inspected and an **exploratory S4 prototype** was built. S4 is scored in the Stage 2 run but kept outside
+  every Stage 2 criterion. See `docs/alien-space-evaluation.md` and `docs/s4-alien-prereg.md`.
 
 ## Rules in force
 
