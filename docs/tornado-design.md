@@ -231,3 +231,10 @@ substitute for it.
     The §3 check (≤ 1% of logged deposits missed, on 2022-02-08..08-07) now applies to the trace rule, and extras are
     reported too.
   - *Data read.* No evaluation data was read.
+- **2026-11-24: one extra stress set is scored in the same run, outside every Stage 2 criterion.**
+  - *What.* The owner asked for an S4 "alien scenarios" prototype, pre-registered separately in
+    `docs/s4-alien-prereg.md` before any post-cutoff read.
+  - *How.* It is scored with the same frozen detectors, thresholds and injection procedure, and reported in a separate
+    section.
+  - *Unchanged.* It is **not** part of SYN. H1, H2–H4, the placebo rule and the power rule are unchanged.
+

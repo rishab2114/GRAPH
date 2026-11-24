@@ -36,7 +36,37 @@ arXiv:2603.01092v3 (21 Oct 2026), NeurIPS 2026. Code: github.com/alejandrohdez00
 | ATT&CK study: on a dense graph, popularity beat structure. The physics control: structure wins on a sparse graph | Their main text reports that hypergraph-distance methods "largely collapse" in a dense field where nearly every pair is within two hops (their Appendix A.9, not checked). **Independent, consistent evidence** about density, though not a test of our claim |
 | Elliptic: forecast-chosen pairs (S1) were no better stress tests than random pairs (S2) | One possible reading: forecasting the defenders' *next likely* topics targets the available region, while detector blind spots may lie elsewhere. **This is a hypothesis, not evidence** |
 
-## Decision: **not adopted into the current work**
+## Their code, inspected 2026-11-24
+
+Repository `alejandrohdez00/alien-space-of-science`, commit `a55d660` (2026-11-02), MIT licence. It was cloned
+read-only and never executed.
+
+**What it does:**
+- **Coherence** (`generation/scoring.py`): a causal transformer over atom tokens. The score is the mean per-atom
+  negative log-likelihood, averaged over orderings of the set.
+- **Availability** (`generation/two_tower_model.py`, `generation/scoring.py`):
+  - an author tower (mean-pool, then an MLP) and a set tower (a transformer), with shared atom embeddings;
+  - availability is the **median of the top-10** author cosine scores, and unavailability is its negative.
+- **Training** (`generation/train_availability.py`): a CLIP-style symmetric InfoNCE loss. Pairs from the same author
+  are masked out as negatives. Each author's repertoire is split into a query subset of 2–4 atoms and its complement
+  (`generation/make_availability.py`).
+- **Fusion** (`generation/sample.py`): (1 − β)·z(coherence) + β·z(unavailability), z-scored over the candidate pool,
+  with default β = 0.7.
+
+**What we can and cannot reuse:**
+
+| Item | Verdict |
+|---|---|
+| Scoring formulas and the fusion rule | **Reused** (re-implemented in `gffs.alien_s4`, with attribution) |
+| Vendi diversity score | **Reused** (re-implemented, Jaccard similarity on atom sets) |
+| Trained models and author bank | **Not usable:** fitted on 273 atoms from LLM-research papers, a different domain |
+| Training stack (PyTorch transformers; the availability model was trained on 4 A100 GPUs) | **Not used:** too heavy for a 28-pair space and our small corpus |
+| LLM atomisation and decoding (paid API calls) | **Not used:** our concepts already exist, and we want no prose scenarios (dual-use) |
+
+**Competing interest, disclosed in the paper:** two authors co-founded Tiptree Systems, which sells a production
+version (Lacuna).
+
+## Decision: **not adopted into the frozen work; an S4 prototype is built separately**
 
 1. **Stage 2 is frozen** (`docs/tornado-design.md`, commit `5f8757c`). It replicates the Elliptic lead with the
    *identical* scenario sets. Adding a new selector now would change what is tested, add comparisons, and require a
@@ -52,9 +82,10 @@ arXiv:2603.01092v3 (21 Oct 2026), NeurIPS 2026. Code: github.com/alejandrohdez00
    detectors*, which is low risk. But a richer "alien" generator over laundering typologies would need a safety review
    before it is built.
 
-## Where it could fit later (a proposal, not started)
+## Where it fits (the owner chose: inspect the code *and* build an S4 prototype)
 
-A separate, pre-registered experiment, **"S4: alien scenarios"**, after Stage 2 reports. It would need:
+**Now built as an exploratory prototype** (`gffs.alien_s4`, pre-registered in `docs/s4-alien-prereg.md`). A full,
+confirmatory version would still need:
 - **a richer vocabulary:** account-level motifs × AML typologies, at least ~30 atoms, so the search space is large
   enough;
 - **an availability model** built from OpenAlex author histories in the AML/fraud literature, dated before the cutoff;

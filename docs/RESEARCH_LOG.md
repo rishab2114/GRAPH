@@ -932,3 +932,27 @@ It is proposed as a later, separately pre-registered **S4 "alien scenarios"** ex
 (`docs/alien-space-evaluation.md`).
 
 **`STATUS.md`** was added at the repository root: a short status page for GitHub, updated with each milestone.
+
+---
+
+### 2026-11-24 — Owner: "inspect their code and build an S4 prototype"; S4 pre-registered before any score
+
+- **Code inspected** (read-only, never executed). `alejandrohdez00/alien-space-of-science` at `a55d660`, MIT licence:
+  - formulas confirmed (coherence = mean atom NLL; availability = median of the top-10 author cosine scores; fusion
+    with z-scores and β = 0.7);
+  - trained models are not reusable (another domain);
+  - the training stack is too heavy for a 28-pair space.
+  - Details: `docs/alien-space-evaluation.md`.
+- **Prototype** `gffs.alien_s4`, with 6 tests (125 in total pass):
+  - coherence = cosine of PPMI-SVD concept embeddings;
+  - availability = log1p(number of pre-cutoff authors holding both concepts);
+  - the paper's fusion rule;
+  - a recovery metric and the Vendi score.
+- **Pre-registration** `docs/s4-alien-prereg.md` is committed **before** the authorship fetch finishes and before any
+  S4 score:
+  - pool = S1's 25 pairs, literature ≤ 2016, β = 0.7, top 10;
+  - exploratory comparisons against S1, S2 and S0 on the Stage 2 data only;
+  - a transparency note was added to the Stage 2 deviations;
+  - H1 is unchanged.
+- **Data:** an OpenAlex authorship fetch for the cached corpus (OpenAlex now reports 106,707 works against 105,533
+  cached; only cached works are used).
