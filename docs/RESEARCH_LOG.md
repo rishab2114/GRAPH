@@ -866,3 +866,34 @@ days before c captures 978 and 914 depositor positives, against 698 and 621 for 
 **Not done, deliberately:**
 - `docs/tornado-design.md` is not drafted until the owner accepts or amends R1–R7.
 - No post-cutoff data is read until the design is frozen.
+
+---
+
+### 2026-11-24 — Owner accepted R1–R7; Stage 2 design frozen (`docs/tornado-design.md`)
+
+The owner chose "Accept R1–R7". The design is frozen **before any post-2022-08-08 data is read and before any detector
+is fitted on Ethereum data**.
+
+**Key choices and their reasons:**
+- **Primary test (H1).** There is one confirmatory test: across the sanctions shift, does the pooled synthetic stress
+  test (SYN = mean of S1, S2, S3 recalls per detector) predict post-shift recall with smaller E4 error than recent data
+  (S0)? Success requires the 95% bootstrap interval of the difference to lie entirely below 0. This is the Elliptic lead
+  as actually observed (all three synthetic sets alike), not the failed S1-specific hypothesis.
+- **Shift specificity.** Placebos P1 = 2022-04-08 and P2 = 2022-06-08 have non-overlapping horizons. A 4-row
+  interpretation table is fixed in advance, including "beats S0 but not shift-specific".
+- **Replication fidelity.**
+  - The same 10 detectors as Elliptic.
+  - The same scenario sets: S1 is the identical 2016 forecast pairs, S2 the identical seed-0 pairs, S3 the 8 motifs,
+    built by the same generator, with accounts as nodes and payment edges.
+  - The same threshold-then-refit procedure.
+  - The threshold is a 1% alert rate on unlabelled eligible addresses, not an FPR.
+- **Operational detail of R2 (flagged to the owner).** The frame uses the last full calendar month ending at least 8
+  days before each task date, plus the feature week. That is a *rolling* month, not a fixed "January". Training tasks
+  and P1 start before or around January 2022, so a fixed January frame would use information from after their own
+  dates. In the pilot's window this rule gives exactly January.
+- **Power rule (R6).** At least 100 eligible positives in 8 weeks; otherwise extend once to 26 weeks; otherwise stop
+  as "underpowered", without looking at any score.
+- **Approval gate.** Post-cutoff reads happen only behind an explicit switch, after the owner approves this design.
+
+**Next:** pre-cutoff builds only (history from 2019-12-16, 7 monthly frames, 15 feature weeks, the labels check), the
+code test-first, and a dry run on training and calibration tasks.
