@@ -897,3 +897,38 @@ is fitted on Ethereum data**.
 
 **Next:** pre-cutoff builds only (history from 2019-12-16, 7 monthly frames, 15 feature weeks, the labels check), the
 code test-first, and a dry run on training and calibration tasks.
+
+---
+
+### 2026-11-24 — Label-rule fix before the data pass; "Alien Space of Science" evaluated (not adopted now); STATUS.md
+
+**Smoke test caught two bugs in the new pre-cutoff builder (before the full pass).** The test day was 2022-02-21,
+inside the logs window, compared against the pilot's Deposit and Withdrawal events.
+1. **Value rule over 38 OFAC addresses.** It counted 29 payments of 0.1 or 1 ETH to *another* listed Tornado contract
+   (`0xca08…`) as ETH-pool deposits.
+2. **Withdrawal roles by amount.** In 4 withdrawals the relayer fee was more than half of 0.1 ETH, so recipient and
+   relayer were swapped.
+
+**Fix.**
+- **Deposits** = successful-transaction calls paying a pool exactly its denomination, from traces. This covers every
+  entry contract.
+- **Withdrawal roles** follow call order (the contract pays the recipient first).
+- Both rules now match the logs exactly on that day: 144/144 and 160/160, with 0 extra.
+- Recorded as a dated **deviation** in `docs/tornado-design.md`. Tests were written first (119 pass).
+
+**Paper evaluated at the owner's request.** Artiles et al., *The Alien Space of Science*, arXiv:2603.01092, NeurIPS
+2026. I read the main text (pp. 1–11), not the 48 appendix pages. **Not adopted into the current work:**
+- Stage 2 is frozen;
+- our expressible space is only 28 motif pairs;
+- availability needs large author histories;
+- the paper itself cautions against low-availability search in dual-use fields.
+
+Two points of real relevance:
+- its note that hypergraph methods collapse in dense fields is independent, consistent evidence for our density
+  observation;
+- it suggests a reading of Elliptic's "S1 ≈ S2": forecasting the *available* region. That is a hypothesis.
+
+It is proposed as a later, separately pre-registered **S4 "alien scenarios"** experiment
+(`docs/alien-space-evaluation.md`).
+
+**`STATUS.md`** was added at the repository root: a short status page for GitHub, updated with each milestone.

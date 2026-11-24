@@ -214,4 +214,20 @@ substitute for it.
 
 ## Deviations
 
-(none yet)
+- **2026-11-24: deposit labels before 2022-02-08 come from pool-inflow traces, not the transactions-table rule.**
+  - *What happened.* A one-day smoke test (2022-02-21, inside the window where logs exist, before the full data pass)
+    found two errors in my first implementation:
+    - it applied the value rule to all 38 OFAC addresses, so it labelled 29 payments to another listed Tornado contract
+      as deposits;
+    - it assigned withdrawal roles by "the larger payment is the recipient", which fails when a relayer fee exceeds half
+      of the 0.1 ETH denomination (4 cases that day).
+  - *Why the trace rule.* Even when restricted to pool, proxy and router as §3 says, the transactions rule would miss
+    deposits made through other entry contracts.
+  - *New rules.*
+    - **Deposit:** a successful-transaction `call` paying an ETH pool exactly its denomination; the depositor is the
+      transaction's sender.
+    - **Withdrawal roles:** by call order (the pool pays the recipient first, then the relayer).
+  - *Check.* Both rules match the logs exactly on that day: 144/144 deposits and 160/160 withdrawals, with 0 extra.
+    The §3 check (≤ 1% of logged deposits missed, on 2022-02-08..08-07) now applies to the trace rule, and extras are
+    reported too.
+  - *Data read.* No evaluation data was read.
