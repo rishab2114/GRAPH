@@ -1017,3 +1017,17 @@ Elliptic's common-model recalls as the template, 8 weekly blocks, and instance-c
   probability **0.59–0.82**, and under strong dependence this barely improves with more positives (8 blocks).
 - **Consequence:** a null Stage 2 result cannot rule out a modest effect. A longer horizon (more blocks) would help
   more than more positives; that is left open for the owner and Codex.
+
+---
+
+### 2026-11-25 — Owner: "both in parallel". E01 scheduling core and trace; Stage 2 account features
+
+- **E01** (`docs/e01-scheduling.md`):
+  - compiler, independent verifier, and an exact MILP **verified against brute force**;
+  - 6 atoms with verified-DOI sources (mapping still unverified);
+  - generator with a canonical family hash; a heuristic learner; records; an end-to-end trace.
+  - **Trace:** 132 scenarios, 132 distinct families, 0 verifier failures, infeasible cases where deadlines exist.
+  - **Finding:** the instances are too easy (the greedy rule is near-optimal). Harder instances come before any
+    learning study.
+- **Stage 2 runner, part 1:** account features (design §4). The reconvergence join is chunked over integer ids so it
+  fits a real week (7.0M edges, 467k accounts) in 147 s and 6.5 GB.
