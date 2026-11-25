@@ -1007,3 +1007,13 @@ to 2016, while forecasting from 2013. With the vocabulary chosen from works up t
 The forecaster's advantage survives the correction, smaller by about 0.03; the leak had mostly been holding back the
 baseline. The correction is noted in `docs/paper/draft.md`, `docs/HANDOFF.md` and `docs/results/e3e4.md`, and the
 draft's after-shift claims are annotated with the E3/E4 reanalysis.
+
+**G05 power simulation and Amendment A2 (2026-11-25, before any Stage 2 score).** Simulated the H1 statistic with
+Elliptic's common-model recalls as the template, 8 weekly blocks, and instance-clustered synthetic positives.
+- **Finding:** the interval frozen in A1 (holdout positives resampled one by one) **rejects a true null in 19–32% of
+  simulations** under strong week dependence. The week-block interval stays at or below 4%.
+- **Amendment A2:** the block interval becomes primary for H1.
+- **Power:** an Elliptic-size effect is detected with probability 0.77–1.00. A half-size effect is detected with
+  probability **0.59–0.82**, and under strong dependence this barely improves with more positives (8 blocks).
+- **Consequence:** a null Stage 2 result cannot rule out a modest effect. A longer horizon (more blocks) would help
+  more than more positives; that is left open for the owner and Codex.

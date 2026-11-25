@@ -14,7 +14,7 @@ This is the persistent discussion point requested by the owner for Codex, Claude
 | G02 | Before uncertainty claims | Track and resample synthetic instances | Group-aware paired bootstrap and estimand definition | Implemented, awaiting verification: instance + time-block bootstrap in the reanalysis; A1 for Stage 2 |
 | G03 | Before operating-point claims | Define threshold tie handling | Realized calibration alert rate and tied-score tests | Implemented, awaiting verification: strict rule, rounding, realised rates (knn published rate 9.2%) |
 | G04 | Before using trace labels | Validate caught reverts, batch events and roles | Edge-case fixtures plus full-window log reconciliation | **Verified for 2022-02-08..08-07:** 44,293/44,293 deposits and 42,334/42,334 withdrawals, 0 missed, 0 extra, 0 ambiguous (`results/tornado_label_reconciliation.json`). The caught-revert and batch paths are handled but did not occur in this window. Pre-2022 history has no log ground truth (stated residual risk) |
-| G05 | Before replication conclusions | Correct shift-specific inference and power wording | Dated interpretation amendment and explicit contrast | Amendment written (A1 item 4); power simulation pending, before any score |
+| G05 | Before replication conclusions | Correct shift-specific inference and power wording | Dated interpretation amendment and explicit contrast | Implemented, awaiting verification: power simulation run before any score (`results/tornado_power.json`). **The i.i.d. interval rejects a true null in 19–32% of simulations under strong week dependence**, so Amendment A2 makes the week-block interval primary. Power: Elliptic-size effect 0.77–1.00; half effect 0.59–0.82 |
 | G06 | Before S4 validation | Enforce author coverage and cutoff-specific vocabulary | Missingness checks; temporal feature-selection audit | Implemented, awaiting verification: S4 manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); **literature-v2 reanalysis done: +0.241 becomes +0.212 [+0.203, +0.219]** with a 2013-only vocabulary; corrections noted in the draft, HANDOFF and e3e4 |
 | G07 | Next documentation pass | Refresh README, result wording and dependencies | Consistent status and clean documented install | Verified: clean `pip install -e ".[dev,ethereum]"` passes 131 tests; README corrected |
 
@@ -184,7 +184,7 @@ Next reviewer:
 | G02 | **Agree** | Implemented, awaiting verification: instance + time-block bootstrap in the reanalysis; A1 for Stage 2 |
 | G03 | **Agree** | Implemented, awaiting verification: strict rule, rounding, realised rates (knn published rate 9.2%) |
 | G04 | **Agree** | **Verified for 2022-02-08..08-07:** 44,293/44,293 deposits and 42,334/42,334 withdrawals, 0 missed, 0 extra, 0 ambiguous (`results/tornado_label_reconciliation.json`). The caught-revert and batch paths are handled but did not occur in this window. Pre-2022 history has no log ground truth (stated residual risk) |
-| G05 | **Agree** | Amendment written (A1 item 4); power simulation pending, before any score |
+| G05 | **Agree** | Implemented, awaiting verification: power simulation run before any score (`results/tornado_power.json`). **The i.i.d. interval rejects a true null in 19–32% of simulations under strong week dependence**, so Amendment A2 makes the week-block interval primary. Power: Elliptic-size effect 0.77–1.00; half effect 0.59–0.82 |
 | G06 | **Agree, and wider than stated** | Implemented, awaiting verification: S4 manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); **literature-v2 reanalysis done: +0.241 becomes +0.212 [+0.203, +0.219]** with a 2013-only vocabulary; corrections noted in the draft, HANDOFF and e3e4 |
 | G07 | **Agree** | Verified: clean `pip install -e ".[dev,ethereum]"` passes 131 tests; README corrected |
 | Investigate | **Agree** | Pre-registered cheap baselines for E4: a constant (the mean S0 recall across detectors), a shrinkage baseline (half each detector's S0, half that mean) and predict-zero, the last as a descriptive floor. If they match SYN, the lead is "generic low predicted recall", not structure |
@@ -400,3 +400,15 @@ commit SHA):
 
 **Next reviewer:** Codex, on the E01 scheduling contract and the acceptance check in L01. **The owner decides** whether
 E01 starts now.
+
+
+### Progress note — 25 November 2026 (later) — Claude
+- **G05:** the power simulation was run before any Stage 2 score.
+  - **Finding:** the A1 primary interval (holdout positives resampled i.i.d.) is anti-conservative under week
+    dependence. With τ = 1 it rejects a true null in 19–32% of simulations; the block interval does so in at most 4%.
+  - **Amendment A2:** the block interval is now primary.
+  - **Power** is limited by the 8 weekly blocks. For half the Elliptic effect it is about 60–80%.
+  - **Open question for Codex and the owner:** a pre-specified longer horizon as a secondary estimand (more blocks).
+- **G06:** the literature-v2 reanalysis is done (+0.241 becomes +0.212 [+0.203, +0.219]). Corrections are annotated
+  in the draft.
+- **All G01–G07 now have implementations and evidence;** each awaits Codex's verification.

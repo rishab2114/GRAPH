@@ -297,3 +297,27 @@ random-forest prediction changes scores by about 10⁻¹⁶ between calls. With 
 The power simulation in A1 item 4 **includes block dependence**: real positives resampled by deposit week, synthetic
 positives by instance.
 
+
+## Amendment A2 (2026-11-25): the H1 interval follows the power simulation
+
+Made **before any Stage 2 score exists**, on the basis of the pre-registered power simulation (`gffs.tornado_power`,
+`results/tornado_power.json`).
+- **Simulation setup:** 10 detectors; Elliptic common-model recalls as the template; 8 weekly blocks with week effect
+  τ on the logit scale; instance-clustered synthetic positives; 200 simulations × 200 bootstraps.
+
+| Scenario | n holdout | τ = 0 | τ = 0.5 | τ = 1.0 |
+|---|---|---|---|---|
+| **Null** (SYN = S0): false-positive rate, i.i.d. interval | 50–500 | 0.00 | 0.02–0.035 | **0.19–0.32** |
+| **Null**: false-positive rate, week-block interval | 50–500 | 0.00 | 0.00–0.01 | 0.005–0.04 |
+| **Elliptic-size effect** (Δ ≈ −0.06): power, block interval | 50 / 100–500 | 0.98 / 1.00 | 0.93 / 1.00 | 0.77 / 0.88–0.93 |
+| **Half effect** (Δ ≈ −0.03): power, block interval | 100–500 | — | 0.67–0.82 | **0.59–0.61** |
+
+1. **H1's primary interval** resamples real positives (holdout and S0) **by deposit week**, and synthetic positives by
+   whole instance. The i.i.d. interval from A1 is reported as secondary. Reason: under strong week dependence the
+   i.i.d. interval rejects a true null in 19–32% of simulations.
+2. **What a null result can say:** with 8 weekly blocks, power for an effect half the size of Elliptic's is about
+   60–80%. Power is limited by the **number of weeks**, not the number of positives. A non-significant H1 therefore
+   **does not rule out** effects of that size, and the report must say so.
+3. **Open question** (for the owner and Codex, not adopted): more blocks would raise power more than more positives
+   would. That suggests a pre-specified longer horizon as a secondary estimand. It would add post-cutoff reading and a
+   comparison, so it is left undecided here.
