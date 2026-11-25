@@ -76,3 +76,25 @@ def test_zero_fee_single_payment_is_recipient_and_fee_equal_to_denomination_is_a
     out = withdrawals_from_payments(pays)
     assert (out[0]["recipient"], out[0]["fee_payee"], out[0]["ambiguous"]) == ("0xs", None, False)
     assert out[1]["ambiguous"] and out[1]["payees"] == ["0xl"]
+
+
+def test_reconcile_counts_misses_and_extras_as_multisets():
+    from gffs.tornado_study_data import reconcile_day
+    logs = {"deposits": [{"tx": "0x1", "pool": POOL1, "depositor": "0xa"}, {"tx": "0x1", "pool": POOL1, "depositor": "0xa"},
+                         {"tx": "0x2", "pool": POOL1, "depositor": "0xb"}],
+            "withdrawals": [{"tx": "0x3", "pool": POOL1, "recipient": "0xr", "relayer": "0xl", "fee_wei": 5},
+                            {"tx": "0x4", "pool": POOL1, "recipient": "0xs", "relayer": "0xl", "fee_wei": 0}]}
+    hist = {"deposits": [{"tx": "0x1", "pool": POOL1, "depositor": "0xa"}, {"tx": "0x9", "pool": POOL1, "depositor": "0xz"}],
+            "withdrawals": [{"tx": "0x3", "pool": POOL1, "recipient": "0xr", "fee_payee": "0xl", "ambiguous": False},
+                            {"tx": "0x4", "pool": POOL1, "recipient": "0xs", "fee_payee": None, "ambiguous": False}]}
+    r = reconcile_day(logs, hist)
+    assert r["deposits"] == {"logs": 3, "traces": 2, "missed": 2, "extra": 1}
+    assert r["withdrawals"] == {"logs": 2, "traces": 2, "missed": 0, "extra": 0, "ambiguous": 0}
+
+
+def test_root_trace_address_stored_as_the_string_none_is_the_root():
+    # Real data: the root call's trace_address is the string "None" (seen 2022-02-08 after the G04 change).
+    tr = [{"tx": "0x1", "order": "None", "error": "Reverted"}, {"tx": "0x1", "order": "0", "error": None},
+          {"tx": "0x2", "order": "None", "error": None}, {"tx": "0x2", "order": "0,1", "error": None}]
+    ok = effective_ok(tr)
+    assert ("0x1", "0") not in ok and ("0x2", "0,1") in ok

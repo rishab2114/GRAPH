@@ -81,19 +81,28 @@ def pool_deposits(inflows: list[dict]) -> list[dict]:
             if abs(x["value"] - eth.POOL_DENOMINATION_WEI[x["pool"]]) <= TOL]
 
 
-def _order(a: str) -> tuple:
-    return tuple(int(x) for x in a.split(",")) if a else ()
+def _order(a) -> tuple:
+    """trace_address -> tuple. The root call is stored as the *string* "None" in this dataset (or null/empty)."""
+    a = "" if a is None else str(a).strip().strip("[]").replace(" ", "")
+    return tuple(int(x) for x in a.split(",")) if a and a != "None" else ()
 
 
 def effective_ok(traces: list[dict]) -> set[tuple]:
     """(tx, trace_address) of calls that took effect: neither the call nor any ancestor in its transaction has an error.
     The traces' `status` column is not used: it was wrong in both directions in the pilot (49 + 1 cases)."""
-    err = {(t["tx"], _order(t["order"] or "")): bool(t["error"]) for t in traces}
+    err = {(t["tx"], _order(t["order"])): bool(t["error"]) for t in traces}
     ok = set()
     for (tx, o), e in err.items():
         if not e and not any(err.get((tx, o[:i]), False) for i in range(len(o))):
             ok.add((tx, ",".join(map(str, o)) if o else None))
     return ok
+
+
+def _key(order) -> str | None:
+    o = _order(order)
+    return ",".join(map(str, o)) if o else None
+
+
 
 
 def withdrawals_from_payments(pays: list[dict]) -> list[dict]:
@@ -156,7 +165,7 @@ def study_day(fs, d: date, ofac: set[str], write_edges: bool) -> tuple[dict, set
                                      out_t["to_address"].to_pylist(), out_t["value"].to_pylist(),
                                      out_t["trace_address"].to_pylist()) if ok_tx(a)]
     n_pay = len(pays)
-    pays = [p for p in pays if (p["tx"], p["order"]) in took_effect]
+    pays = [p for p in pays if (p["tx"], _key(p["order"])) in took_effect]
     wds = withdrawals_from_payments(pays)
     for w in wds:
         w["tx_sender"] = info[w["tx"]][0]
@@ -164,7 +173,7 @@ def study_day(fs, d: date, ofac: set[str], write_edges: bool) -> tuple[dict, set
            zip(ih.to_pylist(), pc.utf8_lower(in_t["to_address"]).to_pylist(), in_t["value"].to_pylist(),
                in_t["trace_address"].to_pylist()) if ok_tx(a)]
     n_in = len(ins)
-    ins = [x for x in ins if (x["tx"], x["order"]) in took_effect]
+    ins = [x for x in ins if (x["tx"], _key(x["order"])) in took_effect]
     deps = pool_deposits(ins)
     for x in deps:
         x["depositor"] = info[x["tx"]][0]
@@ -173,6 +182,39 @@ def study_day(fs, d: date, ofac: set[str], write_edges: bool) -> tuple[dict, set
              "pool_calls_dropped_by_ancestry": (n_pay - len(pays)) + (n_in - len(ins)),
              "payments_in_failed_or_missing_tx": int(out_t.num_rows) - len(pays), "senders": len(senders)}
     return {"day": d.isoformat(), "tornado_txs": rows, "deposits": deps, "withdrawals": wds, "stats": stats}, senders
+
+
+def reconcile_day(logs: dict, hist: dict) -> dict:
+    """Trace-derived labels against log-derived events for one day, as multisets (a transaction can hold several)."""
+    from collections import Counter
+    dl = Counter((d["tx"], d["pool"], d["depositor"]) for d in logs["deposits"])
+    dt = Counter((d["tx"], d["pool"], d["depositor"]) for d in hist["deposits"])
+    wl = Counter((w["tx"], w["pool"], w["recipient"], w["relayer"] if w["fee_wei"] > 0 else None) for w in logs["withdrawals"])
+    wt = Counter((w["tx"], w["pool"], w["recipient"], w["fee_payee"]) for w in hist["withdrawals"] if not w["ambiguous"])
+    return {"deposits": {"logs": sum(dl.values()), "traces": sum(dt.values()), "missed": sum((dl - dt).values()),
+                         "extra": sum((dt - dl).values())},
+            "withdrawals": {"logs": sum(wl.values()), "traces": sum(wt.values()), "missed": sum((wl - wt).values()),
+                            "extra": sum((wt - wl).values()),
+                            "ambiguous": sum(1 for w in hist["withdrawals"] if w["ambiguous"])}}
+
+
+def reconcile(start: date = date(2022, 2, 8), end: date = CUTOFF) -> dict:
+    """G04 / design section 3: full-window check of the trace rule against the Deposit and Withdrawal logs."""
+    from gffs.tornado_pilot import OUT as PILOT
+    days, tot = {}, {"deposits": {}, "withdrawals": {}}
+    d = start
+    while d < end:
+        lp, hp = PILOT / "days" / f"{d}.json", STUDY / "history" / f"{d}.json"
+        if lp.exists() and hp.exists():
+            r = reconcile_day(json.loads(lp.read_text()), json.loads(hp.read_text()))
+            days[d.isoformat()] = r
+            for kind in tot:
+                for k, v in r[kind].items():
+                    tot[kind][k] = tot[kind].get(k, 0) + v
+        d += timedelta(days=1)
+    return {"days": len(days), "totals": tot,
+            "days_with_errors": {k: [day for day, r in days.items() if r[k]["missed"] or r[k]["extra"]] for k in tot},
+            "by_day": days}
 
 
 def run(fs=None, start: date = HISTORY_START, end: date = CUTOFF) -> None:
