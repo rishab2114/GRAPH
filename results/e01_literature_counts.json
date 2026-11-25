@@ -1,0 +1,170 @@
+{
+ "single": {
+  "release_dates": 6,
+  "deadlines": 54,
+  "resource_calendar": 18,
+  "min_time_lags": 2,
+  "max_time_lags": 26,
+  "multi_mode": 402,
+  "nonrenewable": 40,
+  "multiple_resources": 12,
+  "setup_times": 23,
+  "preemption": 42
+ },
+ "pairs": {
+  "release_dates+deadlines": 3,
+  "release_dates+resource_calendar": 0,
+  "release_dates+min_time_lags": 0,
+  "release_dates+max_time_lags": 0,
+  "release_dates+multi_mode": 2,
+  "release_dates+nonrenewable": 0,
+  "release_dates+multiple_resources": 0,
+  "release_dates+setup_times": 0,
+  "release_dates+preemption": 0,
+  "deadlines+resource_calendar": 1,
+  "deadlines+min_time_lags": 0,
+  "deadlines+max_time_lags": 1,
+  "deadlines+multi_mode": 11,
+  "deadlines+nonrenewable": 0,
+  "deadlines+multiple_resources": 0,
+  "deadlines+setup_times": 1,
+  "deadlines+preemption": 1,
+  "resource_calendar+min_time_lags": 0,
+  "resource_calendar+max_time_lags": 0,
+  "resource_calendar+multi_mode": 7,
+  "resource_calendar+nonrenewable": 0,
+  "resource_calendar+multiple_resources": 0,
+  "resource_calendar+setup_times": 0,
+  "resource_calendar+preemption": 1,
+  "min_time_lags+max_time_lags": 1,
+  "min_time_lags+multi_mode": 1,
+  "min_time_lags+nonrenewable": 0,
+  "min_time_lags+multiple_resources": 0,
+  "min_time_lags+setup_times": 0,
+  "min_time_lags+preemption": 0,
+  "max_time_lags+multi_mode": 11,
+  "max_time_lags+nonrenewable": 1,
+  "max_time_lags+multiple_resources": 0,
+  "max_time_lags+setup_times": 1,
+  "max_time_lags+preemption": 0,
+  "multi_mode+nonrenewable": 23,
+  "multi_mode+multiple_resources": 1,
+  "multi_mode+setup_times": 2,
+  "multi_mode+preemption": 9,
+  "nonrenewable+multiple_resources": 0,
+  "nonrenewable+setup_times": 0,
+  "nonrenewable+preemption": 0,
+  "multiple_resources+setup_times": 0,
+  "multiple_resources+preemption": 0,
+  "setup_times+preemption": 3
+ },
+ "anchor": "\"resource-constrained project scheduling\"",
+ "to": "2020-12-31",
+ "broad": {
+  "anchor": "scheduling",
+  "synonyms": {
+   "release_dates": [
+    "release dates",
+    "release times",
+    "ready times"
+   ],
+   "deadlines": [
+    "deadlines",
+    "due dates"
+   ],
+   "resource_calendar": [
+    "machine availability",
+    "unavailability periods",
+    "resource calendars",
+    "maintenance activities"
+   ],
+   "time_lags": [
+    "time lags",
+    "generalized precedence"
+   ],
+   "multi_mode": [
+    "multi-mode",
+    "multimode"
+   ],
+   "nonrenewable": [
+    "nonrenewable",
+    "non-renewable resources"
+   ],
+   "setup_times": [
+    "setup times",
+    "setup costs"
+   ],
+   "preemption": [
+    "preemption",
+    "preemptive"
+   ],
+   "multi_resource": [
+    "multi-resource",
+    "multiple resources"
+   ],
+   "precedence": [
+    "precedence constraints",
+    "precedence relations"
+   ]
+  },
+  "single": {
+   "release_dates": 1881,
+   "deadlines": 15737,
+   "resource_calendar": 1902,
+   "time_lags": 656,
+   "multi_mode": 1017,
+   "nonrenewable": 228,
+   "setup_times": 2462,
+   "preemption": 6502,
+   "multi_resource": 806,
+   "precedence": 2559
+  },
+  "pairs": {
+   "release_dates+deadlines": 622,
+   "release_dates+resource_calendar": 31,
+   "release_dates+time_lags": 17,
+   "release_dates+multi_mode": 8,
+   "release_dates+nonrenewable": 5,
+   "release_dates+setup_times": 174,
+   "release_dates+preemption": 307,
+   "release_dates+multi_resource": 5,
+   "release_dates+precedence": 161,
+   "deadlines+resource_calendar": 55,
+   "deadlines+time_lags": 40,
+   "deadlines+multi_mode": 61,
+   "deadlines+nonrenewable": 17,
+   "deadlines+setup_times": 210,
+   "deadlines+preemption": 1245,
+   "deadlines+multi_resource": 57,
+   "deadlines+precedence": 391,
+   "resource_calendar+time_lags": 2,
+   "resource_calendar+multi_mode": 6,
+   "resource_calendar+nonrenewable": 0,
+   "resource_calendar+setup_times": 36,
+   "resource_calendar+preemption": 53,
+   "resource_calendar+multi_resource": 3,
+   "resource_calendar+precedence": 15,
+   "time_lags+multi_mode": 41,
+   "time_lags+nonrenewable": 9,
+   "time_lags+setup_times": 28,
+   "time_lags+preemption": 21,
+   "time_lags+multi_resource": 1,
+   "time_lags+precedence": 124,
+   "multi_mode+nonrenewable": 59,
+   "multi_mode+setup_times": 7,
+   "multi_mode+preemption": 39,
+   "multi_mode+multi_resource": 4,
+   "multi_mode+precedence": 62,
+   "nonrenewable+setup_times": 1,
+   "nonrenewable+preemption": 16,
+   "nonrenewable+multi_resource": 3,
+   "nonrenewable+precedence": 23,
+   "setup_times+preemption": 69,
+   "setup_times+multi_resource": 16,
+   "setup_times+precedence": 67,
+   "preemption+multi_resource": 23,
+   "preemption+precedence": 228,
+   "multi_resource+precedence": 18
+  }
+ }
+}

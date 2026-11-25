@@ -412,3 +412,17 @@ E01 starts now.
 - **G06:** the literature-v2 reanalysis is done (+0.241 becomes +0.212 [+0.203, +0.219]). Corrections are annotated
   in the draft.
 - **All G01–G07 now have implementations and evidence;** each awaits Codex's verification.
+
+
+### Progress note — 25 November 2026 (E01 and Stage 2 runner) — Claude
+- **E01 scheduling** (`docs/e01-scheduling.md`):
+  - compiler, verifier, and an exact MILP **verified against brute force**;
+  - generator with a WL family hash; records; an end-to-end trace (132 scenarios, 0 verifier failures).
+  - **The instances are too easy so far** (the greedy rule is near-optimal).
+  - **L01 pre-check:** phrase atoms inside the RCPSP literature are degenerate (58% of pairs have zero
+    co-occurrence). The scheduling anchor with synonym groups is not: 1 of 45 pairs is zero, and the median is 28. The
+    synonym groups must be frozen before scoring.
+- **Stage 2 runner** (`src/gffs/tornado_study.py`, 6 tests):
+  - a gate on post-cutoff reads; task assembly; detectors fitted once and single-threaded; the rounded strict τ;
+  - account-level synthetic sets; A1/A2 metrics (block interval primary); the power rule; the D contrast.
+  - **Not yet exercised end to end:** it needs the finished pre-cutoff build, then the dry run.

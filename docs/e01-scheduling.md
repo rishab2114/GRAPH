@@ -40,3 +40,32 @@ learner could not show much.
 5. **Only then:** the E03 six-arm selection study, with frozen families and metrics.
 
 **Not claimed:** none of this yet shows that "alien" or "coherent" combinations help a learner. That is E03's question.
+
+## L01 pre-check: is the literature signal non-degenerate? (2026-11-25)
+
+Counted in OpenAlex, works published up to 2020-12-31 (`results/e01_literature_counts.json`).
+
+| Atom vocabulary | Works per atom | Pairs never co-occurring | Pairs under 10 works | Median pair |
+|---|---|---|---|---|
+| Single phrases within the **RCPSP** anchor, 10 atoms | 2–402 | **26 / 45 (58%)** | — | **0** |
+| **"Scheduling" anchor, with synonym groups**, 10 atoms | 228–15,737 | **1 / 45** | 13 / 45 | **28** (range 0–1,245) |
+
+**Reading:**
+- Phrase atoms inside the narrow RCPSP literature would make availability **degenerate**, as with S4.
+- The broad scheduling literature with synonym groups gives a usable spread.
+
+**Rules for using it:**
+- the synonym groups are a manual choice, so they must be **frozen before any score is computed**;
+- each group is checked against the atom's definition;
+- the L01 acceptance check (≤ 20% ties at the top-k boundary, limited D/C overlap) still has to pass on the actual
+  candidate pool;
+- abstract-level phrase matching is crude: counts are a lower bound, and they mix work that *studies* a combination
+  with work that merely *mentions* it (the distinction Cross-engine J07 draws).
+
+**Solver support needed for these 10 atoms:**
+- **Already supported:** precedence, release dates, deadlines, calendars, minimum lags.
+- **Easy to add:** maximum lags, multiple renewable resources.
+- **Moderate:** multi-mode activities with nonrenewable resources (mode-choice variables); preemption (a different
+  time-indexed model).
+- **Setup times:** only the sequence-independent form, which folds into durations. The sequence-dependent form is out
+  of scope for E01.
