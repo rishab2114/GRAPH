@@ -1,17 +1,22 @@
-"""Exact solver: time-indexed MILP (x[j,t] = 1 if task j starts at t), minimise makespan, via scipy's HiGHS."""
+"""Exact solver: time-indexed MILP, x[j,m,s] = 1 if task j runs in mode m starting at s; minimise makespan (HiGHS)."""
 from __future__ import annotations
 
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, milp
-from scipy.sparse import lil_matrix
+from scipy.sparse import coo_matrix
 
 from gffs.sched.spec import Instance
 
 
 def _certificate(inst: Instance) -> str | None:
     for task in inst.tasks:
-        windows = range(task.release, inst.horizon - task.duration + 1)
-        if not any(all(inst.cap(u) >= task.demand for u in range(s, s + task.duration)) for s in windows):
+        ok = False
+        for m in task.modes:
+            last = inst.horizon - m.duration if task.deadline is None else min(inst.horizon, task.deadline) - m.duration
+            if any(all(inst.cap_r(r, u) >= q for r, q in m.demand.items() for u in range(s, s + m.duration))
+                   for s in range(task.release, last + 1)):
+                ok = True; break
+        if not ok:
             return f"demand exceeds capacity in every window for task {task.id}"
     return None
 
@@ -20,54 +25,62 @@ def solve(inst: Instance, time_limit: float = 60.0) -> dict:
     cert = _certificate(inst)
     if cert:
         return {"status": "infeasible", "certificate": cert}
-    T = inst.horizon
-    tasks = inst.tasks
-    idx, var = {}, 0
+    T, tasks = inst.horizon, inst.tasks
+    idx = {}
     for j, task in enumerate(tasks):
-        last = T - task.duration if task.deadline is None else min(T, task.deadline) - task.duration
-        for s in range(task.release, last + 1):
-            idx[(j, s)] = var; var += 1
-    C = var; n = var + 1                                        # makespan variable
-    rows, lo, hi = [], [], []
+        for mi, m in enumerate(task.modes):
+            last = T - m.duration if task.deadline is None else min(T, task.deadline) - m.duration
+            for s in range(task.release, last + 1):
+                idx[(j, mi, s)] = len(idx)
+    C = len(idx); n = C + 1
+    rows, cols, vals, lo, hi = [], [], [], [], []
 
-    def add(coefs: dict, l: float, h: float):
-        r = lil_matrix((1, n))
+    def add(coefs: dict, l, h):
+        r = len(lo)
         for k, v in coefs.items():
-            r[0, k] = v
-        rows.append(r); lo.append(l); hi.append(h)
+            if v:
+                rows.append(r); cols.append(k); vals.append(v)
+        lo.append(l); hi.append(h)
+
+    by_task = {j: [(mi, s, k) for (jj, mi, s), k in idx.items() if jj == j] for j in range(len(tasks))}
+    start = lambda j: {k: s for (mi, s, k) in by_task[j]}
+    finish = lambda j: {k: s + tasks[j].modes[mi].duration for (mi, s, k) in by_task[j]}
+
+    def diff(pos: dict, neg: dict) -> dict:
+        out = dict(pos)
+        for k, v in neg.items():
+            out[k] = out.get(k, 0) - v
+        return out
 
     pos = {t.id: j for j, t in enumerate(tasks)}
-    for j, task in enumerate(tasks):
-        add({idx[(j, s)]: 1 for (jj, s) in idx if jj == j}, 1, 1)                       # start exactly once
-        add({**{idx[(j, s)]: -(s + task.duration) for (jj, s) in idx if jj == j}, C: 1}, 0, np.inf)   # C >= finish
+    for j in range(len(tasks)):
+        add({k: 1 for (_, _, k) in by_task[j]}, 1, 1)
+        add({**{k: -v for k, v in finish(j).items()}, C: 1}, 0, np.inf)
     for a, b in inst.precedence:
-        ja, jb = pos[a], pos[b]
-        co = {idx[(jb, s)]: s for (jj, s) in idx if jj == jb}
-        for (jj, s) in idx:
-            if jj == ja:
-                co[idx[(ja, s)]] = co.get(idx[(ja, s)], 0) - s
-        add(co, tasks[ja].duration, np.inf)                                             # S_b - S_a >= d_a
+        add(diff(start(pos[b]), finish(pos[a])), 0, np.inf)               # S_b - F_a >= 0
     for a, b, lag in inst.lags:
-        ja, jb = pos[a], pos[b]
-        co = {idx[(jb, s)]: s for (jj, s) in idx if jj == jb}
-        for (jj, s) in idx:
-            if jj == ja:
-                co[idx[(ja, s)]] = co.get(idx[(ja, s)], 0) - s
-        add(co, lag, np.inf)
-    for tau in range(T):
-        co = {idx[(j, s)]: tasks[j].demand for (j, s) in idx if s <= tau < s + tasks[j].duration and tasks[j].demand}
-        if co:
-            add(co, -np.inf, inst.cap(tau))
-    A = lil_matrix((len(rows), n))
-    for i, r in enumerate(rows):
-        A[i] = r
+        add(diff(start(pos[b]), start(pos[a])), lag, np.inf)
+    for a, b, lag in inst.max_lags:
+        add(diff(start(pos[b]), start(pos[a])), -np.inf, lag)
+    for nr, budget in inst.nonrenewable.items():
+        add({k: tasks[j].modes[mi].consumption.get(nr, 0) for (j, mi, s), k in idx.items()}, -np.inf, budget)
+    for r in inst.resources:
+        for tau in range(T):
+            co = {k: tasks[j].modes[mi].demand.get(r, 0) for (j, mi, s), k in idx.items()
+                  if s <= tau < s + tasks[j].modes[mi].duration}
+            if any(co.values()):
+                add(co, -np.inf, inst.cap_r(r, tau))
+    A = coo_matrix((vals, (rows, cols)), shape=(len(lo), n)).tocsr()
     c = np.zeros(n); c[C] = 1.0
-    integrality = np.ones(n); integrality[C] = 0
-    res = milp(c, constraints=LinearConstraint(A.tocsr(), lo, hi), integrality=integrality,
-               bounds=Bounds(np.zeros(n), np.r_[np.ones(var), T]), options={"time_limit": time_limit})
+    integ = np.ones(n); integ[C] = 0
+    res = milp(c, constraints=LinearConstraint(A, lo, hi), integrality=integ,
+               bounds=Bounds(np.zeros(n), np.r_[np.ones(C), T]), options={"time_limit": time_limit})
     if res.status == 2 or res.x is None:
-        return {"status": "infeasible", "certificate": "MILP proves no schedule fits the horizon" if res.status == 2 else res.message}
-    starts = {tasks[j].id: s for (j, s), k in idx.items() if res.x[k] > 0.5}
-    gap = getattr(res, "mip_gap", 0.0) or 0.0
+        return {"status": "infeasible", "certificate": "MILP proves no schedule fits" if res.status == 2 else str(res.message)}
+    starts, modes = {}, {}
+    for (j, mi, s), k in idx.items():
+        if res.x[k] > 0.5:
+            starts[tasks[j].id], modes[tasks[j].id] = s, mi
+    gap = float(getattr(res, "mip_gap", 0.0) or 0.0)
     return {"status": "optimal" if res.status == 0 and gap < 1e-9 else "feasible", "makespan": int(round(res.x[C])),
-            "starts": starts, "gap": float(gap)}
+            "starts": starts, "modes": modes, "gap": gap}
