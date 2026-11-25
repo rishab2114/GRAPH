@@ -42,3 +42,16 @@ def test_recovery_reports_enrichment_over_chance():
 def test_vendi_of_identical_pairs_is_one_and_of_disjoint_pairs_is_n():
     assert abs(vendi_pairs([("a", "b"), ("a", "b")]) - 1.0) < 1e-9
     assert abs(vendi_pairs([("a", "b"), ("c", "d"), ("e", "f")]) - 3.0) < 1e-9
+
+
+def test_concept_frequency_counts_works_up_to_year():
+    from gffs.alien_s4 import concept_frequency
+    f = concept_frequency(_works(), upto=2012)
+    assert f == {"a": 2, "b": 2, "c": 2, "d": 1}
+
+
+def test_stratified_recovery_reports_per_stratum_enrichment():
+    from gffs.alien_s4 import stratified_recovery
+    scores = np.array([0.9, 0.1, 0.8, 0.2]); hit = np.array([1, 0, 0, 1]); strata = np.array([0, 0, 1, 1])
+    r = stratified_recovery(scores, hit, strata, k_share=0.5)
+    assert r[0]["hits"] == 1 and r[1]["hits"] == 0

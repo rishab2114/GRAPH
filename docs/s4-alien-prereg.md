@@ -62,4 +62,18 @@ produces no prose. This follows the paper's own caution about low-availability s
 
 ## Deviations
 
-(none yet)
+- **2026-11-25, before any S4 score: Codex review G06.** The S4 *selection rule* is unchanged. Added:
+  1. **An authorship coverage manifest.**
+     - 7,261 of the 80,689 graph works (9%) have no author records: 7,135 returned with empty authorships, and 126
+       fetched by id where "empty" and "missing" cannot be told apart.
+     - Missing authors look like "no bridging community", so these counts are reported per target concept.
+  2. **The validation vocabulary is chosen from works up to 2013 only.** Before this, the context nodes were selected
+     with data through 2016 and reused for the 2013 forecast. That leak also affects the Stage 1 literature-v2
+     validation, which gets a separate disclosed reanalysis.
+  3. **A rarity control.** It uses the same fusion with z(−log1p(min concept frequency)) in place of unavailability,
+     plus recovery within coverage quintiles and within the zero-bridging stratum. Without it, "unavailability helps"
+     cannot be separated from "rare concepts help".
+  4. **S4 diagnostics:** distinct scores, ties, zero-bridging count, coherence spread, works per motif concept, overlap
+     with S1 and S2.
+  - *Known before running:* the 8 motif concepts have 0–73 works each up to 2016. Pairwise availability is therefore
+    expected to be mostly 0, i.e. degenerate. That would be reported as such.

@@ -105,6 +105,22 @@ def recovery(scores: np.ndarray, hit: np.ndarray, k: int) -> dict:
     return {"k": k, "hits": hits, "expected": float(expected), "enrichment": float(hits / expected) if expected else None}
 
 
+def concept_frequency(works: dict, upto: int) -> dict[str, int]:
+    from collections import Counter
+    return dict(Counter(c for w in works.values() if w["year"] <= upto for c in w["concepts"]))
+
+
+def stratified_recovery(scores: np.ndarray, hit: np.ndarray, strata: np.ndarray, k_share: float) -> dict:
+    """Recovery within each stratum (top k_share of that stratum's candidates), so a ranking cannot win by moving
+    between strata (G06: separate unavailability from rarity/coverage)."""
+    out = {}
+    for s in np.unique(strata):
+        m = strata == s
+        k = max(1, int(round(k_share * m.sum())))
+        out[int(s)] = recovery(scores[m], hit[m], k) if hit[m].sum() else {"k": k, "hits": 0, "expected": 0.0, "enrichment": None}
+    return out
+
+
 def vendi_pairs(pairs: list[tuple]) -> float:
     """Vendi score (effective number of distinct items) with Jaccard similarity between atom sets, as in the paper."""
     sets = [set(p) for p in pairs]
@@ -117,8 +133,9 @@ def vendi_pairs(pairs: list[tuple]) -> float:
 
 # ---------- data ----------
 
-def load_works() -> tuple[dict, aml_vocab.Vocabulary]:
-    """The v2 literature graph's works (same construction as gffs.literature_v2.main), from the local cache."""
+def load_works(vocab_year: int | None = None) -> tuple[dict, aml_vocab.Vocabulary]:
+    """The v2 literature graph's works (same construction as gffs.literature_v2.main), from the local cache.
+    `vocab_year` selects the context nodes from works up to that year only (G06); default = the config cutoff."""
     import tomllib
     cfg = tomllib.loads(CONFIG.read_text())
     v = aml_vocab.load(Path(cfg["base_vocabulary"]))
@@ -129,7 +146,7 @@ def load_works() -> tuple[dict, aml_vocab.Vocabulary]:
     first = json.loads(Path("data/openalex/v2/corpus/page_00000.json").read_text())
     source = l2.choose_source(first, ctx["source_preference"])
     corpus = l2.corpus_from_raw(raw, source, ctx["min_score"], ctx["min_level"])
-    nodes = l2.context_nodes(corpus, ctx["min_works"], ctx["max_nodes"], int(cfg["cutoff"][:4]))
+    nodes = l2.context_nodes(corpus, ctx["min_works"], ctx["max_nodes"], vocab_year or int(cfg["cutoff"][:4]))
     return l2.merge_works(v1_works, corpus, nodes, ctx["node_prefix"]), v
 
 
@@ -210,18 +227,29 @@ def temporal_validation(works: dict, authors: dict) -> dict:
     coh = coherence(works, t0, cand)
     bridge = np.array(bridging_counts(repertoires(works, authors, t0), cand))
     unav = -np.log1p(bridge)
+    freq = concept_frequency(works, t0)
+    minf = np.array([min(freq.get(a, 0), freq.get(b, 0)) for a, b in cand])
+    rarity = -np.log1p(minf)                                    # control: rarer concepts, no author information
     far = (bridge == 0).astype(int) * hit
     k = max(1, int(round(VALID["k_share"] * len(cand))))
+    quint = np.searchsorted(np.quantile(minf, [0.2, 0.4, 0.6, 0.8]), minf, side="right")   # coverage strata
     rows = []
     for b in VALID["betas"]:
-        s = fuse(coh, unav, b)
-        r_all, r_far = recovery(s, hit, k), recovery(s, far, k)
-        rows.append({"beta": b, "all": r_all, "far": r_far,
-                     "far_share_of_hits": (r_far["hits"] / r_all["hits"]) if r_all["hits"] else None})
+        s_av, s_ra = fuse(coh, unav, b), fuse(coh, rarity, b)
+        r_all, r_far = recovery(s_av, hit, k), recovery(s_av, far, k)
+        rows.append({"beta": b, "availability": {"all": r_all, "far": r_far,
+                                                 "far_share_of_hits": (r_far["hits"] / r_all["hits"]) if r_all["hits"] else None,
+                                                 "within_far_candidates": recovery(s_av[bridge == 0], hit[bridge == 0],
+                                                                                   max(1, int(round(VALID["k_share"] * (bridge == 0).sum())))),
+                                                 "by_coverage_quintile": stratified_recovery(s_av, hit, quint, VALID["k_share"])},
+                     "rarity_control": {"all": recovery(s_ra, hit, k), "far": recovery(s_ra, far, k),
+                                        "by_coverage_quintile": stratified_recovery(s_ra, hit, quint, VALID["k_share"])}})
     from scipy.stats import spearmanr
-    return {"t0": t0, "t1": t1, "candidates": len(cand), "targets": int(hit.sum()),
+    return {"t0": t0, "t1": t1, "vocabulary_selected_up_to": t0, "candidates": len(cand), "targets": int(hit.sum()),
             "far_targets_no_bridging_author": int(far.sum()), "k": k,
-            "spearman_coherence_vs_availability": float(spearmanr(coh, np.log1p(bridge)).statistic), "by_beta": rows}
+            "spearman_coherence_vs_availability": float(spearmanr(coh, np.log1p(bridge)).statistic),
+            "spearman_availability_vs_min_concept_frequency": float(spearmanr(np.log1p(bridge), minf).statistic),
+            "by_beta": rows}
 
 
 def select_s4(works: dict, authors: dict, scenario_pairs: list[tuple], t: int = 2016) -> dict:
@@ -231,8 +259,12 @@ def select_s4(works: dict, authors: dict, scenario_pairs: list[tuple], t: int = 
     order = np.argsort(-s, kind="stable")
     table = [{"pair": list(scenario_pairs[i]), "coherence": float(coh[i]), "bridging_authors": int(bridge[i]),
               "F": float(s[i]), "rank": r + 1} for r, i in enumerate(order)]
+    freq = concept_frequency(works, t)
     return {"t": t, "beta": BETA_S4, "pool": len(scenario_pairs), "ranking": table,
-            "S4": [row["pair"] for row in table[:N_S4]]}
+            "S4": [row["pair"] for row in table[:N_S4]],
+            "diagnostics": {"distinct_F": int(len(np.unique(np.round(s, 12)))), "distinct_bridging": int(len(np.unique(bridge))),
+                            "pairs_with_zero_bridging": int((bridge == 0).sum()), "coherence_sd": float(coh.std()),
+                            "concept_works_up_to_t": {c: int(freq.get(c, 0)) for c in sorted({x for p in scenario_pairs for x in p})}}}
 
 
 def main(argv=None):
@@ -240,14 +272,22 @@ def main(argv=None):
     if a.step == "fetch":
         fetch_authorships(); return
     works, _ = load_works(); authors = load_authors()
+    works13, _ = load_works(VALID["t0"])                           # G06: validation vocabulary chosen with 2013 data only
     lit_v2 = json.loads(Path("results/literature_graph_v2.json").read_text())
     pool = [tuple(s["pair"]) for s in lit_v2["scenarios"]]
     s1 = [tuple(s["pair"]) for s in lit_v2["scenarios"][:N_S4]]
     s4 = select_s4(works, authors, pool)
     from gffs.e3e4 import ALL_PAIRS  # S2 exactly as in Stage 1 (e3e4.run_cutoff)
     s2 = [tuple(ALL_PAIRS[i]) for i in np.random.default_rng(0).choice(len(ALL_PAIRS), 10, replace=False)]
-    out = {"paper": "Artiles et al. 2026, arXiv:2603.01092 (NeurIPS 2026)", "validation": temporal_validation(works, authors),
-           "s4": s4, "overlap_S4_S1": len({tuple(p) for p in s4["S4"]} & set(s1)),
+    cov = {"graph_works": len(works), "with_authors": sum(1 for w in works if authors.get(w)),
+           "explicitly_empty_or_unknown": sum(1 for w in works if not authors.get(w)),
+           "target_concept_works_without_authors": {c: sum(1 for w, r in works.items() if c in r["concepts"] and not authors.get(w))
+                                                    for c in sorted({x for p in pool for x in p})}}
+    fz = lambda ps: {frozenset(p) for p in ps}
+    s4set = fz(s4["S4"])
+    out = {"paper": "Artiles et al. 2026, arXiv:2603.01092 (NeurIPS 2026)", "authorship_coverage": cov,
+           "validation": temporal_validation(works13, authors),
+           "s4": s4, "overlap_S4_S1": len(s4set & fz(s1)), "overlap_S4_S2": len(s4set & fz(s2)),
            "vendi": {"S1": vendi_pairs(s1), "S2": vendi_pairs(s2), "S4": vendi_pairs([tuple(p) for p in s4["S4"]])}}
     Path("results").mkdir(exist_ok=True)
     Path("results/s4_alien.json").write_text(json.dumps(out, indent=1))
