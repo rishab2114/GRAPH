@@ -7,10 +7,13 @@ name = "gffs"
 version = "0.1.0"
 description = "Graph-Forecast Fraud Scenarios: forecast undocumented attack-technique combinations"
 requires-python = ">=3.11"
-dependencies = ["networkx", "pandas", "numpy", "scikit-learn", "requests"]
+dependencies = ["networkx", "pandas", "numpy", "scipy", "scikit-learn", "requests"]
 
 [project.optional-dependencies]
 dev = ["pytest"]
+# Ethereum readers and event decoding (gffs.ethereum, tornado_*): pyarrow reads the public S3 parquet, pycryptodome
+# computes keccak event signatures. `pip install -e ".[dev,ethereum]"` runs the whole test suite.
+ethereum = ["pyarrow", "pycryptodome"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
