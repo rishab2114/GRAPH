@@ -238,3 +238,52 @@ substitute for it.
     section.
   - *Unchanged.* It is **not** part of SYN. H1, H2–H4, the placebo rule and the power rule are unchanged.
 
+
+## Amendment A1 (2026-11-25): Codex review G01–G05
+
+Adopted **before any evaluation data exists**: no Stage 2 detector has been fitted, and no post-cutoff data has been
+read. The original sections stay as written; where they conflict, this amendment governs. Each item is discussed in
+`AGENT_DISCUSSION.md`.
+
+1. **One model for every arm (G01).**
+   - **Primary:** each detector is fitted **once**, on the training tasks (m0). Its threshold τ is set once, on the
+     calibration task's unlabelled sample. That same model and τ score S0 (the calibration positives, which m0 never
+     saw), S1–S3, SYN, S4, the baselines and the holdout.
+   - Each arm records its model's hash and τ.
+   - The §5 refit procedure is kept as a named **secondary "refit workflow"** comparison.
+2. **Resampling unit (G02).**
+   - Every synthetic instance keeps its scenario, instance ID, attachment address, seed and node IDs.
+   - Intervals come from a **cluster bootstrap over whole instances** (within each scenario), plus holdout and S0
+     positives, with 1,000 draws (seed 0).
+   - The same draw is used for every detector (paired) and every arm (one shared holdout draw).
+   - **Estimand:** node-weighted recall, as frozen. Equal-instance-weighted recall is reported as a labelled
+     sensitivity, and so is a bootstrap of real positives in blocks by deposit day.
+3. **Threshold ties (G03).**
+   - τ = the smallest score such that **at most 1%** of the calibration sample scores strictly above it; an address is
+     flagged iff its score > τ.
+   - The realised calibration alert rate is reported per detector. With ties it can be well below 1%.
+   - If every score is equal, the detector flags nothing and is reported as degenerate.
+   - The language stays "alert rate", never a false-positive rate.
+4. **Shift specificity and power (G05).**
+   - **H1 wording if met:** "replicated at this event; no detected advantage at these placebos".
+   - **Shift-specific contrast**, pre-specified: Δ = E4(SYN) − E4(S0) at each cutoff, and
+     **D = Δ_C − (Δ_P1 + Δ_P2)/2**, with independent bootstraps per cutoff. "Shift-specific" may be claimed only if D's
+     95% interval lies below 0. Caveats stated with it: one event, overlapping training histories, and P2's horizon ends
+     5 days before C.
+   - **Power:** "≥ 100 positives" is a **feasibility floor**, not a power calculation. A power simulation (binomial
+     noise around plausible per-detector recalls, n ∈ {50, 100, 200, 500}, 200 instances per scenario, instance-level
+     clustering) is run and committed **before any score is computed**.
+   - The 26-week branch is reported as a **different estimand**.
+5. **Cheap baselines (the review's "Investigate" point)**, pre-registered secondary arms for E4. Each predicts every
+   detector's holdout recall from pre-cutoff information only:
+   - **B_const:** the mean S0 recall across detectors;
+   - **B_shrink:** ½ × the detector's own S0 recall + ½ × that mean;
+   - **B_zero:** 0, a descriptive floor only.
+
+   If SYN does not beat B_shrink, the report says the lead **cannot be distinguished from generic shrinkage or low
+   predicted recall**.
+6. **Label name (G04).** A positive is the *first observed qualifying ETH-pool deposit by the top-level transaction
+   sender, under the recorded history and inclusion rules*. It says nothing about intent or identity.
+   - Trace labels count a call only when neither it nor any ancestor in the transaction has an error.
+   - Batched withdrawals are split by pool call frame; frames that do not fit are quarantined.
+   - Full-window reconciliation against the logs (2022-02-08..08-07), with misses and extras counted, precedes any use.
