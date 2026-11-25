@@ -85,17 +85,34 @@ def _order(a: str) -> tuple:
     return tuple(int(x) for x in a.split(",")) if a else ()
 
 
-def split_payments(pays: list[dict]) -> list[dict]:
-    """The pool pays the recipient first and the relayer second (ETHTornado._processWithdraw), so call order decides.
-    More than 2 payments in one (tx, pool) means a batch; `payments` records it and only the first pair is attributed."""
+def effective_ok(traces: list[dict]) -> set[tuple]:
+    """(tx, trace_address) of calls that took effect: neither the call nor any ancestor in its transaction has an error.
+    The traces' `status` column is not used: it was wrong in both directions in the pilot (49 + 1 cases)."""
+    err = {(t["tx"], _order(t["order"] or "")): bool(t["error"]) for t in traces}
+    ok = set()
+    for (tx, o), e in err.items():
+        if not e and not any(err.get((tx, o[:i]), False) for i in range(len(o))):
+            ok.add((tx, ",".join(map(str, o)) if o else None))
+    return ok
+
+
+def withdrawals_from_payments(pays: list[dict]) -> list[dict]:
+    """One withdrawal per pool call frame (a batch makes several frames). In a frame the pool pays the recipient first,
+    then the relayer (ETHTornado._processWithdraw). Frames that do not fit that pattern are kept as `ambiguous`, with
+    every payee listed, instead of being given roles."""
     by: OrderedDict = OrderedDict()
     for p in pays:
-        by.setdefault((p["tx"], p["pool"]), []).append(p)
+        o = _order(p.get("order") or "")
+        by.setdefault((p["tx"], p["pool"], o[:-1]), []).append((o, p))
     out = []
-    for (tx, pool), ps in by.items():
-        ps = sorted(ps, key=lambda p: _order(p.get("order", "")))
-        out.append({"tx": tx, "pool": pool, "recipient": ps[0]["to"], "fee_payee": ps[1]["to"] if len(ps) > 1 else None,
-                    "payments": len(ps)})
+    for (tx, pool, _), ps in by.items():
+        ps = [p for _, p in sorted(ps, key=lambda x: x[0])]
+        denom = eth.POOL_DENOMINATION_WEI[pool]
+        total = sum(p["value"] for p in ps)
+        fits = len(ps) in (1, 2) and abs(total - denom) <= TOL
+        out.append({"tx": tx, "pool": pool, "recipient": ps[0]["to"] if fits else None,
+                    "fee_payee": ps[1]["to"] if fits and len(ps) == 2 else None,
+                    "payees": [p["to"] for p in ps], "ambiguous": not fits, "payments": len(ps)})
     return out
 
 
@@ -117,13 +134,19 @@ def study_day(fs, d: date, ofac: set[str], write_edges: bool) -> tuple[dict, set
         pq.write_table(pa.table({"src": frm, "dst": to, "category": pa.array(cats).dictionary_encode()}),
                        STUDY / "edges" / f"{d}.parquet")
     tr = eth.read_day(fs, "traces", d.isoformat(),
-                      ["transaction_hash", "from_address", "to_address", "value", "call_type", "trace_address"])
+                      ["transaction_hash", "from_address", "to_address", "value", "call_type", "trace_address", "error"])
     pools = pa.array(list(eth.POOL_DENOMINATION_WEI))
     real = pc.and_(pc.equal(tr["call_type"], "call"), pc.greater(tr["value"], 0))
     tf, tt = pc.utf8_lower(tr["from_address"]), pc.utf8_lower(tr["to_address"])
     out_t = tr.filter(pc.and_(real, pc.is_in(tf, value_set=pools)))         # pool payments (withdrawals)
     in_t = tr.filter(pc.and_(real, pc.is_in(tt, value_set=pools)))          # pool inflows (deposits)
     oh, ih = pc.utf8_lower(out_t["transaction_hash"]), pc.utf8_lower(in_t["transaction_hash"])
+    # G04: every trace of the pool-touching transactions, to drop calls whose own frame or an ancestor failed
+    th = pc.utf8_lower(tr["transaction_hash"])
+    anc = tr.filter(pc.is_in(th, value_set=pc.unique(pa.concat_arrays([oh.combine_chunks(), ih.combine_chunks()]))))
+    took_effect = effective_ok([{"tx": a.lower(), "order": o, "error": e} for a, o, e in
+                                zip(anc["transaction_hash"].to_pylist(), anc["trace_address"].to_pylist(),
+                                    anc["error"].to_pylist())])
     # receipt status and sender of every transaction touching a pool (only successful ones count)
     sel = pc.is_in(h, value_set=pc.unique(pa.concat_arrays([oh.combine_chunks(), ih.combine_chunks()])))
     info = {a: (b, c) for a, b, c in zip(h.filter(sel).to_pylist(), frm.filter(sel).to_pylist(), st.filter(sel).to_pylist())}
@@ -132,16 +155,22 @@ def study_day(fs, d: date, ofac: set[str], write_edges: bool) -> tuple[dict, set
             for a, b, c, v, o in zip(oh.to_pylist(), pc.utf8_lower(out_t["from_address"]).to_pylist(),
                                      out_t["to_address"].to_pylist(), out_t["value"].to_pylist(),
                                      out_t["trace_address"].to_pylist()) if ok_tx(a)]
-    wds = split_payments(pays)
+    n_pay = len(pays)
+    pays = [p for p in pays if (p["tx"], p["order"]) in took_effect]
+    wds = withdrawals_from_payments(pays)
     for w in wds:
         w["tx_sender"] = info[w["tx"]][0]
-    ins = [{"tx": a, "pool": b, "value": v} for a, b, v in
-           zip(ih.to_pylist(), pc.utf8_lower(in_t["to_address"]).to_pylist(), in_t["value"].to_pylist()) if ok_tx(a)]
+    ins = [{"tx": a, "pool": b, "value": v, "order": o} for a, b, v, o in
+           zip(ih.to_pylist(), pc.utf8_lower(in_t["to_address"]).to_pylist(), in_t["value"].to_pylist(),
+               in_t["trace_address"].to_pylist()) if ok_tx(a)]
+    n_in = len(ins)
+    ins = [x for x in ins if (x["tx"], x["order"]) in took_effect]
     deps = pool_deposits(ins)
     for x in deps:
         x["depositor"] = info[x["tx"]][0]
     stats = {"n_tx": tx.num_rows, "tornado_txs": len(rows), "deposits": len(deps), "pool_inflows_not_denomination":
-             len(ins) - len(deps), "withdrawals": len(wds), "batched_withdrawal_groups": sum(w["payments"] > 2 for w in wds),
+             len(ins) - len(deps), "withdrawals": len(wds), "ambiguous_withdrawal_frames": sum(w["ambiguous"] for w in wds),
+             "pool_calls_dropped_by_ancestry": (n_pay - len(pays)) + (n_in - len(ins)),
              "payments_in_failed_or_missing_tx": int(out_t.num_rows) - len(pays), "senders": len(senders)}
     return {"day": d.isoformat(), "tornado_txs": rows, "deposits": deps, "withdrawals": wds, "stats": stats}, senders
 

@@ -1,7 +1,7 @@
 from datetime import date
 
-from gffs.tornado_study_data import (DENOMS, pool_deposits, reference_month, split_payments, task_dates,
-                                     tornado_rows)
+from gffs.tornado_study_data import (DENOMS, pool_deposits, reference_month, task_dates, tornado_rows,
+                                     withdrawals_from_payments)
 
 POOL1 = "0x47ce0c6ed5b0ce3d3a51fdb1c52dc66a7c3c2936"   # 1 ETH
 
@@ -40,6 +40,39 @@ def test_split_payments_uses_call_order_recipient_first():
     pays = [{"tx": "0x1", "pool": P01, "to": "0xl", "value": 6e16, "order": "0,2"},
             {"tx": "0x1", "pool": P01, "to": "0xr", "value": 4e16, "order": "0,1"},
             {"tx": "0x2", "pool": POOL1, "to": "0xs", "value": 1e18, "order": "0,10"}]
-    out = split_payments(pays)
-    assert out == [{"tx": "0x1", "pool": P01, "recipient": "0xr", "fee_payee": "0xl", "payments": 2},
-                   {"tx": "0x2", "pool": POOL1, "recipient": "0xs", "fee_payee": None, "payments": 1}]
+    out = withdrawals_from_payments(pays)
+    assert [(w["tx"], w["recipient"], w["fee_payee"], w["ambiguous"]) for w in out] == \
+        [("0x1", "0xr", "0xl", False), ("0x2", "0xs", None, False)]
+
+
+# ---- G04 (Codex review 2026-11-24): call ancestry, batches, zero fees ----
+from gffs.tornado_study_data import effective_ok, withdrawals_from_payments  # noqa: E402
+
+P10 = "0x12d66f87a04a9e220743712ce6d9bb1b5616b8fc"   # 0.1 ETH
+
+
+def test_a_call_counts_only_if_it_and_every_ancestor_has_no_error():
+    tr = [{"tx": "0x1", "order": None, "error": None}, {"tx": "0x1", "order": "0", "error": "Reverted"},
+          {"tx": "0x1", "order": "0,0", "error": None},                 # caught revert: parent failed, outer tx fine
+          {"tx": "0x1", "order": "1", "error": None}, {"tx": "0x1", "order": "1,0", "error": None},
+          {"tx": "0x2", "order": "0", "error": "Out of gas"}]
+    ok = effective_ok(tr)
+    assert ("0x1", "0,0") not in ok and ("0x1", "0") not in ok and ("0x2", "0") not in ok
+    assert ("0x1", "1,0") in ok and ("0x1", "1") in ok
+
+
+def test_batched_withdrawals_are_split_by_their_pool_call_frame():
+    pays = [{"tx": "0x1", "pool": POOL1, "to": "0xl", "value": 3e15, "order": "0,2"},
+            {"tx": "0x1", "pool": POOL1, "to": "0xr1", "value": 1e18 - 3e15, "order": "0,1"},
+            {"tx": "0x1", "pool": POOL1, "to": "0xr2", "value": 1e18 - 3e15, "order": "1,1"},
+            {"tx": "0x1", "pool": POOL1, "to": "0xl", "value": 3e15, "order": "1,2"}]
+    out = withdrawals_from_payments(pays)
+    assert [(w["recipient"], w["fee_payee"], w["ambiguous"]) for w in out] == [("0xr1", "0xl", False), ("0xr2", "0xl", False)]
+
+
+def test_zero_fee_single_payment_is_recipient_and_fee_equal_to_denomination_is_ambiguous():
+    pays = [{"tx": "0x1", "pool": P10, "to": "0xs", "value": 1e17, "order": "0,1"},      # zero fee
+            {"tx": "0x2", "pool": P10, "to": "0xl", "value": 1e17 - 1e14, "order": "0,1"}]  # recipient got 0: unseen
+    out = withdrawals_from_payments(pays)
+    assert (out[0]["recipient"], out[0]["fee_payee"], out[0]["ambiguous"]) == ("0xs", None, False)
+    assert out[1]["ambiguous"] and out[1]["payees"] == ["0xl"]
