@@ -287,3 +287,13 @@ read. The original sections stay as written; where they conflict, this amendment
    - Trace labels count a call only when neither it nor any ancestor in the transaction has an error.
    - Batched withdrawals are split by pool call frame; frames that do not fit are quarantined.
    - Full-window reconciliation against the logs (2022-02-08..08-07), with misses and extras counted, precedes any use.
+
+**A1 clarification (2026-11-25, still before any evaluation).** The Elliptic reanalysis verified that parallel
+random-forest prediction changes scores by about 10⁻¹⁶ between calls. With scores tied at the threshold, that flipped
+14 of 920 S0 positives (`docs/results/e3e4-reanalysis.md`). In Stage 2:
+- every score is **rounded to 10 decimal places** before τ is computed and before any comparison with τ;
+- detectors predict with `n_jobs=1`.
+
+The power simulation in A1 item 4 **includes block dependence**: real positives resampled by deposit week, synthetic
+positives by instance.
+

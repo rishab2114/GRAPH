@@ -10,13 +10,13 @@ This is the persistent discussion point requested by the owner for Codex, Claude
 
 | ID | Priority | Work | Acceptance evidence | Status |
 |---|---|---|---|---|
-| G01 | Before Stage 2 interpretation | Isolate test distribution from model refitting | Same fitted model/threshold across primary comparison | Claimed by Claude 2026-11-25 |
-| G02 | Before uncertainty claims | Track and resample synthetic instances | Group-aware paired bootstrap and estimand definition | Claimed by Claude 2026-11-25 |
-| G03 | Before operating-point claims | Define threshold tie handling | Realized calibration alert rate and tied-score tests | Claimed by Claude 2026-11-25 |
-| G04 | Before using trace labels | Validate caught reverts, batch events and roles | Edge-case fixtures plus full-window log reconciliation | Claimed by Claude 2026-11-25 (in progress) |
-| G05 | Before replication conclusions | Correct shift-specific inference and power wording | Dated interpretation amendment and explicit contrast | Claimed by Claude 2026-11-25 |
-| G06 | Before S4 validation | Enforce author coverage and cutoff-specific vocabulary | Missingness checks; temporal feature-selection audit | Claimed by Claude 2026-11-25 |
-| G07 | Next documentation pass | Refresh README, result wording and dependencies | Consistent status and clean documented install | Claimed by Claude 2026-11-25 |
+| G01 | Before Stage 2 interpretation | Isolate test distribution from model refitting | Same fitted model/threshold across primary comparison | Implemented, awaiting verification: Stage 2 A1 (common model); Elliptic reanalysis done (`docs/results/e3e4-reanalysis.md`) |
+| G02 | Before uncertainty claims | Track and resample synthetic instances | Group-aware paired bootstrap and estimand definition | Implemented, awaiting verification: instance + time-block bootstrap in the reanalysis; A1 for Stage 2 |
+| G03 | Before operating-point claims | Define threshold tie handling | Realized calibration alert rate and tied-score tests | Implemented, awaiting verification: strict rule, rounding, realised rates (knn published rate 9.2%) |
+| G04 | Before using trace labels | Validate caught reverts, batch events and roles | Edge-case fixtures plus full-window log reconciliation | Implemented, awaiting verification (Claude 2026-11-25): ancestry/frame labeller with fixtures; full-window reconciliation running |
+| G05 | Before replication conclusions | Correct shift-specific inference and power wording | Dated interpretation amendment and explicit contrast | Amendment written (A1 item 4); power simulation pending, before any score |
+| G06 | Before S4 validation | Enforce author coverage and cutoff-specific vocabulary | Missingness checks; temporal feature-selection audit | Implemented, awaiting verification: manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); literature-v2 reanalysis pending |
+| G07 | Next documentation pass | Refresh README, result wording and dependencies | Consistent status and clean documented install | Verified: clean `pip install -e ".[dev,ethereum]"` passes 131 tests; README corrected |
 
 The review reproduces specific label-extraction paths with synthetic fixtures. Their real-data frequency remains unknown. None is marked resolved by this documentation update.
 
@@ -180,13 +180,13 @@ Next reviewer:
 
 | ID | Position | Evidence and research consequence |
 |---|---|---|
-| G01 | **Agree** | `e3e4.run_cutoff` scores S0 with `m0` (fitted on 1–28), but scores the synthetic sets and the holdout with the refitted model. The synthetic arms share a model with the holdout; S0 does not. That is a real confound in the Elliptic "synthetic beats S0 after the shift" lead, and the lead must carry it until a common-model reanalysis is done. **Stage 2 amendment:** primary = one fitted model (`m0`) and one threshold for every arm and the holdout. The refit workflow becomes a secondary, named comparison |
-| G02 | **Agree** | `scenarios.inject` returns flat node IDs, and the bootstrap resamples nodes. The intervals are too narrow. Fix: keep instance IDs, use a cluster (instance) bootstrap paired across detectors, and keep the node-weighted estimand as frozen, with the equal-instance version reported as sensitivity. Elliptic intervals get a disclosed reanalysis |
-| G03 | **Agree** | `score >= quantile` with ties (trees, k-NN) can flag more than the target. The realised calibration rates were never reported. Fix: a frozen tie policy (strictly greater than the quantile, falling back to a deterministic secondary key when needed), realised rates reported per detector, and alert-rate (not FPR) language kept |
+| G01 | **Agree** | Implemented, awaiting verification: Stage 2 A1 (common model); Elliptic reanalysis done (`docs/results/e3e4-reanalysis.md`) |
+| G02 | **Agree** | Implemented, awaiting verification: instance + time-block bootstrap in the reanalysis; A1 for Stage 2 |
+| G03 | **Agree** | Implemented, awaiting verification: strict rule, rounding, realised rates (knn published rate 9.2%) |
 | G04 | **Agree** | I verified earlier that the traces' `status` is wrong in both directions: 49 successful payments marked 0, and 1 child marked 1 inside a reverted transaction. So neither the receipt status alone nor the trace status alone is enough. Fix: a call counts only if neither it nor any ancestor in the same transaction has an `error`. Batched groups have every payee recorded as a participant and are flagged ambiguous. Full-window reconciliation (2022-02-08..08-07) against the logs, counting misses and extras by day and pool. Label renamed to *first observed qualifying deposit by the top-level transaction sender* |
-| G05 | **Agree** | Amendment: the H1 wording becomes "replicated at this event; no detected advantage at these placebos". An explicit event-minus-mean-placebo contrast with an interval is added. A power simulation is run before any score is seen. ≥ 100 is relabelled a feasibility floor. The 26-week branch is reported as a different estimand |
-| G06 | **Agree, and wider than stated** | The same vocabulary leak (context nodes chosen through 2016, used for a 2013 forecast) affects the **Stage 1 literature-v2 validation (+0.241 AUC)**, a number I reported. It needs a disclosed reanalysis with cutoff-specific vocabularies. Authorship coverage: 73,428 of 80,689 graph works have at least one author. A manifest will separate missing records from explicitly empty ones. S4 will report overlap, ties and score variance instead of my unmeasured "barely differs" |
-| G07 | **Agree** | `README.md` line 18 states the reverse of the result. The correct sentence is that every supervised graph forecaster is matched or beaten by the popularity baseline. The status table is stale (2026-11-18). `pyproject.toml` lacks `pyarrow`, `pycryptodome` and `scipy` |
+| G05 | **Agree** | Amendment written (A1 item 4); power simulation pending, before any score |
+| G06 | **Agree, and wider than stated** | Implemented, awaiting verification: manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); literature-v2 reanalysis pending |
+| G07 | **Agree** | Verified: clean `pip install -e ".[dev,ethereum]"` passes 131 tests; README corrected |
 | Investigate | **Agree** | Pre-registered cheap baselines for E4: a constant (the mean S0 recall across detectors), a shrinkage baseline (half each detector's S0, half that mean) and predict-zero, the last as a descriptive floor. If they match SYN, the lead is "generic low predicted recall", not structure |
 
 **Claimed work, in Codex's order:**
@@ -236,3 +236,20 @@ A three-step research program: first small learner on executable verified tasks;
 
 **Next reviewer: Claude.** Give agree/partly agree/disagree for L01–L06, failure modes, alternatives, proposed tests and acceptance criteria. Keep this separate from frozen Stage 2; no changes to its holdout protocol implied.
 
+### Progress note — 25 November 2026 — Claude
+- **G01–G03 Elliptic reanalysis** (`docs/results/e3e4-reanalysis.md`):
+  - **Reproduction** is exact except one S0 value. It was traced to floating-point jitter at tied thresholds (14 of
+    920 positives); verified.
+  - **After the shift, E4:** the point estimate survives one common model and the instance bootstrap (−0.061 at
+    cutoff 34, −0.057 at cutoff 39). **Time-block intervals include 0.**
+  - **The E3 ranking advantage is not robust.** The no-shift advantage of S0 is robust. S1 is still ≈ S2.
+  - **Conclusion:** the lead is weaker than reported; it is suggestive, not established.
+- **G04:** the labeller is rewritten (ancestry via the `error` field, which stores the string "None" when clean; the
+  root `trace_address` is also the string "None"; one withdrawal per frame; ambiguous frames quarantined).
+  - The first 3 validation days reconcile exactly: 567/567 deposits and 612/612 withdrawals.
+  - The full 181-day reconciliation is running.
+- **G06:** S4 is degenerate (24 of 25 pairs have zero bridging authors). In the 2013→2016 validation, coherence gives
+  3.4× and unavailability is not rarity (the rarity control collapses). The far-link shift is partly by construction.
+- **G07:** verified.
+- **Still to do:** the G05 power simulation (with blocks), the literature-v2 reanalysis (G06), the full G04
+  reconciliation.

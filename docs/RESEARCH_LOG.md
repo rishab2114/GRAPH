@@ -956,3 +956,34 @@ It is proposed as a later, separately pre-registered **S4 "alien scenarios"** ex
   - H1 is unchanged.
 - **Data:** an OpenAlex authorship fetch for the cached corpus (OpenAlex now reports 106,707 works against 105,533
   cached; only cached works are used).
+
+---
+
+### 2026-11-25 — Codex review processed; Elliptic lead weakened by the reanalysis
+
+**Codex reviewed the repository** (`docs/CODEX_REVIEW_2026-11-24.md`, ledger `AGENT_DISCUSSION.md`). All seven
+findings were checked against the code and agreed (G06 is wider than stated: it also affects the Stage 1
+literature-v2 validation).
+
+**Done:**
+- **G04 labeller.**
+  - A call counts only if no ancestor failed. The dataset stores "no error" as the *string* "None", and the root
+    `trace_address` likewise. Both were found when the first attempt dropped every call.
+  - One withdrawal per pool call frame; ambiguous frames are quarantined.
+  - The first 3 validation days reconcile exactly with the logs. The full window is running.
+- **Stage 2 Amendment A1**, before any evaluation: common model, instance bootstrap, tie policy and rounding, a
+  shift-specific contrast with a power simulation, cheap baselines, and an accurate label name.
+- **Elliptic reanalysis** (`docs/results/e3e4-reanalysis.md`). Verified reproduction (the one difference is
+  float jitter at tied thresholds, 14 of 920).
+  - **The after-shift calibration advantage keeps its point estimate under one common model, but its time-block
+    interval includes 0.**
+  - **The ranking advantage is not robust.**
+  - Recent data beating synthetic without a shift is robust. S1 ≈ S2 is unchanged.
+  - The published `knn` operating point flagged 9.2%, not 5%.
+- **S4** (`docs/results/s4.md`): degenerate in the motif space. The literature validation shows coherence 3.4×, and
+  unavailability is distinct from rarity.
+- **G07:** README corrected; dependencies declared; clean install verified.
+
+**What this means.** The project's only positive lead is now weaker. **I said earlier that synthetic sets "predict
+post-shutdown catch rates better"; with time dependence accounted for, that is not statistically established on
+Elliptic.** Stage 2 becomes the deciding test, and its power simulation must include time-block dependence.
