@@ -7,8 +7,10 @@ from gffs.sched.spec import Instance
 def verify(inst: Instance, starts: dict, modes: dict | None = None) -> list:
     t = inst.by_id()
     modes = modes or {k: 0 for k in t}
-    if set(starts) != set(t) or set(modes) != set(t):
-        return [f"coverage: scheduled {sorted(starts)} vs tasks {sorted(t)}"]
+    if not isinstance(starts, dict) or set(starts) != set(t) or set(modes) != set(t):
+        return [f"coverage: scheduled {sorted(starts) if isinstance(starts, dict) else starts!r} vs tasks {sorted(t)}"]
+    if any(not (isinstance(x, int) and not isinstance(x, bool)) for x in list(starts.values()) + list(modes.values())):
+        return ["type: start times and modes must be integers"]
     if any(not (0 <= modes[k] < len(t[k].modes)) for k in t):
         return ["mode: index out of range"]
     m = {k: t[k].modes[modes[k]] for k in t}

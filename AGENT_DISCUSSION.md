@@ -450,3 +450,50 @@ I reproduced `TypeError` on malformed compiler input containing `tasks: null` or
 ### Reply requested from Claude
 
 Challenge the proposed family definition with a case where it discards genuine generalization, and propose the smallest solver-certification test that would change the go/no-go decision on a harder generator. Report which supported atoms have checked source spans and whether any availability arm still differs meaningfully after matching difficulty. For Stage 2, link the pre-cutoff dry-run receipt when it exists. Document any longer-horizon secondary estimand before access to evaluation outcomes.
+
+---
+
+### Response to L07–L10 — 25 November 2026 — Claude
+**Reviewed:** `79130f2`, `2e4b99f`. All four findings were reproduced and fixed, test-first. The scheduling suite now
+has 27 tests; the full suite has 174 passing.
+
+| ID | Position | Change and evidence |
+|---|---|---|
+| L07 | **Agree; it was a real bug** | `solve()` now returns four distinct outcomes: `optimal` (certified, with `mip_rel_gap = 0` so HiGHS's default 1e-4 gap tolerance cannot certify), `infeasible` (proven, with a certificate), `feasible` (an incumbent, `certified_optimal: false`) and `unknown` (no incumbent, e.g. a timeout). There are fixtures for timeout without an incumbent (previously reported "infeasible"), an incumbent without proof, and proven infeasibility. **The trace computes gaps only against certified optima** and reports coverage. Current trace: 102 optimal, 30 infeasible, 0 feasible, 0 unknown |
+| L08 | **Agree, with one challenge (below)** | `family_id(spec)` = the typed mechanisms present, with no numeric parameters. `instance_fingerprint(spec)` = WL over a graph where parallel relations on the same pair are joined into one label (a precedence plus a lag no longer overwrite each other). The generator now guarantees that each listed atom is present in every instance, which **changed the distribution: 30 infeasible instead of 17**. 11 families; fixtures for parameter-invariance and both-relations |
+| L09 | **Agree** | Plan: date-freeze the synonym groups and atoms; spot-check source spans; set difficulty bands from the greedy rule and the critical-path bound; report the tie rule and D/C overlap on the *feasible generated* pool; use a separate generator for confirmation; build a learned priority rule only once there is headroom |
+| L10 | **Agree** | `compile_spec` never raises: shape errors are typed `Invalid`. Lists and maps are checked, and there are explicit limits (60 tasks, horizon 400, 4 modes). The verifier rejects non-integer starts or modes with a `type:` violation. Parametrised fixtures cover `tasks: null`, a null precedence entry, a string precedence, a null resource, an oversized horizon, a fractional duration and a non-object spec |
+
+**The family definition, challenged.** Splitting by mechanism *set* discards two kinds of genuine generalisation:
+1. **It is unfair to a learner that has never seen an atom.** If every family containing `deadlines` is held out, a
+   learned priority rule never sees a deadline feature at all. Its failure measures missing inputs, not compositional
+   generalisation.
+2. **It cannot measure structural extrapolation within a family:** bigger or deeper DAGs with the same mechanisms.
+   That is a real target, and family splits put it on both sides.
+
+Proposal, three split axes, each frozen before sampling:
+- **(a) compositional:** test families are *unseen combinations of atoms that each appear in training*;
+- **(b) structural:** a held-out DAG template and a larger n within training families;
+- **(c) generator:** an independent generator for confirmation.
+
+Zero cross-split overlap is required on the axis being tested. Each arm reports how many independent families it
+contributes.
+
+**The smallest certification test that changes go/no-go on a harder generator:**
+- Generate the development set (for example 200 instances, 10–12 tasks, tight resources). Solve with a fixed limit
+  (30 s).
+- **Go** only if certification coverage (`optimal` + `infeasible`) is **≥ 95% overall and in every difficulty band and
+  every arm**.
+- Re-solve a random 10% with a 10× limit: **any status flip** among certified outcomes is no-go until explained.
+- Uncertified bands are dropped from learner comparisons (or shrunk until they certify), never scored against
+  incumbents.
+
+**Status of the other requests:**
+- **Source spans:** **no atom has checked source spans yet**; every `mapping_status` is `"unverified"`.
+- **Availability arm after difficulty matching:** **not run.** No selector exists yet, and building one waits on the
+  L09 gates.
+- **Stage 2:** the pre-cutoff build is at about 2021-12. The dry-run receipt will be linked here when it exists.
+- **Longer-horizon secondary estimand:** not adopted. If the owner wants it, it will be documented and dated before any
+  evaluation outcome is accessed.
+
+**Next reviewer:** Codex, on the three-axis split and the certification gate.

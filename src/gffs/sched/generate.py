@@ -40,11 +40,12 @@ def generate(composition: tuple[str, ...], template: str, seed: int, n: int | No
         es[i] = max([es[p] + dur[p] for p in g.predecessors(i)], default=0)
     horizon = sum(dur) + 4
     tasks = []
+    must_r, must_d = rng.randrange(n), rng.randrange(n)             # each listed atom is present in every instance (L08)
     for i in range(n):
         t = {"id": f"t{i}", "duration": dur[i], "demand": dem[i]}
-        if "release_dates" in composition and rng.random() < 0.5:
-            t["release"] = rng.randint(0, 4)
-        if "deadlines" in composition and rng.random() < 0.5:
+        if "release_dates" in composition and (i == must_r or rng.random() < 0.5):
+            t["release"] = rng.randint(1, 4)
+        if "deadlines" in composition and (i == must_d or rng.random() < 0.5):
             t["deadline"] = es[i] + dur[i] + rng.randint(0, 3)          # tight: some instances become infeasible
         tasks.append(t)
     spec = {"tasks": tasks, "precedence": [[f"t{a}", f"t{b}"] for a, b in edges],
@@ -70,15 +71,49 @@ def rename(spec: dict, seed: int) -> dict:
     return out
 
 
-def canonical_hash(spec: dict) -> str:
-    """Weisfeiler-Lehman hash of the labelled precedence/lag graph plus resource data: invariant to names and order."""
+MECHANISMS = ("release_dates", "deadlines", "resource_calendar", "min_time_lags", "max_time_lags", "multi_mode",
+              "nonrenewable", "multiple_resources")
+
+
+def mechanisms(spec: dict) -> list[str]:
+    """Typed mechanisms present in a spec, independent of every numeric parameter."""
+    tasks = spec.get("tasks", [])
+    res = spec.get("resources") or {"r": spec.get("resource", {})}
+    present = {"release_dates": any(t.get("release", 0) > 0 for t in tasks),
+               "deadlines": any(t.get("deadline") is not None for t in tasks),
+               "resource_calendar": any(r.get("calendar") for r in res.values()),
+               "min_time_lags": bool(spec.get("lags")), "max_time_lags": bool(spec.get("max_lags")),
+               "multi_mode": any(len(t.get("modes", [])) > 1 for t in tasks),
+               "nonrenewable": bool(spec.get("nonrenewable")), "multiple_resources": len(res) > 1}
+    return [m for m in MECHANISMS if present[m]]
+
+
+def family_id(spec: dict) -> str:
+    """Composition family = the set of typed mechanisms (plus the always-present core). Split units are families, so
+    no family appears on both sides of a split; numeric parameters never change the family (Codex L08)."""
+    return "fam:" + "+".join(["precedence", "renewable_capacity"] + mechanisms(spec))
+
+
+def instance_fingerprint(spec: dict) -> str:
+    """Name- and order-invariant fingerprint of one instance, for deduplication and renaming checks. Parallel relations
+    on the same pair (precedence and a lag) are kept together in one edge label, never overwritten (Codex L08)."""
     g = nx.DiGraph()
     for t in spec["tasks"]:
-        g.add_node(t["id"], label=f"{t['duration']}/{t['demand']}/{t.get('release', 0)}/{t.get('deadline', '-')}")
+        g.add_node(t["id"], label=f"{t.get('duration')}/{t.get('demand')}/{t.get('release', 0)}/{t.get('deadline', '-')}"
+                                  f"/{json.dumps(t.get('modes'), sort_keys=True)}")
+    rel: dict = {}
     for a, b in spec["precedence"]:
-        g.add_edge(a, b, label="fs")
+        rel.setdefault((a, b), []).append("fs")
     for a, b, l in spec.get("lags", []):
-        g.add_edge(a, b, label=f"lag{l}")
+        rel.setdefault((a, b), []).append(f"min{l}")
+    for a, b, l in spec.get("max_lags", []):
+        rel.setdefault((a, b), []).append(f"max{l}")
+    for (a, b), labels in rel.items():
+        g.add_edge(a, b, label="|".join(sorted(labels)))
     wl = nx.weisfeiler_lehman_graph_hash(g, node_attr="label", edge_attr="label", iterations=4)
-    res = json.dumps({"r": spec["resource"], "h": spec["horizon"]}, sort_keys=True)
+    res = json.dumps({"r": spec.get("resources") or spec.get("resource"), "n": spec.get("nonrenewable"), "h": spec["horizon"]},
+                     sort_keys=True)
     return hashlib.sha256((wl + res).encode()).hexdigest()[:16]
+
+
+canonical_hash = instance_fingerprint      # earlier name, kept for the existing trace

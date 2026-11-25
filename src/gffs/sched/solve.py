@@ -24,7 +24,7 @@ def _certificate(inst: Instance) -> str | None:
 def solve(inst: Instance, time_limit: float = 60.0) -> dict:
     cert = _certificate(inst)
     if cert:
-        return {"status": "infeasible", "certificate": cert}
+        return {"status": "infeasible", "certificate": cert, "certified_optimal": False}
     T, tasks = inst.horizon, inst.tasks
     idx = {}
     for j, task in enumerate(tasks):
@@ -74,13 +74,18 @@ def solve(inst: Instance, time_limit: float = 60.0) -> dict:
     c = np.zeros(n); c[C] = 1.0
     integ = np.ones(n); integ[C] = 0
     res = milp(c, constraints=LinearConstraint(A, lo, hi), integrality=integ,
-               bounds=Bounds(np.zeros(n), np.r_[np.ones(C), T]), options={"time_limit": time_limit})
-    if res.status == 2 or res.x is None:
-        return {"status": "infeasible", "certificate": "MILP proves no schedule fits" if res.status == 2 else str(res.message)}
+               bounds=Bounds(np.zeros(n), np.r_[np.ones(C), T]),
+               options={"time_limit": time_limit, "mip_rel_gap": 0.0})
+    # Four distinct outcomes (Codex L07). Only "optimal" is a certified reference for optimality gaps.
+    if res.status == 2:
+        return {"status": "infeasible", "certificate": "MILP proves no schedule fits the horizon", "certified_optimal": False}
+    if res.x is None:
+        return {"status": "unknown", "reason": str(res.message), "solver_status": int(res.status), "certified_optimal": False}
     starts, modes = {}, {}
     for (j, mi, s), k in idx.items():
         if res.x[k] > 0.5:
             starts[tasks[j].id], modes[tasks[j].id] = s, mi
     gap = float(getattr(res, "mip_gap", 0.0) or 0.0)
-    return {"status": "optimal" if res.status == 0 and gap < 1e-9 else "feasible", "makespan": int(round(res.x[C])),
-            "starts": starts, "modes": modes, "gap": gap}
+    certified = res.status == 0 and gap <= 1e-9
+    return {"status": "optimal" if certified else "feasible", "certified_optimal": bool(certified),
+            "makespan": int(round(res.x[C])), "starts": starts, "modes": modes, "gap": gap, "solver_status": int(res.status)}

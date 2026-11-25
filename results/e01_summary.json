@@ -1,5 +1,12 @@
 {
  "scenarios": 132,
+ "composition_families": 11,
+ "certification": {
+  "optimal": 102,
+  "feasible": 0,
+  "infeasible": 30,
+  "unknown": 0
+ },
  "distinct_family_hashes": 132,
  "duplicate_hashes": 0,
  "by_composition": {
@@ -18,67 +25,10 @@
    "verifier_failures": 0,
    "heuristic_feasibility_correct": 12,
    "gap_n": 12,
-   "gap_sum_x1000": 536,
+   "gap_sum_x1000": 726,
    "optimal_hits": 9
   },
   "deadlines": {
-   "scenarios": 12,
-   "optimal": 9,
-   "verifier_failures": 0,
-   "heuristic_feasibility_correct": 12,
-   "gap_n": 9,
-   "gap_sum_x1000": 0,
-   "optimal_hits": 9,
-   "infeasible": 3
-  },
-  "resource_calendar": {
-   "scenarios": 12,
-   "optimal": 12,
-   "verifier_failures": 0,
-   "heuristic_feasibility_correct": 12,
-   "gap_n": 12,
-   "gap_sum_x1000": 100,
-   "optimal_hits": 11
-  },
-  "min_time_lags": {
-   "scenarios": 12,
-   "optimal": 12,
-   "verifier_failures": 0,
-   "heuristic_feasibility_correct": 12,
-   "gap_n": 12,
-   "gap_sum_x1000": 167,
-   "optimal_hits": 11
-  },
-  "release_dates+deadlines": {
-   "scenarios": 12,
-   "optimal": 5,
-   "verifier_failures": 0,
-   "heuristic_feasibility_correct": 12,
-   "gap_n": 5,
-   "gap_sum_x1000": 0,
-   "optimal_hits": 5,
-   "infeasible": 7
-  },
-  "release_dates+resource_calendar": {
-   "scenarios": 12,
-   "infeasible": 2,
-   "verifier_failures": 0,
-   "heuristic_feasibility_correct": 11,
-   "optimal": 10,
-   "gap_n": 9,
-   "gap_sum_x1000": 333,
-   "optimal_hits": 8
-  },
-  "release_dates+min_time_lags": {
-   "scenarios": 12,
-   "optimal": 12,
-   "verifier_failures": 0,
-   "heuristic_feasibility_correct": 12,
-   "gap_n": 12,
-   "gap_sum_x1000": 749,
-   "optimal_hits": 8
-  },
-  "deadlines+resource_calendar": {
    "scenarios": 12,
    "optimal": 8,
    "verifier_failures": 0,
@@ -88,15 +38,73 @@
    "optimal_hits": 8,
    "infeasible": 4
   },
+  "resource_calendar": {
+   "scenarios": 12,
+   "infeasible": 1,
+   "verifier_failures": 0,
+   "heuristic_feasibility_correct": 12,
+   "optimal": 11,
+   "gap_n": 11,
+   "gap_sum_x1000": 0,
+   "optimal_hits": 11
+  },
+  "min_time_lags": {
+   "scenarios": 12,
+   "optimal": 12,
+   "verifier_failures": 0,
+   "heuristic_feasibility_correct": 12,
+   "gap_n": 12,
+   "gap_sum_x1000": 427,
+   "optimal_hits": 10
+  },
+  "release_dates+deadlines": {
+   "scenarios": 12,
+   "infeasible": 11,
+   "verifier_failures": 0,
+   "heuristic_feasibility_correct": 12,
+   "optimal": 1,
+   "gap_n": 1,
+   "gap_sum_x1000": 222,
+   "optimal_hits": 0
+  },
+  "release_dates+resource_calendar": {
+   "scenarios": 12,
+   "infeasible": 1,
+   "verifier_failures": 0,
+   "heuristic_feasibility_correct": 12,
+   "optimal": 11,
+   "gap_n": 11,
+   "gap_sum_x1000": 390,
+   "optimal_hits": 7
+  },
+  "release_dates+min_time_lags": {
+   "scenarios": 12,
+   "optimal": 12,
+   "verifier_failures": 0,
+   "heuristic_feasibility_correct": 12,
+   "gap_n": 12,
+   "gap_sum_x1000": 1297,
+   "optimal_hits": 5
+  },
+  "deadlines+resource_calendar": {
+   "scenarios": 12,
+   "optimal": 4,
+   "verifier_failures": 0,
+   "heuristic_feasibility_correct": 12,
+   "gap_n": 4,
+   "gap_sum_x1000": 0,
+   "optimal_hits": 4,
+   "infeasible": 8
+  },
   "deadlines+min_time_lags": {
    "scenarios": 12,
-   "optimal": 11,
+   "optimal": 7,
    "verifier_failures": 0,
    "heuristic_feasibility_correct": 11,
-   "gap_n": 10,
-   "gap_sum_x1000": 67,
-   "optimal_hits": 9,
-   "infeasible": 1
+   "gap_n": 6,
+   "gap_sum_x1000": 0,
+   "optimal_hits": 6,
+   "infeasible": 5
   },
   "resource_calendar+min_time_lags": {
    "scenarios": 12,
@@ -104,8 +112,8 @@
    "verifier_failures": 0,
    "heuristic_feasibility_correct": 12,
    "gap_n": 12,
-   "gap_sum_x1000": 265,
-   "optimal_hits": 10
+   "gap_sum_x1000": 1093,
+   "optimal_hits": 9
   }
  }
 }

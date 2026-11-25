@@ -72,6 +72,7 @@ class Instance:
 
 
 ALLOWED = {"tasks", "precedence", "resource", "resources", "horizon", "lags", "max_lags", "nonrenewable"}
+MAX_TASKS, MAX_HORIZON, MAX_MODES = 60, 400, 4       # explicit size limits for the bounded compiler (Codex L10)
 
 
 def _int(x, lo=None) -> bool:
@@ -89,6 +90,17 @@ def _calendar(res: dict):
 
 
 def compile_spec(spec: dict):
+    try:
+        return _compile(spec)
+    except (TypeError, AttributeError, ValueError, KeyError) as e:      # any shape error is a typed rejection, never a crash
+        return Invalid(f"malformed spec: {type(e).__name__}")
+
+
+def _list(x) -> bool:
+    return isinstance(x, list)
+
+
+def _compile(spec: dict):
     if not isinstance(spec, dict) or set(spec) - ALLOWED:
         return Invalid(f"unknown fields: {sorted(set(spec) - ALLOWED) if isinstance(spec, dict) else type(spec).__name__}")
     if "resource" in spec and "resources" in spec:
@@ -106,11 +118,20 @@ def compile_spec(spec: dict):
     if not isinstance(nonren, dict) or any(not (isinstance(k, str) and _int(v, 0)) for k, v in nonren.items()):
         return Invalid("bad nonrenewable budgets")
     single = next(iter(resources))
+    for key in ("tasks", "precedence", "lags", "max_lags"):
+        if key in spec and not _list(spec[key]):
+            return Invalid(f"{key} must be a list")
+    if not _list(spec.get("tasks")) or not (0 < len(spec["tasks"]) <= MAX_TASKS):
+        return Invalid(f"tasks must be a non-empty list of at most {MAX_TASKS}")
+    if not _int(spec.get("horizon"), 1) or spec["horizon"] > MAX_HORIZON:
+        return Invalid(f"horizon must be an integer in [1, {MAX_HORIZON}]")
     tasks = []
     for t in spec.get("tasks", []):
         if not (isinstance(t, dict) and isinstance(t.get("id"), str) and _int(t.get("release", 0), 0)
                 and (t.get("deadline") is None or _int(t["deadline"], 1))):
             return Invalid(f"bad task {t!r}")
+        if "modes" in t and not (_list(t["modes"]) and 0 < len(t["modes"]) <= MAX_MODES):
+            return Invalid(f"bad modes in task {t.get('id')!r}")
         raw_modes = t.get("modes") or [{"duration": t.get("duration"),
                                         "demand": t.get("demand") if isinstance(t.get("demand"), dict) else {single: t.get("demand")},
                                         "consumption": {}}]
@@ -126,6 +147,9 @@ def compile_spec(spec: dict):
     ids = [t.id for t in tasks]
     if not tasks or len(set(ids)) != len(ids):
         return Invalid("no tasks or duplicate ids")
+    for key in ("precedence", "lags", "max_lags"):
+        if any(not _list(x) for x in spec.get(key, [])):
+            return Invalid(f"{key} entries must be lists")
     prec = [tuple(p) for p in spec.get("precedence", [])]
     lags, max_lags = [tuple(x) for x in spec.get("lags", [])], [tuple(x) for x in spec.get("max_lags", [])]
     for p in prec:

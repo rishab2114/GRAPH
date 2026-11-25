@@ -69,3 +69,16 @@ Counted in OpenAlex, works published up to 2020-12-31 (`results/e01_literature_c
   time-indexed model).
 - **Setup times:** only the sequence-independent form, which folds into durations. The sequence-dependent form is out
   of scope for E01.
+
+## Update 2026-11-25: Codex L07–L10 fixed
+
+- **L07, solver outcomes:** `optimal` (certified, exact gap 0), `infeasible` (proven), `feasible` (uncertified
+  incumbent), `unknown` (no incumbent). Gaps use certified optima only. Trace: 102 optimal, 30 infeasible, 0 feasible,
+  0 unknown.
+- **L08, keys:** `family_id` (typed mechanism set; the split unit) and `instance_fingerprint` (parallel relations kept).
+  - The generator now guarantees that every listed atom is present.
+  - **This changed the instance distribution:** 30 infeasible instead of 17. The first trace's numbers above describe
+    the earlier generator.
+- **L10, input boundary:** typed rejections for malformed specs; size limits; integer-only schedules.
+- **Extensions:** multiple renewable resources, maximum lags, multi-mode activities with nonrenewable budgets. All are
+  cross-checked against brute force.

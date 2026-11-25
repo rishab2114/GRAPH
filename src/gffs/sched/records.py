@@ -32,10 +32,11 @@ class Scenario:
     template: str
     seed: int
     spec: dict
-    family_hash: str
+    family_hash: str                           # instance fingerprint (dedup / renaming checks)
     target: dict                               # solver output: status, makespan, gap, certificate
     verification: list[str]                    # verifier output on the solver's schedule ([] = valid)
     complexity: dict
+    family: str = ""                           # composition family: the split unit (Codex L08)
     hasher: str = f"networkx {nx.__version__} WL-4"
     schema: str = SCHEMA_VERSION
     id: str = ""

@@ -13,7 +13,7 @@ from pathlib import Path
 import networkx as nx
 
 from gffs.sched.atoms import ATOMS, BASE
-from gffs.sched.generate import TEMPLATES, canonical_hash, generate
+from gffs.sched.generate import TEMPLATES, family_id, generate, instance_fingerprint
 from gffs.sched.heuristic import serial_sgs
 from gffs.sched.records import Combination, Run, Scenario, to_json
 from gffs.sched.solve import solve
@@ -36,7 +36,7 @@ def complexity(spec: dict) -> dict:
 
 def main(seeds: int = 3) -> None:
     out = Path("results/e01_trace.jsonl"); out.parent.mkdir(exist_ok=True)
-    stats = defaultdict(Counter); hashes = Counter(); rows = 0
+    stats = defaultdict(Counter); hashes = Counter(); families = Counter(); rows = 0
     with out.open("w") as fh:
         for comp in compositions():
             cmb = Combination(list(comp))
@@ -48,29 +48,34 @@ def main(seeds: int = 3) -> None:
                     if isinstance(inst, Invalid):
                         stats[comp]["invalid"] += 1; continue
                     target = solve(inst)
-                    ver = verify(inst, target["starts"]) if target["status"] in ("optimal", "feasible") else []
-                    scn = Scenario(cmb.id, tpl, seed, spec, canonical_hash(spec), target, ver, complexity(spec))
+                    ver = verify(inst, target["starts"], target["modes"]) if target["status"] in ("optimal", "feasible") else []
+                    scn = Scenario(cmb.id, tpl, seed, spec, instance_fingerprint(spec), target, ver, complexity(spec),
+                                   family=family_id(spec))
+                    families[scn.family] += 1
                     hashes[scn.family_hash] += 1
                     h = serial_sgs(inst)
                     pred = {"feasible": h is not None, "makespan": (max(h[t.id] + t.duration for t in inst.tasks) if h else None)}
-                    truth_feasible = target["status"] != "infeasible"
-                    outcome = {"feasibility_correct": pred["feasible"] == truth_feasible,
+                    known = target["status"] in ("optimal", "infeasible")          # feasibility is settled either way
+                    truth_feasible = target["status"] in ("optimal", "feasible")
+                    outcome = {"feasibility_correct": (pred["feasible"] == truth_feasible) if known or truth_feasible else None,
                                "gap": (pred["makespan"] - target["makespan"]) / target["makespan"]
-                               if pred["feasible"] and truth_feasible else None,
+                               if pred["feasible"] and target.get("certified_optimal") else None,   # certified optima only (L07)
                                "schedule_valid": (verify(inst, h) == []) if h else None}
                     run = Run(scn.id, "serial_sgs_deadline_rule", pred, outcome)
                     for rec, kind in ((scn, "Scenario"), (run, "Run")):
                         fh.write(json.dumps({"type": kind, **json.loads(to_json(rec))}) + "\n")
                     s = stats[comp]
                     s["scenarios"] += 1; s[target["status"]] += 1; s["verifier_failures"] += bool(ver)
-                    s["heuristic_feasibility_correct"] += outcome["feasibility_correct"]
+                    s["heuristic_feasibility_correct"] += bool(outcome["feasibility_correct"])
                     if outcome["gap"] is not None:
                         s["gap_n"] += 1; s["gap_sum_x1000"] += round(1000 * outcome["gap"]); s["optimal_hits"] += outcome["gap"] == 0
                     rows += 1
-    summary = {"scenarios": rows, "distinct_family_hashes": len(hashes), "duplicate_hashes": sum(c - 1 for c in hashes.values() if c > 1),
+    summary = {"scenarios": rows, "composition_families": len(families),
+               "certification": {st: sum(v.get(st, 0) for v in stats.values()) for st in ("optimal", "feasible", "infeasible", "unknown")},
+               "distinct_family_hashes": len(hashes), "duplicate_hashes": sum(c - 1 for c in hashes.values() if c > 1),
                "by_composition": {"+".join(c[2:]) or "base": dict(v) for c, v in stats.items()}}
     Path("results/e01_summary.json").write_text(json.dumps(summary, indent=1))
-    print(json.dumps({k: summary[k] for k in ("scenarios", "distinct_family_hashes", "duplicate_hashes")}))
+    print(json.dumps({k: summary[k] for k in ("scenarios", "composition_families", "certification", "distinct_family_hashes", "duplicate_hashes")}))
     for c, v in summary["by_composition"].items():
         print(f"{c:40s} n={v.get('scenarios',0):3d} infeasible={v.get('infeasible',0):2d} verifier_fail={v.get('verifier_failures',0)} "
               f"heur_feas_ok={v.get('heuristic_feasibility_correct',0)} mean_gap={(v.get('gap_sum_x1000',0)/1000/max(1,v.get('gap_n',0))):.3f}")
