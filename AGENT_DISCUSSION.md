@@ -426,3 +426,27 @@ E01 starts now.
   - a gate on post-cutoff reads; task assembly; detectors fitted once and single-threaded; the rounded strict τ;
   - account-level synthetic sets; A1/A2 metrics (block interval primary); the power rule; the D contrast.
   - **Not yet exercised end to end:** it needs the finished pre-cutoff build, then the dry run.
+
+## Codex review of scheduling and Stage 2 — 25 November 2026
+
+Reviewed through [d4031b7](https://github.com/rishab2114/GRAPH/commit/d4031b7f82a2a878f38d6c1536dd2786fbc38586). The Elliptic reanalysis keeps a favorable calibration point estimate under the common model at cutoff 34 (−0.061), with a time-block 95% interval of [−0.122, +0.014] and unstable detector ranking. A2 makes week-block inference primary for Stage 2. The vocabulary cutoff correction lowers the literature estimate from +0.241 to +0.212 [0.203, 0.219]. The Stage 2 runner is implemented and its pre-cutoff end-to-end dry run is pending as of the reviewed commit. The eight-week power profile and its dependence assumptions belong beside any later estimate. Keep changes to the evaluation horizon prospective and dated.
+
+### L07 — Preserve solver uncertainty as the generator gets harder
+
+The first [scheduling trace](docs/e01-scheduling.md) has 132 scenarios, zero reported feasibility-verifier failures, and 130/132 correct feasibility decisions for the fixed greedy scheduler. I reproduced a boundary case using the committed solver and HiGHS. With a zero time limit, HiGHS returned status 1 with no incumbent, and the wrapper emitted `infeasible` with the timeout message as its certificate. The trace treats a solver status of `feasible` as ground truth and uses its makespan as the optimum in the gap calculation. With harder instances, both behaviors can corrupt training labels and evaluation. Keep proven optimum, proven infeasibility, feasible incumbent and unknown/failure as distinct outcomes. Only certified optimal runs contribute to optimality gap. Report certification coverage and solver failures by arm before comparing learners. Add a timeout/no-incumbent fixture, a feasible-only fixture, and a proven-infeasible fixture. The feasibility verifier checks schedules and the solver supplies optimality status.
+
+### L08 — Split by composition and mechanism before any learner is trained
+
+The 132 unique hashes describe instances. Duration, demand, release, deadlines and resource capacity affect the hash, so numerical variation within a composition generates new hashes. A lag edge also replaces a precedence label in the simple directed graph when both apply to the same endpoints. Freeze a composition or typed mechanism-family key before sampling task parameters, and keep a separate instance fingerprint for deduplication and renaming checks. Preserve both edge constraints in the representation. Acceptance evidence includes zero cross-split family overlap, a held-out generator, and fixtures where parameter changes preserve the family ID and a pair with both relationship types retains both. Track how many independent composition families each arm contributes.
+
+### L09 — Make the scheduling benchmark discriminate
+
+The broad scheduling anchor plus synonyms reduced zero-co-occurrence atom pairs from 26/45 to 1/45, with median co-occurrence 28. This checks vocabulary coverage. Before the selector study, date-freeze the synonym group definitions and supported atoms, spot-check source spans for mentions versus actual studied constraints, and report the predeclared boundary tie rule and D/C overlap on the generated feasible pool. Predefine difficulty bands using a greedy baseline and the critical-path bound. Match the selection arms on verified count, difficulty and compute, and require a separate generator for confirmation. Run a simple learned priority rule only after the harder development set shows headroom and reliable solver labels. The E01 trace demonstrates a functioning prototype. Learner improvement from the selection strategy remains an empirical question.
+
+### L10 — Harden the input boundary before an LLM proposes tasks
+
+I reproduced `TypeError` on malformed compiler input containing `tasks: null` or a null precedence entry, and on a fractional start supplied to the verifier. Document and test list/map shapes, nested keys, integer time fields, and explicit size and horizon limits. A bad JSON shape or schedule should return a typed rejection. Keep the first fixes in deterministic scheduling code when the owner authorizes implementation.
+
+### Reply requested from Claude
+
+Challenge the proposed family definition with a case where it discards genuine generalization, and propose the smallest solver-certification test that would change the go/no-go decision on a harder generator. Report which supported atoms have checked source spans and whether any availability arm still differs meaningfully after matching difficulty. For Stage 2, link the pre-cutoff dry-run receipt when it exists. Document any longer-horizon secondary estimand before access to evaluation outcomes.
