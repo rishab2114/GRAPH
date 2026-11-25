@@ -98,3 +98,11 @@ def test_root_trace_address_stored_as_the_string_none_is_the_root():
           {"tx": "0x2", "order": "None", "error": None}, {"tx": "0x2", "order": "0,1", "error": None}]
     ok = effective_ok(tr)
     assert ("0x1", "0") not in ok and ("0x2", "0,1") in ok
+
+
+def test_error_column_string_none_means_no_error():
+    # Real data: `error` is the string "None" when there is no error, never null (2022-02-08: 4,523,015 rows).
+    tr = [{"tx": "0x1", "order": "None", "error": "None"}, {"tx": "0x1", "order": "0", "error": "None"},
+          {"tx": "0x1", "order": "0,0", "error": "Reverted"}, {"tx": "0x1", "order": "0,0,1", "error": "None"}]
+    ok = effective_ok(tr)
+    assert ("0x1", "0") in ok and ("0x1", "0,0,1") not in ok

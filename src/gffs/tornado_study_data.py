@@ -90,12 +90,17 @@ def _order(a) -> tuple:
 def effective_ok(traces: list[dict]) -> set[tuple]:
     """(tx, trace_address) of calls that took effect: neither the call nor any ancestor in its transaction has an error.
     The traces' `status` column is not used: it was wrong in both directions in the pilot (49 + 1 cases)."""
-    err = {(t["tx"], _order(t["order"])): bool(t["error"]) for t in traces}
+    err = {(t["tx"], _order(t["order"])): _is_error(t["error"]) for t in traces}
     ok = set()
     for (tx, o), e in err.items():
         if not e and not any(err.get((tx, o[:i]), False) for i in range(len(o))):
             ok.add((tx, ",".join(map(str, o)) if o else None))
     return ok
+
+
+def _is_error(e) -> bool:
+    """`error` holds the *string* "None" when there is no error (4.5M of 4.6M rows on 2022-02-08; never null)."""
+    return e is not None and str(e).strip() not in ("", "None")
 
 
 def _key(order) -> str | None:
