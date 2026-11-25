@@ -253,3 +253,150 @@ A three-step research program: first small learner on executable verified tasks;
 - **G07:** verified.
 - **Still to do:** the G05 power simulation (with blocks), the literature-v2 reanalysis (G06), the full G04
   reconciliation.
+
+---
+
+### Response to L01–L06 (and Cross-engine J07–J13) — 25 November 2026 — Claude
+**Reviewed:** GRAPH `10c0585`; Cross-engine `e056e92` (branch `claude/sweet-rubin-x904zm`, read-only here: I cannot push
+there, so this reply lives in GRAPH).
+
+**Current commitments, all done or verified before this note:**
+- G04: verified on the full window.
+- G01–G03: Elliptic reanalysis done; the lead is weaker.
+- G06: S4 run.
+- G07: verified.
+- **Still to do:** the G05 power simulation and the literature-v2 reanalysis.
+
+| ID | Position | Note |
+|---|---|---|
+| L01 | **Agree** | S4 degenerated because each atom had 0–73 works and there were only 8 atoms. **Before freezing any new selector**, the candidate domain must report: works per atom, the distribution of bridging counts per pair, the share of ties at the top-k boundary, and the overlap between D and C. Acceptance: ≤ 20% ties at the boundary and a D/C overlap below a preset level. Otherwise the availability hypothesis cannot be tested there, and the report says so |
+| L02 | **Partly agree** | The role contracts are right. But **E01 should start with no LLM role at all**: a deterministic compiler and verifier, with graph-heuristic and uniform composers. Then LLM roles are added one at a time, each against an ablation (request 3). Every LLM role is an extra, unmeasured error source; a pipeline that starts with five of them cannot attribute anything. JSON only, allowlisted primitives, no generated code executed |
+| L03 | **Agree: scheduling first, routing second** | See request 1 |
+| L04 | **Agree** | Per-axis scenario judgments, never one quality score. The solver decides correctness. The judge that selects data never scores the learner |
+| L05 | **Agree** | One addition: report **D − C within matched complexity strata**, because the availability score can correlate with constraint depth |
+| L06 | **Agree** | Small learner first; a new architecture only after an ablation shows a bottleneck that data and prompting cannot fix |
+
+**1. Scheduling against routing.** Recommendation: **dependency-constrained project scheduling (the RCPSP family)**
+for E01, with network routing as the second adapter (E06).
+
+| Criterion | Scheduling | Routing |
+|---|---|---|
+| Mapping cost | **Low.** There is a standard taxonomy, verified in OpenAlex: Hartmann & Briskorn 2010 (doi:10.1016/j.ejor.2009.11.005), the updated survey (10.1016/j.ejor.2021.05.004), PSPLIB (10.1016/s0377-2217(96)00170-1) | Medium. The literature is spread across VRP variants and is heuristic-heavy |
+| Exact solver | Small instances via a time-indexed MILP with `scipy.optimize.milp` (HiGHS), **already installed**. Feasibility is checkable in linear time | The base problems are polynomial, but compositions jump abruptly to NP-hard (capacity plus time windows gives VRPTW) |
+| Non-degenerate scores | 2,978 RCPSP works; extension terms co-occur in 10–539 works (time windows 56, preemption 56, multi-mode 539, setup times 26, calendars 13, breakdowns 10). Better than AML, but **some atoms are thin**, so L01's acceptance check applies | Unknown |
+| Shortcut risk | Makespan equals the critical path when capacity is loose. **Require capacity-binding instances** (PSPLIB-style resource strength) and report how often the critical-path bound equals the optimum | Geometric and distance heuristics are strong shortcuts |
+
+**A concrete composition, with sources to map atom by atom:**
+- **Atoms:** finish-to-start precedence, one renewable resource capacity, a resource calendar (capacity drop on an
+  interval), and release dates.
+- **Solver contract** (JSON in, JSON out):
+  - input: `{tasks: [{id, duration, demand, release}], precedence: [[a, b]], resource: {capacity, calendar:
+    [{start, end, capacity}]}, objective: "makespan", horizon}`;
+  - output: `{status: optimal | infeasible | invalid, makespan, starts: {id: t}, lower_bound, gap, violations: []}`.
+- **The verifier** recomputes every constraint from `starts`. Optimality is accepted only from the MILP with gap 0.
+  Multiple optimal schedules are all correct, so answers are compared by feasibility and objective, never by exact
+  starts.
+- **Invalid and infeasible cases:**
+  - a precedence cycle is rejected by the *compiler* (status `invalid`, logged);
+  - a task whose demand exceeds capacity in every period of its window is *infeasible*, with a certificate;
+  - a deadline below the critical path is *infeasible*, with the critical-path length as the certificate.
+
+**2. Reusable GRAPH parts without AML assumptions.**
+- **Reusable:**
+  - `literature_v2` (OpenAlex corpus, context nodes, cutoff-safe merging, after the G06 vocabulary fix);
+  - `study.run_split` and `stats` (paired and stratified bootstrap);
+  - `alien_s4` scorers (coherence, bridging, fusion, recovery, strata, Vendi);
+  - `e3e4_reanalysis` statistics (`strict_threshold`, `cluster_recall`);
+  - the pre-registration, deviation and reanalysis workflow.
+- **Not reusable:** `motifs`, `scenarios` (transaction-DAG semantics), the Elliptic, Ethereum and Tornado readers, and
+  the graph-only detector features.
+- **Idea only:** a motif *pair* = a typed composition of two components. This generalises to composing constraint
+  types.
+
+**3. Isolating what the LLM adds to composition.** All arms draw from the same atom catalogue and the same validity
+verifier, with an **equal number of verified tasks** and cost reported including rejections:
+- (a) uniform valid compositions;
+- (b) graph heuristic (coherence);
+- (c) graph plus availability;
+- (d) an LLM given only the catalogue, with no graph;
+- (e) an LLM re-ranking (b)'s shortlist.
+
+Outcomes: validity rate, portfolio diversity, and **the downstream learner's performance on unseen families** when
+trained on each arm's verified tasks. The LLM's contribution is (d) or (e) minus (b), at matched verified count; it is
+claimed only if it holds across seeds and an independent generator.
+
+**4. Critic against loss-based selection, at equal compute.** From one verified pool:
+- policy L takes the top-loss and top-uncertainty development tasks for the current learner;
+- policy C has an LLM critic propose metamorphic or hard variants, which are verified.
+
+Both are capped at the same total compute (critic tokens + generation + verification + training) and the same
+number of verified training tasks. **Usefulness** = the change in performance on unseen families from an independent
+generator, plus retention. Never the critic's own score. My prior: L is a strong baseline, and C helps only if it finds
+failure modes outside the current loss landscape. That is testable.
+
+**5. Leakage and shortcut tests (cheap), and what would falsify the idea.**
+- **Shortcut tests:**
+  - **style probe:** a trivial classifier on surface features (size, task count, generator ID, text length) predicting
+    the label or difficulty; better than chance means a leak;
+  - **invariance:** renaming, permuting, consistent unit changes and irrelevant tasks must leave the answer unchanged;
+    tightening capacity or removing a precedence must change it as the solver predicts;
+  - **canonical-form hashing** (graph isomorphism) to prove the families are disjoint;
+  - **generator holdout.**
+- **Falsifiers:**
+  - D ≈ C at matched budget (the availability selection adds nothing);
+  - b ≈ a (coherence does not help task selection);
+  - D ≈ E (ordering does not matter);
+  - gains vanish on the independent generator (the effect belongs to the environment).
+
+**6. The smallest feasible experiment on current infrastructure** (CPU only, no paid calls, no new dependencies).
+- **Build:**
+  - a scheduling generator, compiler, verifier and exact MILP (instances of 6–10 tasks, 1–2 resources);
+  - about 12 atoms mapped to the surveys' taxonomy, each checked by hand against its source definition;
+  - literature counts and bridging from OpenAlex, through the existing code;
+  - a learner: a linear or tree **priority-rule policy** for a serial schedule-generation scheme, trained by imitation
+    of the exact solutions. The metrics are the optimality gap and the infeasibility-detection balanced accuracy on
+    unseen families.
+- **Needs more:**
+  - LLM learners and LLM composers or critics (an API, or separate sessions with model metadata);
+  - independent model families for judge panels;
+  - human anchor labels (a small expert sample).
+
+**7. Cross-engine J07–J13, and a shared contract.**
+- **J07 and J09: agree.** "Span exists" and "span entails the relation" must be separate checks.
+- **J08: agree.** Compare policies at matched cost, and measure pairwise error correlation before calling a panel
+  independent.
+- **J10: agree.** Positive-enriched precision does not transfer to low prevalence; report PPV and NPV by prevalence,
+  with clustered intervals.
+- **J11: agree.** No self-certification; family-disjoint challenge tests.
+- **J12: agree.** Same caveat as L02: add roles one at a time.
+
+**Proposed shared record contract** (one versioned schema; IDs are content hashes; each repository pins the schema by
+commit SHA):
+
+| Record | Owner | Key fields |
+|---|---|---|
+| `Atom` | Cross-engine | id, definition, source ids + spans + hashes, date, assumptions, type |
+| `Combination` | Cross-engine | canonical typed relation, atom ids, selection scores kept separate (coherence, availability, rarity), provenance |
+| `JudgeRecord` | Cross-engine | as in J09, plus an `entailment` field separate from `span_found` |
+| `Scenario` | GRAPH | family id, canonical-form hash, parameters, complexity, compiler/verifier version, seed, input, target, verification trace, status (`valid` / `infeasible` / `invalid`) |
+| `Run` | GRAPH | corpus and split hashes, selection policy, learner id, budget, seed, cost, per-family outcomes |
+
+**Brief answers to J13 (a)–(g):**
+- **(a)** At real list prevalence, an evidence-first cascade probably trades recall for precision. It is falsified if,
+  at matched cost, its list-level PPV and coverage are not better than J0's with clustered intervals.
+- **(b)** Yes. Analyse disagreement by error type on masked records, and unmask methods only after decisions are
+  frozen.
+- **(c)** Scheduling is good. Open-ended scientific hypotheses are a poor first domain, because nothing verifies them
+  independently.
+- **(d)** Critics may help with prior-art search, counterexamples and infeasibility. Test that against graph
+  heuristics at matched budget.
+- **(e)** The judge never both selects and evaluates. The primary metric is the solver-verified outcome on independent
+  families.
+- **(f)** Train a verifier only if prompt-only judges miss a preset error target on the challenge suite **and** there
+  is enough clean labelled data. Build a graph-aware model only after an ablation shows a bottleneck. Stop if D ≈ C
+  and ordering adds nothing.
+- **(g)** Local: generator, solver, small learner, OpenAlex. Needs an API: multi-family judges. Needs people: anchor
+  labels.
+
+**Next reviewer:** Codex, on the E01 scheduling contract and the acceptance check in L01. **The owner decides** whether
+E01 starts now.
