@@ -1,0 +1,2739 @@
+{
+ "days": 181,
+ "totals": {
+  "deposits": {
+   "logs": 44293,
+   "traces": 44293,
+   "missed": 0,
+   "extra": 0
+  },
+  "withdrawals": {
+   "logs": 42334,
+   "traces": 42334,
+   "missed": 0,
+   "extra": 0,
+   "ambiguous": 0
+  }
+ },
+ "days_with_errors": {
+  "deposits": [],
+  "withdrawals": []
+ },
+ "by_day": {
+  "2022-02-08": {
+   "deposits": {
+    "logs": 162,
+    "traces": 162,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 162,
+    "traces": 162,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-09": {
+   "deposits": {
+    "logs": 212,
+    "traces": 212,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 209,
+    "traces": 209,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-10": {
+   "deposits": {
+    "logs": 193,
+    "traces": 193,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 241,
+    "traces": 241,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-11": {
+   "deposits": {
+    "logs": 205,
+    "traces": 205,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 147,
+    "traces": 147,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-12": {
+   "deposits": {
+    "logs": 129,
+    "traces": 129,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 156,
+    "traces": 156,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-13": {
+   "deposits": {
+    "logs": 151,
+    "traces": 151,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 177,
+    "traces": 177,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-14": {
+   "deposits": {
+    "logs": 147,
+    "traces": 147,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 237,
+    "traces": 237,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-15": {
+   "deposits": {
+    "logs": 203,
+    "traces": 203,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 179,
+    "traces": 179,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-16": {
+   "deposits": {
+    "logs": 173,
+    "traces": 173,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 175,
+    "traces": 175,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-17": {
+   "deposits": {
+    "logs": 167,
+    "traces": 167,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 209,
+    "traces": 209,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-18": {
+   "deposits": {
+    "logs": 127,
+    "traces": 127,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 140,
+    "traces": 140,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-19": {
+   "deposits": {
+    "logs": 148,
+    "traces": 148,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 175,
+    "traces": 175,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-20": {
+   "deposits": {
+    "logs": 236,
+    "traces": 236,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 216,
+    "traces": 216,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-21": {
+   "deposits": {
+    "logs": 144,
+    "traces": 144,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 160,
+    "traces": 160,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-22": {
+   "deposits": {
+    "logs": 148,
+    "traces": 148,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 160,
+    "traces": 160,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-23": {
+   "deposits": {
+    "logs": 239,
+    "traces": 239,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 243,
+    "traces": 243,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-24": {
+   "deposits": {
+    "logs": 201,
+    "traces": 201,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 232,
+    "traces": 232,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-25": {
+   "deposits": {
+    "logs": 288,
+    "traces": 288,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 180,
+    "traces": 180,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-26": {
+   "deposits": {
+    "logs": 128,
+    "traces": 128,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 223,
+    "traces": 223,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-27": {
+   "deposits": {
+    "logs": 207,
+    "traces": 207,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 267,
+    "traces": 267,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-02-28": {
+   "deposits": {
+    "logs": 247,
+    "traces": 247,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 222,
+    "traces": 222,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-01": {
+   "deposits": {
+    "logs": 220,
+    "traces": 220,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 229,
+    "traces": 229,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-02": {
+   "deposits": {
+    "logs": 233,
+    "traces": 233,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 237,
+    "traces": 237,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-03": {
+   "deposits": {
+    "logs": 260,
+    "traces": 260,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 243,
+    "traces": 243,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-04": {
+   "deposits": {
+    "logs": 186,
+    "traces": 186,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 243,
+    "traces": 243,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-05": {
+   "deposits": {
+    "logs": 188,
+    "traces": 188,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 146,
+    "traces": 146,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-06": {
+   "deposits": {
+    "logs": 198,
+    "traces": 198,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 179,
+    "traces": 179,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-07": {
+   "deposits": {
+    "logs": 243,
+    "traces": 243,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 197,
+    "traces": 197,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-08": {
+   "deposits": {
+    "logs": 258,
+    "traces": 258,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 302,
+    "traces": 302,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-09": {
+   "deposits": {
+    "logs": 311,
+    "traces": 311,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 271,
+    "traces": 271,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-10": {
+   "deposits": {
+    "logs": 249,
+    "traces": 249,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 270,
+    "traces": 270,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-11": {
+   "deposits": {
+    "logs": 258,
+    "traces": 258,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 284,
+    "traces": 284,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-12": {
+   "deposits": {
+    "logs": 261,
+    "traces": 261,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 222,
+    "traces": 222,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-13": {
+   "deposits": {
+    "logs": 330,
+    "traces": 330,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 249,
+    "traces": 249,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-14": {
+   "deposits": {
+    "logs": 247,
+    "traces": 247,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 239,
+    "traces": 239,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-15": {
+   "deposits": {
+    "logs": 355,
+    "traces": 355,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 262,
+    "traces": 262,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-16": {
+   "deposits": {
+    "logs": 258,
+    "traces": 258,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 267,
+    "traces": 267,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-17": {
+   "deposits": {
+    "logs": 258,
+    "traces": 258,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 226,
+    "traces": 226,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-18": {
+   "deposits": {
+    "logs": 163,
+    "traces": 163,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 187,
+    "traces": 187,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-19": {
+   "deposits": {
+    "logs": 199,
+    "traces": 199,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 199,
+    "traces": 199,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-20": {
+   "deposits": {
+    "logs": 248,
+    "traces": 248,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 210,
+    "traces": 210,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-21": {
+   "deposits": {
+    "logs": 366,
+    "traces": 366,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 269,
+    "traces": 269,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-22": {
+   "deposits": {
+    "logs": 273,
+    "traces": 273,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 341,
+    "traces": 341,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-23": {
+   "deposits": {
+    "logs": 257,
+    "traces": 257,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 319,
+    "traces": 319,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-24": {
+   "deposits": {
+    "logs": 278,
+    "traces": 278,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 250,
+    "traces": 250,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-25": {
+   "deposits": {
+    "logs": 276,
+    "traces": 276,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 252,
+    "traces": 252,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-26": {
+   "deposits": {
+    "logs": 172,
+    "traces": 172,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 179,
+    "traces": 179,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-27": {
+   "deposits": {
+    "logs": 292,
+    "traces": 292,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 273,
+    "traces": 273,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-28": {
+   "deposits": {
+    "logs": 211,
+    "traces": 211,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 238,
+    "traces": 238,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-29": {
+   "deposits": {
+    "logs": 346,
+    "traces": 346,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 306,
+    "traces": 306,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-30": {
+   "deposits": {
+    "logs": 274,
+    "traces": 274,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 274,
+    "traces": 274,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-03-31": {
+   "deposits": {
+    "logs": 224,
+    "traces": 224,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 254,
+    "traces": 254,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-01": {
+   "deposits": {
+    "logs": 232,
+    "traces": 232,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 197,
+    "traces": 197,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-02": {
+   "deposits": {
+    "logs": 412,
+    "traces": 412,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 321,
+    "traces": 321,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-03": {
+   "deposits": {
+    "logs": 194,
+    "traces": 194,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 242,
+    "traces": 242,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-04": {
+   "deposits": {
+    "logs": 223,
+    "traces": 223,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 198,
+    "traces": 198,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-05": {
+   "deposits": {
+    "logs": 265,
+    "traces": 265,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 273,
+    "traces": 273,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-06": {
+   "deposits": {
+    "logs": 248,
+    "traces": 248,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 247,
+    "traces": 247,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-07": {
+   "deposits": {
+    "logs": 296,
+    "traces": 296,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 233,
+    "traces": 233,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-08": {
+   "deposits": {
+    "logs": 261,
+    "traces": 261,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 251,
+    "traces": 251,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-09": {
+   "deposits": {
+    "logs": 307,
+    "traces": 307,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 257,
+    "traces": 257,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-10": {
+   "deposits": {
+    "logs": 235,
+    "traces": 235,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 206,
+    "traces": 206,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-11": {
+   "deposits": {
+    "logs": 286,
+    "traces": 286,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 262,
+    "traces": 262,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-12": {
+   "deposits": {
+    "logs": 254,
+    "traces": 254,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 267,
+    "traces": 267,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-13": {
+   "deposits": {
+    "logs": 240,
+    "traces": 240,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 252,
+    "traces": 252,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-14": {
+   "deposits": {
+    "logs": 274,
+    "traces": 274,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 256,
+    "traces": 256,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-15": {
+   "deposits": {
+    "logs": 259,
+    "traces": 259,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 290,
+    "traces": 290,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-16": {
+   "deposits": {
+    "logs": 265,
+    "traces": 265,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 226,
+    "traces": 226,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-17": {
+   "deposits": {
+    "logs": 548,
+    "traces": 548,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 218,
+    "traces": 218,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-18": {
+   "deposits": {
+    "logs": 284,
+    "traces": 284,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 286,
+    "traces": 286,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-19": {
+   "deposits": {
+    "logs": 256,
+    "traces": 256,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 278,
+    "traces": 278,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-20": {
+   "deposits": {
+    "logs": 313,
+    "traces": 313,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 297,
+    "traces": 297,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-21": {
+   "deposits": {
+    "logs": 257,
+    "traces": 257,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 258,
+    "traces": 258,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-22": {
+   "deposits": {
+    "logs": 194,
+    "traces": 194,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 251,
+    "traces": 251,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-23": {
+   "deposits": {
+    "logs": 297,
+    "traces": 297,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 279,
+    "traces": 279,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-24": {
+   "deposits": {
+    "logs": 302,
+    "traces": 302,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 342,
+    "traces": 342,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-25": {
+   "deposits": {
+    "logs": 247,
+    "traces": 247,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 282,
+    "traces": 282,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-26": {
+   "deposits": {
+    "logs": 231,
+    "traces": 231,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 270,
+    "traces": 270,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-27": {
+   "deposits": {
+    "logs": 326,
+    "traces": 326,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 363,
+    "traces": 363,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-28": {
+   "deposits": {
+    "logs": 319,
+    "traces": 319,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 257,
+    "traces": 257,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-29": {
+   "deposits": {
+    "logs": 300,
+    "traces": 300,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 297,
+    "traces": 297,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-04-30": {
+   "deposits": {
+    "logs": 489,
+    "traces": 489,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 329,
+    "traces": 329,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-01": {
+   "deposits": {
+    "logs": 184,
+    "traces": 184,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 247,
+    "traces": 247,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-02": {
+   "deposits": {
+    "logs": 197,
+    "traces": 197,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 195,
+    "traces": 195,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-03": {
+   "deposits": {
+    "logs": 252,
+    "traces": 252,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 204,
+    "traces": 204,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-04": {
+   "deposits": {
+    "logs": 331,
+    "traces": 331,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 310,
+    "traces": 310,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-05": {
+   "deposits": {
+    "logs": 304,
+    "traces": 304,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 277,
+    "traces": 277,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-06": {
+   "deposits": {
+    "logs": 329,
+    "traces": 329,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 332,
+    "traces": 332,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-07": {
+   "deposits": {
+    "logs": 250,
+    "traces": 250,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 253,
+    "traces": 253,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-08": {
+   "deposits": {
+    "logs": 274,
+    "traces": 274,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 278,
+    "traces": 278,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-09": {
+   "deposits": {
+    "logs": 273,
+    "traces": 273,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 263,
+    "traces": 263,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-10": {
+   "deposits": {
+    "logs": 333,
+    "traces": 333,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 306,
+    "traces": 306,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-11": {
+   "deposits": {
+    "logs": 185,
+    "traces": 185,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 270,
+    "traces": 270,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-12": {
+   "deposits": {
+    "logs": 169,
+    "traces": 169,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 225,
+    "traces": 225,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-13": {
+   "deposits": {
+    "logs": 222,
+    "traces": 222,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 236,
+    "traces": 236,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-14": {
+   "deposits": {
+    "logs": 301,
+    "traces": 301,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 238,
+    "traces": 238,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-15": {
+   "deposits": {
+    "logs": 257,
+    "traces": 257,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 245,
+    "traces": 245,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-16": {
+   "deposits": {
+    "logs": 230,
+    "traces": 230,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 240,
+    "traces": 240,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-17": {
+   "deposits": {
+    "logs": 316,
+    "traces": 316,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 289,
+    "traces": 289,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-18": {
+   "deposits": {
+    "logs": 276,
+    "traces": 276,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 305,
+    "traces": 305,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-19": {
+   "deposits": {
+    "logs": 388,
+    "traces": 388,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 254,
+    "traces": 254,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-20": {
+   "deposits": {
+    "logs": 216,
+    "traces": 216,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 196,
+    "traces": 196,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-21": {
+   "deposits": {
+    "logs": 154,
+    "traces": 154,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 161,
+    "traces": 161,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-22": {
+   "deposits": {
+    "logs": 423,
+    "traces": 423,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 199,
+    "traces": 199,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-23": {
+   "deposits": {
+    "logs": 190,
+    "traces": 190,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 199,
+    "traces": 199,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-24": {
+   "deposits": {
+    "logs": 276,
+    "traces": 276,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 188,
+    "traces": 188,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-25": {
+   "deposits": {
+    "logs": 169,
+    "traces": 169,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 250,
+    "traces": 250,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-26": {
+   "deposits": {
+    "logs": 210,
+    "traces": 210,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 243,
+    "traces": 243,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-27": {
+   "deposits": {
+    "logs": 224,
+    "traces": 224,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 206,
+    "traces": 206,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-28": {
+   "deposits": {
+    "logs": 240,
+    "traces": 240,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 268,
+    "traces": 268,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-29": {
+   "deposits": {
+    "logs": 234,
+    "traces": 234,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 226,
+    "traces": 226,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-30": {
+   "deposits": {
+    "logs": 197,
+    "traces": 197,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 245,
+    "traces": 245,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-05-31": {
+   "deposits": {
+    "logs": 165,
+    "traces": 165,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 146,
+    "traces": 146,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-01": {
+   "deposits": {
+    "logs": 142,
+    "traces": 142,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 205,
+    "traces": 205,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-02": {
+   "deposits": {
+    "logs": 179,
+    "traces": 179,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 144,
+    "traces": 144,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-03": {
+   "deposits": {
+    "logs": 169,
+    "traces": 169,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 168,
+    "traces": 168,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-04": {
+   "deposits": {
+    "logs": 214,
+    "traces": 214,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 174,
+    "traces": 174,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-05": {
+   "deposits": {
+    "logs": 208,
+    "traces": 208,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 126,
+    "traces": 126,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-06": {
+   "deposits": {
+    "logs": 142,
+    "traces": 142,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 209,
+    "traces": 209,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-07": {
+   "deposits": {
+    "logs": 187,
+    "traces": 187,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 189,
+    "traces": 189,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-08": {
+   "deposits": {
+    "logs": 156,
+    "traces": 156,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 168,
+    "traces": 168,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-09": {
+   "deposits": {
+    "logs": 187,
+    "traces": 187,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 190,
+    "traces": 190,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-10": {
+   "deposits": {
+    "logs": 207,
+    "traces": 207,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 164,
+    "traces": 164,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-11": {
+   "deposits": {
+    "logs": 215,
+    "traces": 215,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 246,
+    "traces": 246,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-12": {
+   "deposits": {
+    "logs": 235,
+    "traces": 235,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 214,
+    "traces": 214,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-13": {
+   "deposits": {
+    "logs": 179,
+    "traces": 179,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 234,
+    "traces": 234,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-14": {
+   "deposits": {
+    "logs": 202,
+    "traces": 202,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 292,
+    "traces": 292,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-15": {
+   "deposits": {
+    "logs": 169,
+    "traces": 169,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 184,
+    "traces": 184,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-16": {
+   "deposits": {
+    "logs": 259,
+    "traces": 259,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 239,
+    "traces": 239,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-17": {
+   "deposits": {
+    "logs": 116,
+    "traces": 116,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 163,
+    "traces": 163,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-18": {
+   "deposits": {
+    "logs": 185,
+    "traces": 185,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 189,
+    "traces": 189,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-19": {
+   "deposits": {
+    "logs": 203,
+    "traces": 203,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 200,
+    "traces": 200,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-20": {
+   "deposits": {
+    "logs": 215,
+    "traces": 215,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 188,
+    "traces": 188,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-21": {
+   "deposits": {
+    "logs": 226,
+    "traces": 226,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 181,
+    "traces": 181,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-22": {
+   "deposits": {
+    "logs": 187,
+    "traces": 187,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 132,
+    "traces": 132,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-23": {
+   "deposits": {
+    "logs": 184,
+    "traces": 184,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 192,
+    "traces": 192,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-24": {
+   "deposits": {
+    "logs": 208,
+    "traces": 208,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 196,
+    "traces": 196,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-25": {
+   "deposits": {
+    "logs": 115,
+    "traces": 115,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 94,
+    "traces": 94,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-26": {
+   "deposits": {
+    "logs": 172,
+    "traces": 172,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 147,
+    "traces": 147,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-27": {
+   "deposits": {
+    "logs": 367,
+    "traces": 367,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 296,
+    "traces": 296,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-28": {
+   "deposits": {
+    "logs": 291,
+    "traces": 291,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 312,
+    "traces": 312,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-29": {
+   "deposits": {
+    "logs": 222,
+    "traces": 222,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 251,
+    "traces": 251,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-06-30": {
+   "deposits": {
+    "logs": 374,
+    "traces": 374,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 353,
+    "traces": 353,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-01": {
+   "deposits": {
+    "logs": 336,
+    "traces": 336,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 350,
+    "traces": 350,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-02": {
+   "deposits": {
+    "logs": 395,
+    "traces": 395,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 405,
+    "traces": 405,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-03": {
+   "deposits": {
+    "logs": 188,
+    "traces": 188,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 186,
+    "traces": 186,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-04": {
+   "deposits": {
+    "logs": 202,
+    "traces": 202,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 246,
+    "traces": 246,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-05": {
+   "deposits": {
+    "logs": 196,
+    "traces": 196,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 259,
+    "traces": 259,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-06": {
+   "deposits": {
+    "logs": 242,
+    "traces": 242,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 215,
+    "traces": 215,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-07": {
+   "deposits": {
+    "logs": 212,
+    "traces": 212,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 221,
+    "traces": 221,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-08": {
+   "deposits": {
+    "logs": 167,
+    "traces": 167,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 182,
+    "traces": 182,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-09": {
+   "deposits": {
+    "logs": 222,
+    "traces": 222,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 160,
+    "traces": 160,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-10": {
+   "deposits": {
+    "logs": 344,
+    "traces": 344,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 215,
+    "traces": 215,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-11": {
+   "deposits": {
+    "logs": 240,
+    "traces": 240,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 206,
+    "traces": 206,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-12": {
+   "deposits": {
+    "logs": 295,
+    "traces": 295,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 191,
+    "traces": 191,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-13": {
+   "deposits": {
+    "logs": 280,
+    "traces": 280,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 260,
+    "traces": 260,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-14": {
+   "deposits": {
+    "logs": 222,
+    "traces": 222,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 218,
+    "traces": 218,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-15": {
+   "deposits": {
+    "logs": 177,
+    "traces": 177,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 210,
+    "traces": 210,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-16": {
+   "deposits": {
+    "logs": 219,
+    "traces": 219,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 208,
+    "traces": 208,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-17": {
+   "deposits": {
+    "logs": 182,
+    "traces": 182,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 173,
+    "traces": 173,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-18": {
+   "deposits": {
+    "logs": 268,
+    "traces": 268,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 230,
+    "traces": 230,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-19": {
+   "deposits": {
+    "logs": 274,
+    "traces": 274,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 268,
+    "traces": 268,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-20": {
+   "deposits": {
+    "logs": 222,
+    "traces": 222,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 231,
+    "traces": 231,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-21": {
+   "deposits": {
+    "logs": 250,
+    "traces": 250,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 243,
+    "traces": 243,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-22": {
+   "deposits": {
+    "logs": 262,
+    "traces": 262,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 266,
+    "traces": 266,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-23": {
+   "deposits": {
+    "logs": 178,
+    "traces": 178,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 206,
+    "traces": 206,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-24": {
+   "deposits": {
+    "logs": 224,
+    "traces": 224,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 189,
+    "traces": 189,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-25": {
+   "deposits": {
+    "logs": 216,
+    "traces": 216,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 175,
+    "traces": 175,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-26": {
+   "deposits": {
+    "logs": 238,
+    "traces": 238,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 216,
+    "traces": 216,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-27": {
+   "deposits": {
+    "logs": 553,
+    "traces": 553,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 231,
+    "traces": 231,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-28": {
+   "deposits": {
+    "logs": 183,
+    "traces": 183,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 188,
+    "traces": 188,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-29": {
+   "deposits": {
+    "logs": 275,
+    "traces": 275,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 257,
+    "traces": 257,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-30": {
+   "deposits": {
+    "logs": 224,
+    "traces": 224,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 209,
+    "traces": 209,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-07-31": {
+   "deposits": {
+    "logs": 303,
+    "traces": 303,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 266,
+    "traces": 266,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-08-01": {
+   "deposits": {
+    "logs": 319,
+    "traces": 319,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 300,
+    "traces": 300,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-08-02": {
+   "deposits": {
+    "logs": 505,
+    "traces": 505,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 365,
+    "traces": 365,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-08-03": {
+   "deposits": {
+    "logs": 296,
+    "traces": 296,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 342,
+    "traces": 342,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-08-04": {
+   "deposits": {
+    "logs": 241,
+    "traces": 241,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 267,
+    "traces": 267,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-08-05": {
+   "deposits": {
+    "logs": 287,
+    "traces": 287,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 256,
+    "traces": 256,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-08-06": {
+   "deposits": {
+    "logs": 255,
+    "traces": 255,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 301,
+    "traces": 301,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  },
+  "2022-08-07": {
+   "deposits": {
+    "logs": 356,
+    "traces": 356,
+    "missed": 0,
+    "extra": 0
+   },
+   "withdrawals": {
+    "logs": 177,
+    "traces": 177,
+    "missed": 0,
+    "extra": 0,
+    "ambiguous": 0
+   }
+  }
+ }
+}

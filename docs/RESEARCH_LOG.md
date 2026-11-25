@@ -987,3 +987,13 @@ literature-v2 validation).
 **What this means.** The project's only positive lead is now weaker. **I said earlier that synthetic sets "predict
 post-shutdown catch rates better"; with time dependence accounted for, that is not statistically established on
 Elliptic.** Stage 2 becomes the deciding test, and its power simulation must include time-block dependence.
+
+**G04 verified (2026-11-25).** Full-window reconciliation of the corrected trace labeller against the logs, 181 days:
+- **deposits** 44,293 / 44,293;
+- **withdrawals** 42,334 / 42,334;
+- 0 missed, 0 extra, 0 ambiguous frames;
+- 0 calls dropped by the ancestry rule (no caught reverts occurred in this window);
+- 1 payment inside a reverted transaction, correctly excluded.
+
+The design's §3 check (≤ 1% missed) passes, with no extras. **Residual risk:** history before 2022-02-08 uses the same
+rule but has no log ground truth.
