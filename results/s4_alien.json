@@ -1,0 +1,1475 @@
+{
+ "paper": "Artiles et al. 2026, arXiv:2603.01092 (NeurIPS 2026)",
+ "authorship_coverage": {
+  "graph_works": 80689,
+  "with_authors": 73428,
+  "explicitly_empty_or_unknown": 7261,
+  "target_concept_works_without_authors": {
+   "coinjoin": 0,
+   "fan_in": 0,
+   "fan_out": 0,
+   "layering": 2,
+   "mixing_service": 4,
+   "pass_through": 0,
+   "peel_chain": 0,
+   "smurfing": 1
+  }
+ },
+ "validation": {
+  "t0": 2013,
+  "t1": 2016,
+  "vocabulary_selected_up_to": 2013,
+  "candidates": 82576,
+  "targets": 5442,
+  "far_targets_no_bridging_author": 1893,
+  "k": 826,
+  "spearman_coherence_vs_availability": 0.09859431797653397,
+  "spearman_availability_vs_min_concept_frequency": 0.23415333966933316,
+  "by_beta": [
+   {
+    "beta": 0.0,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 185,
+      "expected": 54.4358167021895,
+      "enrichment": 3.3984977393121207
+     },
+     "far": {
+      "k": 826,
+      "hits": 55,
+      "expected": 18.93550184072854,
+      "enrichment": 2.904596902824091
+     },
+     "far_share_of_hits": 0.2972972972972973,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 25,
+       "expected": 7.134239433997394,
+       "enrichment": 3.5042277780677487
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 39,
+       "expected": 11.012088771275636,
+       "enrichment": 3.5415624419709664
+      },
+      "3": {
+       "k": 164,
+       "hits": 41,
+       "expected": 12.727250489236791,
+       "enrichment": 3.221434200157604
+      },
+      "4": {
+       "k": 167,
+       "hits": 71,
+       "expected": 15.355516952198395,
+       "enrichment": 4.623745343189841
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 185,
+      "expected": 54.4358167021895,
+      "enrichment": 3.3984977393121207
+     },
+     "far": {
+      "k": 826,
+      "hits": 55,
+      "expected": 18.93550184072854,
+      "enrichment": 2.904596902824091
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 25,
+       "expected": 7.134239433997394,
+       "enrichment": 3.5042277780677487
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 39,
+       "expected": 11.012088771275636,
+       "enrichment": 3.5415624419709664
+      },
+      "3": {
+       "k": 164,
+       "hits": 41,
+       "expected": 12.727250489236791,
+       "enrichment": 3.221434200157604
+      },
+      "4": {
+       "k": 167,
+       "hits": 71,
+       "expected": 15.355516952198395,
+       "enrichment": 4.623745343189841
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.1,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 180,
+      "expected": 54.4358167021895,
+      "enrichment": 3.306646449060442
+     },
+     "far": {
+      "k": 826,
+      "hits": 59,
+      "expected": 18.93550184072854,
+      "enrichment": 3.1158403139385706
+     },
+     "far_share_of_hits": 0.3277777777777778,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 23,
+       "expected": 7.134239433997394,
+       "enrichment": 3.223889555822329
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 37,
+       "expected": 11.012088771275636,
+       "enrichment": 3.3599438552032246
+      },
+      "3": {
+       "k": 164,
+       "hits": 39,
+       "expected": 12.727250489236791,
+       "enrichment": 3.064291068442599
+      },
+      "4": {
+       "k": 167,
+       "hits": 68,
+       "expected": 15.355516952198395,
+       "enrichment": 4.428375821646609
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 171,
+      "expected": 54.4358167021895,
+      "enrichment": 3.1413141266074196
+     },
+     "far": {
+      "k": 826,
+      "hits": 51,
+      "expected": 18.93550184072854,
+      "enrichment": 2.693353491709612
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 23,
+       "expected": 7.134239433997394,
+       "enrichment": 3.223889555822329
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 39,
+       "expected": 11.012088771275636,
+       "enrichment": 3.5415624419709664
+      },
+      "3": {
+       "k": 164,
+       "hits": 42,
+       "expected": 12.727250489236791,
+       "enrichment": 3.300005766015107
+      },
+      "4": {
+       "k": 167,
+       "hits": 72,
+       "expected": 15.355516952198395,
+       "enrichment": 4.688868517037586
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.2,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 166,
+      "expected": 54.4358167021895,
+      "enrichment": 3.049462836355741
+     },
+     "far": {
+      "k": 826,
+      "hits": 64,
+      "expected": 18.93550184072854,
+      "enrichment": 3.37989457783167
+     },
+     "far_share_of_hits": 0.3855421686746988,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 22,
+       "expected": 7.134239433997394,
+       "enrichment": 3.083720444699619
+      },
+      "1": {
+       "k": 168,
+       "hits": 38,
+       "expected": 8.21488981536629,
+       "enrichment": 4.625746766428861
+      },
+      "2": {
+       "k": 166,
+       "hits": 35,
+       "expected": 11.012088771275636,
+       "enrichment": 3.178325268435483
+      },
+      "3": {
+       "k": 164,
+       "hits": 36,
+       "expected": 12.727250489236791,
+       "enrichment": 2.8285763708700915
+      },
+      "4": {
+       "k": 167,
+       "hits": 66,
+       "expected": 15.355516952198395,
+       "enrichment": 4.29812947395112
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 163,
+      "expected": 54.4358167021895,
+      "enrichment": 2.9943520622047335
+     },
+     "far": {
+      "k": 826,
+      "hits": 51,
+      "expected": 18.93550184072854,
+      "enrichment": 2.693353491709612
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 20,
+       "expected": 7.134239433997394,
+       "enrichment": 2.803382222454199
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 39,
+       "expected": 11.012088771275636,
+       "enrichment": 3.5415624419709664
+      },
+      "3": {
+       "k": 164,
+       "hits": 42,
+       "expected": 12.727250489236791,
+       "enrichment": 3.300005766015107
+      },
+      "4": {
+       "k": 167,
+       "hits": 72,
+       "expected": 15.355516952198395,
+       "enrichment": 4.688868517037586
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.3,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 155,
+      "expected": 54.4358167021895,
+      "enrichment": 2.8473899978020474
+     },
+     "far": {
+      "k": 826,
+      "hits": 75,
+      "expected": 18.93550184072854,
+      "enrichment": 3.960813958396488
+     },
+     "far_share_of_hits": 0.4838709677419355,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 21,
+       "expected": 7.134239433997394,
+       "enrichment": 2.943551333576909
+      },
+      "1": {
+       "k": 168,
+       "hits": 40,
+       "expected": 8.21488981536629,
+       "enrichment": 4.869207122556697
+      },
+      "2": {
+       "k": 166,
+       "hits": 33,
+       "expected": 11.012088771275636,
+       "enrichment": 2.996706681667741
+      },
+      "3": {
+       "k": 164,
+       "hits": 32,
+       "expected": 12.727250489236791,
+       "enrichment": 2.514290107440081
+      },
+      "4": {
+       "k": 167,
+       "hits": 64,
+       "expected": 15.355516952198395,
+       "enrichment": 4.167883126255632
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 142,
+      "expected": 54.4358167021895,
+      "enrichment": 2.608576643147682
+     },
+     "far": {
+      "k": 826,
+      "hits": 44,
+      "expected": 18.93550184072854,
+      "enrichment": 2.323677522259273
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 18,
+       "expected": 7.134239433997394,
+       "enrichment": 2.5230440002087793
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 38,
+       "expected": 11.012088771275636,
+       "enrichment": 3.4507531485870957
+      },
+      "3": {
+       "k": 164,
+       "hits": 43,
+       "expected": 12.727250489236791,
+       "enrichment": 3.3785773318726093
+      },
+      "4": {
+       "k": 167,
+       "hits": 73,
+       "expected": 15.355516952198395,
+       "enrichment": 4.75399169088533
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.4,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 151,
+      "expected": 54.4358167021895,
+      "enrichment": 2.773908965600704
+     },
+     "far": {
+      "k": 826,
+      "hits": 89,
+      "expected": 18.93550184072854,
+      "enrichment": 4.700165897297166
+     },
+     "far_share_of_hits": 0.5894039735099338,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 18,
+       "expected": 7.134239433997394,
+       "enrichment": 2.5230440002087793
+      },
+      "1": {
+       "k": 168,
+       "hits": 41,
+       "expected": 8.21488981536629,
+       "enrichment": 4.9909373006206135
+      },
+      "2": {
+       "k": 166,
+       "hits": 31,
+       "expected": 11.012088771275636,
+       "enrichment": 2.815088094899999
+      },
+      "3": {
+       "k": 164,
+       "hits": 30,
+       "expected": 12.727250489236791,
+       "enrichment": 2.3571469757250765
+      },
+      "4": {
+       "k": 167,
+       "hits": 61,
+       "expected": 15.355516952198395,
+       "enrichment": 3.9725136047123994
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 104,
+      "expected": 54.4358167021895,
+      "enrichment": 1.910506837234922
+     },
+     "far": {
+      "k": 826,
+      "hits": 32,
+      "expected": 18.93550184072854,
+      "enrichment": 1.689947288915835
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 11,
+       "expected": 7.134239433997394,
+       "enrichment": 1.5418602223498095
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 38,
+       "expected": 11.012088771275636,
+       "enrichment": 3.4507531485870957
+      },
+      "3": {
+       "k": 164,
+       "hits": 43,
+       "expected": 12.727250489236791,
+       "enrichment": 3.3785773318726093
+      },
+      "4": {
+       "k": 167,
+       "hits": 74,
+       "expected": 15.355516952198395,
+       "enrichment": 4.819114864733074
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.5,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 146,
+      "expected": 54.4358167021895,
+      "enrichment": 2.682057675349025
+     },
+     "far": {
+      "k": 826,
+      "hits": 104,
+      "expected": 18.93550184072854,
+      "enrichment": 5.492328688976463
+     },
+     "far_share_of_hits": 0.7123287671232876,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 16,
+       "expected": 7.134239433997394,
+       "enrichment": 2.242705777963359
+      },
+      "1": {
+       "k": 168,
+       "hits": 40,
+       "expected": 8.21488981536629,
+       "enrichment": 4.869207122556697
+      },
+      "2": {
+       "k": 166,
+       "hits": 30,
+       "expected": 11.012088771275636,
+       "enrichment": 2.724278801516128
+      },
+      "3": {
+       "k": 164,
+       "hits": 31,
+       "expected": 12.727250489236791,
+       "enrichment": 2.435718541582579
+      },
+      "4": {
+       "k": 167,
+       "hits": 56,
+       "expected": 15.355516952198395,
+       "enrichment": 3.646897735473678
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 50,
+      "expected": 54.4358167021895,
+      "enrichment": 0.9185129025167894
+     },
+     "far": {
+      "k": 826,
+      "hits": 20,
+      "expected": 18.93550184072854,
+      "enrichment": 1.0562170555723969
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 5,
+       "expected": 7.134239433997394,
+       "enrichment": 0.7008455556135498
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 38,
+       "expected": 11.012088771275636,
+       "enrichment": 3.4507531485870957
+      },
+      "3": {
+       "k": 164,
+       "hits": 44,
+       "expected": 12.727250489236791,
+       "enrichment": 3.4571488977301117
+      },
+      "4": {
+       "k": 167,
+       "hits": 75,
+       "expected": 15.355516952198395,
+       "enrichment": 4.884238038580819
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.6,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 140,
+      "expected": 54.4358167021895,
+      "enrichment": 2.5718361270470105
+     },
+     "far": {
+      "k": 826,
+      "hits": 115,
+      "expected": 18.93550184072854,
+      "enrichment": 6.073248069541282
+     },
+     "far_share_of_hits": 0.8214285714285714,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 15,
+       "expected": 7.134239433997394,
+       "enrichment": 2.102536666840649
+      },
+      "1": {
+       "k": 168,
+       "hits": 40,
+       "expected": 8.21488981536629,
+       "enrichment": 4.869207122556697
+      },
+      "2": {
+       "k": 166,
+       "hits": 28,
+       "expected": 11.012088771275636,
+       "enrichment": 2.5426602147483863
+      },
+      "3": {
+       "k": 164,
+       "hits": 35,
+       "expected": 12.727250489236791,
+       "enrichment": 2.750004805012589
+      },
+      "4": {
+       "k": 167,
+       "hits": 47,
+       "expected": 15.355516952198395,
+       "enrichment": 3.0607891708439796
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 18,
+      "expected": 54.4358167021895,
+      "enrichment": 0.3306646449060442
+     },
+     "far": {
+      "k": 826,
+      "hits": 12,
+      "expected": 18.93550184072854,
+      "enrichment": 0.6337302333434381
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 3,
+       "expected": 7.134239433997394,
+       "enrichment": 0.42050733336812984
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 38,
+       "expected": 11.012088771275636,
+       "enrichment": 3.4507531485870957
+      },
+      "3": {
+       "k": 164,
+       "hits": 44,
+       "expected": 12.727250489236791,
+       "enrichment": 3.4571488977301117
+      },
+      "4": {
+       "k": 167,
+       "hits": 74,
+       "expected": 15.355516952198395,
+       "enrichment": 4.819114864733074
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.7,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 125,
+      "expected": 54.4358167021895,
+      "enrichment": 2.2962822562919736
+     },
+     "far": {
+      "k": 826,
+      "hits": 119,
+      "expected": 18.93550184072854,
+      "enrichment": 6.2844914806557615
+     },
+     "far_share_of_hits": 0.952,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 15,
+       "expected": 7.134239433997394,
+       "enrichment": 2.102536666840649
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 24,
+       "expected": 11.012088771275636,
+       "enrichment": 2.1794230412129023
+      },
+      "3": {
+       "k": 164,
+       "hits": 31,
+       "expected": 12.727250489236791,
+       "enrichment": 2.435718541582579
+      },
+      "4": {
+       "k": 167,
+       "hits": 45,
+       "expected": 15.355516952198395,
+       "enrichment": 2.930542823148491
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 12,
+      "expected": 54.4358167021895,
+      "enrichment": 0.22044309660402947
+     },
+     "far": {
+      "k": 826,
+      "hits": 9,
+      "expected": 18.93550184072854,
+      "enrichment": 0.4752976750075786
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 3,
+       "expected": 7.134239433997394,
+       "enrichment": 0.42050733336812984
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 38,
+       "expected": 11.012088771275636,
+       "enrichment": 3.4507531485870957
+      },
+      "3": {
+       "k": 164,
+       "hits": 42,
+       "expected": 12.727250489236791,
+       "enrichment": 3.300005766015107
+      },
+      "4": {
+       "k": 167,
+       "hits": 72,
+       "expected": 15.355516952198395,
+       "enrichment": 4.688868517037586
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.8,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 122,
+      "expected": 54.4358167021895,
+      "enrichment": 2.2411714821409663
+     },
+     "far": {
+      "k": 826,
+      "hits": 121,
+      "expected": 18.93550184072854,
+      "enrichment": 6.390113186213001
+     },
+     "far_share_of_hits": 0.9918032786885246,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 15,
+       "expected": 7.134239433997394,
+       "enrichment": 2.102536666840649
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 24,
+       "expected": 11.012088771275636,
+       "enrichment": 2.1794230412129023
+      },
+      "3": {
+       "k": 164,
+       "hits": 30,
+       "expected": 12.727250489236791,
+       "enrichment": 2.3571469757250765
+      },
+      "4": {
+       "k": 167,
+       "hits": 45,
+       "expected": 15.355516952198395,
+       "enrichment": 2.930542823148491
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 8,
+      "expected": 54.4358167021895,
+      "enrichment": 0.1469620644026863
+     },
+     "far": {
+      "k": 826,
+      "hits": 7,
+      "expected": 18.93550184072854,
+      "enrichment": 0.36967596945033887
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 0,
+       "expected": 7.134239433997394,
+       "enrichment": 0.0
+      },
+      "1": {
+       "k": 168,
+       "hits": 40,
+       "expected": 8.21488981536629,
+       "enrichment": 4.869207122556697
+      },
+      "2": {
+       "k": 166,
+       "hits": 39,
+       "expected": 11.012088771275636,
+       "enrichment": 3.5415624419709664
+      },
+      "3": {
+       "k": 164,
+       "hits": 41,
+       "expected": 12.727250489236791,
+       "enrichment": 3.221434200157604
+      },
+      "4": {
+       "k": 167,
+       "hits": 70,
+       "expected": 15.355516952198395,
+       "enrichment": 4.558622169342097
+      }
+     }
+    }
+   },
+   {
+    "beta": 0.9,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 121,
+      "expected": 54.4358167021895,
+      "enrichment": 2.2228012240906305
+     },
+     "far": {
+      "k": 826,
+      "hits": 121,
+      "expected": 18.93550184072854,
+      "enrichment": 6.390113186213001
+     },
+     "far_share_of_hits": 1.0,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 82,
+      "expected": 18.91444892344726,
+      "enrichment": 4.335310023140503
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 15,
+       "expected": 7.134239433997394,
+       "enrichment": 2.102536666840649
+      },
+      "1": {
+       "k": 168,
+       "hits": 39,
+       "expected": 8.21488981536629,
+       "enrichment": 4.747476944492779
+      },
+      "2": {
+       "k": 166,
+       "hits": 24,
+       "expected": 11.012088771275636,
+       "enrichment": 2.1794230412129023
+      },
+      "3": {
+       "k": 164,
+       "hits": 29,
+       "expected": 12.727250489236791,
+       "enrichment": 2.2785754098675737
+      },
+      "4": {
+       "k": 167,
+       "hits": 44,
+       "expected": 15.355516952198395,
+       "enrichment": 2.865419649300747
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 4,
+      "expected": 54.4358167021895,
+      "enrichment": 0.07348103220134315
+     },
+     "far": {
+      "k": 826,
+      "hits": 4,
+      "expected": 18.93550184072854,
+      "enrichment": 0.21124341111447936
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 0,
+       "expected": 7.134239433997394,
+       "enrichment": 0.0
+      },
+      "1": {
+       "k": 168,
+       "hits": 41,
+       "expected": 8.21488981536629,
+       "enrichment": 4.9909373006206135
+      },
+      "2": {
+       "k": 166,
+       "hits": 41,
+       "expected": 11.012088771275636,
+       "enrichment": 3.723181028738708
+      },
+      "3": {
+       "k": 164,
+       "hits": 41,
+       "expected": 12.727250489236791,
+       "enrichment": 3.221434200157604
+      },
+      "4": {
+       "k": 167,
+       "hits": 67,
+       "expected": 15.355516952198395,
+       "enrichment": 4.3632526477988645
+      }
+     }
+    }
+   },
+   {
+    "beta": 1.0,
+    "availability": {
+     "all": {
+      "k": 826,
+      "hits": 11,
+      "expected": 54.4358167021895,
+      "enrichment": 0.20207283855369368
+     },
+     "far": {
+      "k": 826,
+      "hits": 11,
+      "expected": 18.93550184072854,
+      "enrichment": 0.5809193805648183
+     },
+     "far_share_of_hits": 1.0,
+     "within_far_candidates": {
+      "k": 523,
+      "hits": 8,
+      "expected": 18.91444892344726,
+      "enrichment": 0.4229570754283417
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 2,
+       "expected": 7.134239433997394,
+       "enrichment": 0.2803382222454199
+      },
+      "1": {
+       "k": 168,
+       "hits": 2,
+       "expected": 8.21488981536629,
+       "enrichment": 0.24346035612783481
+      },
+      "2": {
+       "k": 166,
+       "hits": 5,
+       "expected": 11.012088771275636,
+       "enrichment": 0.4540464669193547
+      },
+      "3": {
+       "k": 164,
+       "hits": 5,
+       "expected": 12.727250489236791,
+       "enrichment": 0.3928578292875127
+      },
+      "4": {
+       "k": 167,
+       "hits": 9,
+       "expected": 15.355516952198395,
+       "enrichment": 0.5861085646296983
+      }
+     }
+    },
+    "rarity_control": {
+     "all": {
+      "k": 826,
+      "hits": 0,
+      "expected": 54.4358167021895,
+      "enrichment": 0.0
+     },
+     "far": {
+      "k": 826,
+      "hits": 0,
+      "expected": 18.93550184072854,
+      "enrichment": 0.0
+     },
+     "by_coverage_quintile": {
+      "0": {
+       "k": 161,
+       "hits": 0,
+       "expected": 7.134239433997394,
+       "enrichment": 0.0
+      },
+      "1": {
+       "k": 168,
+       "hits": 9,
+       "expected": 8.21488981536629,
+       "enrichment": 1.0955716025752567
+      },
+      "2": {
+       "k": 166,
+       "hits": 10,
+       "expected": 11.012088771275636,
+       "enrichment": 0.9080929338387094
+      },
+      "3": {
+       "k": 164,
+       "hits": 4,
+       "expected": 12.727250489236791,
+       "enrichment": 0.31428626343001015
+      },
+      "4": {
+       "k": 167,
+       "hits": 18,
+       "expected": 15.355516952198395,
+       "enrichment": 1.1722171292593966
+      }
+     }
+    }
+   }
+  ]
+ },
+ "s4": {
+  "t": 2016,
+  "beta": 0.7,
+  "pool": 25,
+  "ranking": [
+   {
+    "pair": [
+     "fan_in",
+     "mixing_service"
+    ],
+    "coherence": 0.32599236264993114,
+    "bridging_authors": 0,
+    "F": 1.0501737608323125,
+    "rank": 1
+   },
+   {
+    "pair": [
+     "mixing_service",
+     "smurfing"
+    ],
+    "coherence": 0.18331792799709043,
+    "bridging_authors": 0,
+    "F": 0.5811561863641116,
+    "rank": 2
+   },
+   {
+    "pair": [
+     "fan_out",
+     "layering"
+    ],
+    "coherence": 0.17436693077846677,
+    "bridging_authors": 0,
+    "F": 0.551731328191268,
+    "rank": 3
+   },
+   {
+    "pair": [
+     "fan_in",
+     "smurfing"
+    ],
+    "coherence": 0.08820724012491048,
+    "bridging_authors": 0,
+    "F": 0.26849621865262374,
+    "rank": 4
+   },
+   {
+    "pair": [
+     "layering",
+     "pass_through"
+    ],
+    "coherence": 0.08327462720854234,
+    "bridging_authors": 0,
+    "F": 0.2522811051920046,
+    "rank": 5
+   },
+   {
+    "pair": [
+     "fan_in",
+     "pass_through"
+    ],
+    "coherence": 0.0654670727403896,
+    "bridging_authors": 0,
+    "F": 0.19374184394183164,
+    "rank": 6
+   },
+   {
+    "pair": [
+     "coinjoin",
+     "fan_out"
+    ],
+    "coherence": 0.05232020042195491,
+    "bridging_authors": 0,
+    "F": 0.15052377069949552,
+    "rank": 7
+   },
+   {
+    "pair": [
+     "coinjoin",
+     "smurfing"
+    ],
+    "coherence": 0.04398826458748027,
+    "bridging_authors": 0,
+    "F": 0.12313396996036097,
+    "rank": 8
+   },
+   {
+    "pair": [
+     "fan_out",
+     "smurfing"
+    ],
+    "coherence": 0.041501496398379356,
+    "bridging_authors": 0,
+    "F": 0.11495914882190854,
+    "rank": 9
+   },
+   {
+    "pair": [
+     "fan_in",
+     "fan_out"
+    ],
+    "coherence": 0.02527575963973904,
+    "bridging_authors": 0,
+    "F": 0.061619840227385314,
+    "rank": 10
+   },
+   {
+    "pair": [
+     "fan_in",
+     "layering"
+    ],
+    "coherence": 0.020997190908937882,
+    "bridging_authors": 0,
+    "F": 0.04755478412116235,
+    "rank": 11
+   },
+   {
+    "pair": [
+     "fan_out",
+     "pass_through"
+    ],
+    "coherence": 0.013092682340842744,
+    "bridging_authors": 0,
+    "F": 0.02157007673478352,
+    "rank": 12
+   },
+   {
+    "pair": [
+     "pass_through",
+     "smurfing"
+    ],
+    "coherence": 0.011847961565696133,
+    "bridging_authors": 0,
+    "F": 0.017478272058844557,
+    "rank": 13
+   },
+   {
+    "pair": [
+     "layering",
+     "peel_chain"
+    ],
+    "coherence": 0.0,
+    "bridging_authors": 0,
+    "F": -0.021469856310869867,
+    "rank": 14
+   },
+   {
+    "pair": [
+     "mixing_service",
+     "peel_chain"
+    ],
+    "coherence": 0.0,
+    "bridging_authors": 0,
+    "F": -0.021469856310869867,
+    "rank": 15
+   },
+   {
+    "pair": [
+     "pass_through",
+     "peel_chain"
+    ],
+    "coherence": 0.0,
+    "bridging_authors": 0,
+    "F": -0.021469856310869867,
+    "rank": 16
+   },
+   {
+    "pair": [
+     "peel_chain",
+     "smurfing"
+    ],
+    "coherence": 0.0,
+    "bridging_authors": 0,
+    "F": -0.021469856310869867,
+    "rank": 17
+   },
+   {
+    "pair": [
+     "fan_out",
+     "peel_chain"
+    ],
+    "coherence": 0.0,
+    "bridging_authors": 0,
+    "F": -0.021469856310869867,
+    "rank": 18
+   },
+   {
+    "pair": [
+     "coinjoin",
+     "peel_chain"
+    ],
+    "coherence": 0.0,
+    "bridging_authors": 0,
+    "F": -0.021469856310869867,
+    "rank": 19
+   },
+   {
+    "pair": [
+     "fan_in",
+     "peel_chain"
+    ],
+    "coherence": 0.0,
+    "bridging_authors": 0,
+    "F": -0.021469856310869867,
+    "rank": 20
+   },
+   {
+    "pair": [
+     "mixing_service",
+     "pass_through"
+    ],
+    "coherence": -0.015052162743856734,
+    "bridging_authors": 0,
+    "F": -0.0709512429222991,
+    "rank": 21
+   },
+   {
+    "pair": [
+     "coinjoin",
+     "fan_in"
+    ],
+    "coherence": -0.02700979260323355,
+    "bridging_authors": 0,
+    "F": -0.11025988687578528,
+    "rank": 22
+   },
+   {
+    "pair": [
+     "fan_out",
+     "mixing_service"
+    ],
+    "coherence": -0.036054962102460224,
+    "bridging_authors": 0,
+    "F": -0.13999432016443739,
+    "rank": 23
+   },
+   {
+    "pair": [
+     "coinjoin",
+     "pass_through"
+    ],
+    "coherence": -0.06157673658418197,
+    "bridging_authors": 0,
+    "F": -0.22389274802691797,
+    "rank": 24
+   },
+   {
+    "pair": [
+     "coinjoin",
+     "layering"
+    ],
+    "coherence": 0.2599708478213214,
+    "bridging_authors": 2,
+    "F": -2.7390331136325656,
+    "rank": 25
+   }
+  ],
+  "S4": [
+   [
+    "fan_in",
+    "mixing_service"
+   ],
+   [
+    "mixing_service",
+    "smurfing"
+   ],
+   [
+    "fan_out",
+    "layering"
+   ],
+   [
+    "fan_in",
+    "smurfing"
+   ],
+   [
+    "layering",
+    "pass_through"
+   ],
+   [
+    "fan_in",
+    "pass_through"
+   ],
+   [
+    "coinjoin",
+    "fan_out"
+   ],
+   [
+    "coinjoin",
+    "smurfing"
+   ],
+   [
+    "fan_out",
+    "smurfing"
+   ],
+   [
+    "fan_in",
+    "fan_out"
+   ]
+  ],
+  "diagnostics": {
+   "distinct_F": 19,
+   "distinct_bridging": 2,
+   "pairs_with_zero_bridging": 24,
+   "coherence_sd": 0.09125954489953594,
+   "concept_works_up_to_t": {
+    "coinjoin": 2,
+    "fan_in": 1,
+    "fan_out": 11,
+    "layering": 73,
+    "mixing_service": 45,
+    "pass_through": 6,
+    "peel_chain": 0,
+    "smurfing": 9
+   }
+  }
+ },
+ "overlap_S4_S1": 4,
+ "overlap_S4_S2": 4,
+ "vendi": {
+  "S1": 8.01141823804037,
+  "S2": 7.827763432240375,
+  "S4": 7.965417598578089
+ }
+}
