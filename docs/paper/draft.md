@@ -20,10 +20,14 @@ attack techniques.
 3. **Illicit transactions on Elliptic look like chains, not hubs.** Most textbook laundering motifs are *rarer* among
    illicit transactions than licit ones.
 4. **The core hypothesis is not supported.** Motif scenarios chosen by a literature-graph forecast (which itself beats
-   popularity by +0.241 AUC on pre-2017 AML literature) predict later detector recall no better than randomly chosen motif
+   popularity by +0.212 AUC on pre-2017 AML literature; +0.241 before the G06 vocabulary-leak correction) predict later detector recall no better than randomly chosen motif
    pairs, and worse than recent data in normal periods. **But after a documented market shift** (a dark-market
    shutdown), synthetic motif stress tests of any kind predicted detectors' post-shift recall better than recent data
    (mean error 0.047 vs 0.120). This lead was not pre-registered and needs a second shift to confirm.
+   **[Correction 2026-11-25, `docs/results/e3e4-reanalysis.md`]** Under one common model for every arm, instance-level
+   resampling and strict tie handling, the point estimate remains (error difference −0.061). But with time-block
+   resampling of the 7 post-shift steps, its interval includes 0, and the ranking advantage is not robust. The lead is
+   suggestive, not established.
 
 All designs were frozen in the repository before the data they test was read.
 
@@ -130,6 +134,8 @@ peel-chain signal. We report this as a lesson, not a corrected result.
 - **Size:** 105,533 pre-2017 AML, crypto and fraud works, 500 OpenAlex concept tags plus the 14 target concepts;
   density 0.37 at 2013.
 - **Forecasting (2013 → 2016):** logistic regression AUC 0.818 against popularity 0.576 (+0.241, 95% CI [+0.234, +0.249]).
+  **Corrected (G06):** that evaluation chose its context vocabulary with works up to 2016. With the vocabulary chosen
+  from works up to 2013: AUC 0.824 against 0.612, **+0.212 [+0.203, +0.219]** (`results/literature_graph_v2_reanalysis.json`).
 - **Result:** the pre-registered hypothesis holds, so scenarios were ranked with this model. The top 10 of the 25 unlinked
   drawable motif pairs form stress test S1.
 
@@ -145,6 +151,8 @@ peel-chain signal. We report this as a lesson, not a corrected result.
 - **The frozen success criterion is not met:** S1 must beat both recent data and random motif pairs.
 - **S1 against random pairs:** S1 is not reliably better.
 - **After a shift, any synthetic motif set beats recent data at predicting detector recall, and loses to it otherwise.**
+  *(Correction 2026-11-25: the after-shift half does not survive time-block resampling, and the ranking half is not
+  robust; see `docs/results/e3e4-reanalysis.md`. The no-shift half is robust.)*
 - **The mechanism visible in per-detector recalls:** linear detectors flag unfamiliar synthetic shapes and also survive the
   shift. Tree ensembles do neither, consistent with Maganti (2026).
 - **E5:** thresholds fixed at a 5% false-positive rate held near target after cutoff 34 (0.2–9%), drifted up at

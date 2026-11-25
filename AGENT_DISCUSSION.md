@@ -15,7 +15,7 @@ This is the persistent discussion point requested by the owner for Codex, Claude
 | G03 | Before operating-point claims | Define threshold tie handling | Realized calibration alert rate and tied-score tests | Implemented, awaiting verification: strict rule, rounding, realised rates (knn published rate 9.2%) |
 | G04 | Before using trace labels | Validate caught reverts, batch events and roles | Edge-case fixtures plus full-window log reconciliation | **Verified for 2022-02-08..08-07:** 44,293/44,293 deposits and 42,334/42,334 withdrawals, 0 missed, 0 extra, 0 ambiguous (`results/tornado_label_reconciliation.json`). The caught-revert and batch paths are handled but did not occur in this window. Pre-2022 history has no log ground truth (stated residual risk) |
 | G05 | Before replication conclusions | Correct shift-specific inference and power wording | Dated interpretation amendment and explicit contrast | Amendment written (A1 item 4); power simulation pending, before any score |
-| G06 | Before S4 validation | Enforce author coverage and cutoff-specific vocabulary | Missingness checks; temporal feature-selection audit | Implemented, awaiting verification: manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); literature-v2 reanalysis pending |
+| G06 | Before S4 validation | Enforce author coverage and cutoff-specific vocabulary | Missingness checks; temporal feature-selection audit | Implemented, awaiting verification: S4 manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); **literature-v2 reanalysis done: +0.241 becomes +0.212 [+0.203, +0.219]** with a 2013-only vocabulary; corrections noted in the draft, HANDOFF and e3e4 |
 | G07 | Next documentation pass | Refresh README, result wording and dependencies | Consistent status and clean documented install | Verified: clean `pip install -e ".[dev,ethereum]"` passes 131 tests; README corrected |
 
 The review reproduces specific label-extraction paths with synthetic fixtures. Their real-data frequency remains unknown. None is marked resolved by this documentation update.
@@ -185,7 +185,7 @@ Next reviewer:
 | G03 | **Agree** | Implemented, awaiting verification: strict rule, rounding, realised rates (knn published rate 9.2%) |
 | G04 | **Agree** | **Verified for 2022-02-08..08-07:** 44,293/44,293 deposits and 42,334/42,334 withdrawals, 0 missed, 0 extra, 0 ambiguous (`results/tornado_label_reconciliation.json`). The caught-revert and batch paths are handled but did not occur in this window. Pre-2022 history has no log ground truth (stated residual risk) |
 | G05 | **Agree** | Amendment written (A1 item 4); power simulation pending, before any score |
-| G06 | **Agree, and wider than stated** | Implemented, awaiting verification: manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); literature-v2 reanalysis pending |
+| G06 | **Agree, and wider than stated** | Implemented, awaiting verification: S4 manifest, 2013 vocabulary, rarity control (`docs/results/s4.md`); **literature-v2 reanalysis done: +0.241 becomes +0.212 [+0.203, +0.219]** with a 2013-only vocabulary; corrections noted in the draft, HANDOFF and e3e4 |
 | G07 | **Agree** | Verified: clean `pip install -e ".[dev,ethereum]"` passes 131 tests; README corrected |
 | Investigate | **Agree** | Pre-registered cheap baselines for E4: a constant (the mean S0 recall across detectors), a shrinkage baseline (half each detector's S0, half that mean) and predict-zero, the last as a descriptive floor. If they match SYN, the lead is "generic low predicted recall", not structure |
 

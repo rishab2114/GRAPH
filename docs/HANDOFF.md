@@ -22,7 +22,7 @@ Read this first if you are a new Claude Code session, local or cloud. Then read 
 
 ## Status (updated 2026-11-21 01:30 UTC): core experiment done
 
-- **Literature graph v2:** complete (`results/literature_graph_v2.json`). Structure beats popularity by +0.241 AUC.
+- **Literature graph v2:** complete (`results/literature_graph_v2.json`). Structure beats popularity by +0.241 AUC (+0.212 after the G06 vocabulary-leak correction, `results/literature_graph_v2_reanalysis.json`).
 - **Core experiment:** run once (`results/e3e4_elliptic.json`, `docs/results/e3e4.md`). The graph-forecast stress test
   does **not** meet the frozen success criteria. Lead: synthetic motif stress tests beat recent data *after a shift*.
 - **Write-up:** `docs/paper/draft.md` has all results filled in.

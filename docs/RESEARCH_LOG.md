@@ -997,3 +997,13 @@ Elliptic.** Stage 2 becomes the deciding test, and its power simulation must inc
 
 The design's §3 check (≤ 1% missed) passes, with no extras. **Residual risk:** history before 2022-02-08 uses the same
 rule but has no log ground truth.
+
+**Literature-v2 reanalysis (G06, 2026-11-25).** The published validation chose its ~500 context nodes using works up
+to 2016, while forecasting from 2013. With the vocabulary chosen from works up to 2013 only:
+- **logreg_all** AUC 0.824;
+- the **popularity baseline** rises from 0.576 to 0.612;
+- the **margin** falls from **+0.241 to +0.212 [+0.203, +0.219]**.
+
+The forecaster's advantage survives the correction, smaller by about 0.03; the leak had mostly been holding back the
+baseline. The correction is noted in `docs/paper/draft.md`, `docs/HANDOFF.md` and `docs/results/e3e4.md`, and the
+draft's after-shift claims are annotated with the E3/E4 reanalysis.
