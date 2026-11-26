@@ -1,0 +1,272 @@
+{
+ "2022-08-08": {
+  "tasks": {
+   "2021-12-27": {
+    "frame": 7659338,
+    "eligible": 7642044,
+    "positives": 703,
+    "active_eligible": 2084984,
+    "prior_excluded": 17294,
+    "infrastructure": 569
+   },
+   "2022-02-21": {
+    "frame": 6363173,
+    "eligible": 6345874,
+    "positives": 947,
+    "active_eligible": 1844985,
+    "prior_excluded": 17299,
+    "infrastructure": 588
+   },
+   "2022-04-18": {
+    "frame": 8201644,
+    "eligible": 8181276,
+    "positives": 895,
+    "active_eligible": 1823994,
+    "prior_excluded": 20368,
+    "infrastructure": 694
+   },
+   "2022-06-13": {
+    "frame": 6745280,
+    "eligible": 6724459,
+    "positives": 866,
+    "active_eligible": 1523047,
+    "prior_excluded": 20821,
+    "infrastructure": 727
+   }
+  },
+  "training_rows": 52545,
+  "training_positives": 2545,
+  "detectors": {
+   "lr": {
+    "tau": 0.4103452844,
+    "realised_calibration_alert_rate": 0.003455,
+    "degenerate": false
+   },
+   "lr_scaled": {
+    "tau": 0.2664284983,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "rf": {
+    "tau": 0.4945,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "rf_balanced": {
+    "tau": 0.8887813053,
+    "realised_calibration_alert_rate": 0.008875,
+    "degenerate": false
+   },
+   "extra_trees": {
+    "tau": 0.5,
+    "realised_calibration_alert_rate": 0.00982,
+    "degenerate": false
+   },
+   "hgb": {
+    "tau": 0.4086110534,
+    "realised_calibration_alert_rate": 0.00999,
+    "degenerate": false
+   },
+   "tree": {
+    "tau": 1.0,
+    "realised_calibration_alert_rate": 0.0,
+    "degenerate": true
+   },
+   "nb": {
+    "tau": 0.9999999959,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "knn": {
+    "tau": 1.0,
+    "realised_calibration_alert_rate": 0.0,
+    "degenerate": true
+   },
+   "mlp": {
+    "tau": 0.3770912107,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   }
+  }
+ },
+ "2022-06-08": {
+  "tasks": {
+   "2021-10-27": {
+    "frame": 6513475,
+    "eligible": 6498755,
+    "positives": 584,
+    "active_eligible": 2137616,
+    "prior_excluded": 14720,
+    "infrastructure": 533
+   },
+   "2021-12-22": {
+    "frame": 7611024,
+    "eligible": 7593925,
+    "positives": 702,
+    "active_eligible": 2001492,
+    "prior_excluded": 17099,
+    "infrastructure": 568
+   },
+   "2022-02-16": {
+    "frame": 6516677,
+    "eligible": 6499706,
+    "positives": 951,
+    "active_eligible": 2073266,
+    "prior_excluded": 16971,
+    "infrastructure": 588
+   },
+   "2022-04-13": {
+    "frame": 8110975,
+    "eligible": 8090827,
+    "positives": 929,
+    "active_eligible": 1797839,
+    "prior_excluded": 20148,
+    "infrastructure": 689
+   }
+  },
+  "training_rows": 52237,
+  "training_positives": 2237,
+  "detectors": {
+   "lr": {
+    "tau": 0.1884702304,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "lr_scaled": {
+    "tau": 0.2244775417,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "rf": {
+    "tau": 0.4293333333,
+    "realised_calibration_alert_rate": 0.00993,
+    "degenerate": false
+   },
+   "rf_balanced": {
+    "tau": 0.83,
+    "realised_calibration_alert_rate": 0.009925,
+    "degenerate": false
+   },
+   "extra_trees": {
+    "tau": 0.44,
+    "realised_calibration_alert_rate": 0.0099,
+    "degenerate": false
+   },
+   "hgb": {
+    "tau": 0.3569340164,
+    "realised_calibration_alert_rate": 0.009955,
+    "degenerate": false
+   },
+   "tree": {
+    "tau": 1.0,
+    "realised_calibration_alert_rate": 0.0,
+    "degenerate": true
+   },
+   "nb": {
+    "tau": 0.9997941757,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "knn": {
+    "tau": 1.0,
+    "realised_calibration_alert_rate": 0.0,
+    "degenerate": true
+   },
+   "mlp": {
+    "tau": 0.3497563556,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   }
+  }
+ },
+ "2022-04-08": {
+  "tasks": {
+   "2021-08-27": {
+    "frame": 7414026,
+    "eligible": 7400257,
+    "positives": 656,
+    "active_eligible": 1768385,
+    "prior_excluded": 13769,
+    "infrastructure": 504
+   },
+   "2021-10-22": {
+    "frame": 6328965,
+    "eligible": 6314225,
+    "positives": 598,
+    "active_eligible": 1985943,
+    "prior_excluded": 14740,
+    "infrastructure": 530
+   },
+   "2021-12-17": {
+    "frame": 7679751,
+    "eligible": 7663017,
+    "positives": 729,
+    "active_eligible": 2115397,
+    "prior_excluded": 16734,
+    "infrastructure": 564
+   },
+   "2022-02-11": {
+    "frame": 6393146,
+    "eligible": 6376263,
+    "positives": 957,
+    "active_eligible": 1996441,
+    "prior_excluded": 16883,
+    "infrastructure": 586
+   }
+  },
+  "training_rows": 51983,
+  "training_positives": 1983,
+  "detectors": {
+   "lr": {
+    "tau": 0.3575380978,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "lr_scaled": {
+    "tau": 0.3752201486,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "rf": {
+    "tau": 0.53,
+    "realised_calibration_alert_rate": 0.009635,
+    "degenerate": false
+   },
+   "rf_balanced": {
+    "tau": 0.872858058,
+    "realised_calibration_alert_rate": 0.009905,
+    "degenerate": false
+   },
+   "extra_trees": {
+    "tau": 0.52,
+    "realised_calibration_alert_rate": 0.00992,
+    "degenerate": false
+   },
+   "hgb": {
+    "tau": 0.3681774223,
+    "realised_calibration_alert_rate": 0.009995,
+    "degenerate": false
+   },
+   "tree": {
+    "tau": 1.0,
+    "realised_calibration_alert_rate": 0.0,
+    "degenerate": true
+   },
+   "nb": {
+    "tau": 0.9999999954,
+    "realised_calibration_alert_rate": 0.00996,
+    "degenerate": false
+   },
+   "knn": {
+    "tau": 1.0,
+    "realised_calibration_alert_rate": 0.0,
+    "degenerate": true
+   },
+   "mlp": {
+    "tau": 0.4025591316,
+    "realised_calibration_alert_rate": 0.009915,
+    "degenerate": false
+   }
+  }
+ }
+}

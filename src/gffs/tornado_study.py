@@ -348,17 +348,20 @@ def run() -> dict:
     return results
 
 
-def run_one(cutoffs) -> dict:
-    """One evaluated cutoff of the frozen run. Post-cutoff labels only behind the approval gate."""
+def run_one(cutoffs, rehearsal: bool = False) -> dict:
+    """One evaluated cutoff of the frozen run. Post-cutoff labels only behind the approval gate.
+    rehearsal=True: the calibration week stands in for the evaluation week (all pre-cutoff, no new labels), the full code
+    path runs, and ONLY shapes and finiteness are written: no metric value is printed or saved."""
     from gffs.scenarios import size_sampler_from
     from gffs.tornado_study_data import HISTORY_START
     registry, sets, results = load_registry(), _stress_sets(), {}
     for c in cutoffs:
         td = task_dates(c); weeks = WEEKS
         import gc
-        ch = compact_history(load_history(HISTORY_START, c + timedelta(weeks=WEEKS)))
-        ev = build_task(c, ch, registry, keep_edges=True)
-        if c == CUTOFF:                                              # power rule (s7): a count, before any score
+        ev_date = td["calibration"] if rehearsal else c
+        ch = compact_history(load_history(HISTORY_START, ev_date + timedelta(weeks=WEEKS)))
+        ev = build_task(ev_date, ch, registry, keep_edges=True)
+        if c == CUTOFF and not rehearsal:                             # power rule (s7): a count, before any score
             n8 = len(ev["positives"]); rule = {"positives_8w": n8}
             if n8 < 100:
                 ch = compact_history(load_history(HISTORY_START, c + timedelta(weeks=26))); weeks = 26
@@ -390,10 +393,22 @@ def run_one(cutoffs) -> dict:
             S0[:, j] = scores(m, X0) > tau; H[:, j] = scores(m, Xh) > tau
             for k in syn:
                 syn[k][0][:, j] = scores(m, syn_X[k][0]) > tau
-        r = evaluate(names, S0, cal["weeks"], syn, H,
+        keep = [j for j, nme in enumerate(names) if taus[nme]["calibration_alert_rate"] > 0]      # Amendment A3
+        sub = lambda M: M[:, keep]
+        r = evaluate([names[j] for j in keep], sub(S0), cal["weeks"], {k: (sub(v[0]), v[1]) for k, v in syn.items()}, sub(H),
                      np.array([ev["positives"][a] for a in posh]), h_n_weeks=weeks)
+        r["degenerate_detectors_excluded"] = [nme for j, nme in enumerate(names) if j not in keep]
         r.update({"horizon_weeks": weeks, "thresholds": taus, "model_hash": model_ids,
                   "sizes": {"eligible": len(ev["eligible"]), "holdout_positives": len(posh), "s0_positives": len(X0)}})
+        if rehearsal:
+            fin = lambda x: bool(np.all(np.isfinite([v for v in x.values() if isinstance(v, (int, float))])))
+            shape = {"detectors_kept": len(r["metrics"]["S0"]) and len(r["recall_holdout"]), "excluded": r["degenerate_detectors_excluded"],
+                     "arms": sorted(r["metrics"]), "contrasts": sorted(r["contrasts"]), "n_holdout": r["n_holdout"], "n_s0": r["n_s0"],
+                     "synthetic_rows": {k: int(len(v[1])) for k, v in syn.items()},
+                     "metrics_finite": all(fin(m) for m in r["metrics"].values() if m), "block_draws": len(r["syn_minus_s0_block_draws"])}
+            Path(f"results/tornado_rehearsal_{c}.json").write_text(json.dumps(shape, indent=1))
+            print("rehearsal", c, json.dumps(shape), flush=True)
+            continue
         results[str(c)] = r
         Path(f"results/tornado_run_{c}.json").write_text(json.dumps({str(c): r}, indent=1, default=str))
     return results
@@ -404,7 +419,7 @@ if __name__ == "__main__":
     step = sys.argv[1] if len(sys.argv) > 1 else "dry-run"
     arg = [date.fromisoformat(sys.argv[2])] if len(sys.argv) > 2 else None
     {"dry-run": lambda: dry_run_all(), "dry-run-one": lambda: dry_run(arg), "registry": build_registry,
-     "run": run, "run-one": lambda: run_one(arg)}[step]()
+     "run": run, "run-one": lambda: run_one(arg), "rehearse": lambda: run_one(arg, rehearsal=True)}[step]()
 
 
 # ---------------------------------------------------------------- synthetic accounts and metrics (design s6, s8; A1, A2)

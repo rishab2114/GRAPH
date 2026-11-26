@@ -331,3 +331,17 @@ Made **before any Stage 2 score exists**, on the basis of the pre-registered pow
   - *Rule.* It is treated as infrastructure **at every task date**. Removing its edges can only remove interactions
     with a listed Tornado address.
 
+## Amendment A3 (2026-11-26): degenerate detectors, from the dry-run receipt only
+
+The pre-cutoff dry run (`results/tornado_dry_run.json`: training and calibration tasks only, no study score) shows the
+**decision tree and k-NN flagging 0% at the operating point at every cutoff**. Their scores are coarse, and the top
+tied value holds more than 1% of the calibration sample, so the strict rule of A1 item 3 sets τ at the maximum.
+
+**Rule:** a detector whose realised calibration alert rate is 0 is **excluded from H1–H4 (E3/E4)** and reported
+separately. It carries no ranking or calibration information at the operating point; kept in, it would add a recall
+of zero to every arm. With 8 of 10 detectors remaining, the minimum of 8 (review note 3) still holds.
+
+**Basis:** the decision uses calibration data only and was made before any evaluation run. A rehearsal mode (the
+calibration week standing in for the evaluation week) checks the full code path and writes only shapes and finiteness,
+never metric values.
+
