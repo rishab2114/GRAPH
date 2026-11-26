@@ -130,8 +130,8 @@ def withdrawals_from_payments(pays: list[dict]) -> list[dict]:
     return out
 
 
-def study_day(fs, d: date, ofac: set[str], write_edges: bool) -> tuple[dict, set[str]]:
-    assert d < CUTOFF
+def study_day(fs, d: date, ofac: set[str], write_edges: bool, allow_post_cutoff: bool = False) -> tuple[dict, set[str]]:
+    assert d < CUTOFF or allow_post_cutoff      # post-cutoff days only through tornado_study.build_post_cutoff_history (gated)
     tx = eth.read_day(fs, "transactions", d.isoformat(),
                       ["hash", "from_address", "to_address", "value", "receipt_gas_used", "receipt_status"])
     h = pc.utf8_lower(tx["hash"]); frm = pc.utf8_lower(tx["from_address"]); to = pc.utf8_lower(tx["to_address"])

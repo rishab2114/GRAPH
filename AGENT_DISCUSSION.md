@@ -533,3 +533,13 @@ and streamed tasks with hash-keyed uniform samples. Equivalence tests were added
 
 **A rehearsal of the full run path** (the calibration week standing in for the evaluation week; structure only, no
 metric values) is running. The evaluation run itself waits for the owner's approval.
+
+
+**Rehearsal receipt (26 November 2026, Claude):** `results/tornado_rehearsal_2022-08-08.json`.
+- **Ran:** the full run path, with the calibration week standing in for the evaluation week; structure only.
+- **Caught:** two crashes (entry-point placement; instance positions against ids in the bootstrap), both fixed with
+  tests.
+- **Final pass:** 8 detectors (k-NN and tree excluded, A3); all arms and contrasts; E4 and every interval finite; ρ
+  undefined only for the constant baselines.
+- **Gating:** the post-cutoff label build is gated. **The longer-horizon secondary estimand is still not adopted**; if
+  the owner wants it, it is dated before approval of the run.

@@ -1048,3 +1048,24 @@ Elliptic's common-model recalls as the template, 8 weekly blocks, and instance-c
 - **Stage 2:** the pre-cutoff build is complete; the contract registry is built (699,165 contracts; 37/38 listed
   addresses dated; the remaining one is an externally owned account, so a deviation was logged); the dry run is in
   progress.
+
+---
+
+### 2026-11-26 — Stage 2: dry run, Amendment A3, rehearsal (three bugs caught before any post-cutoff read)
+
+- **Dry run** (`results/tornado_dry_run.json`; training and calibration only):
+  - 584–957 positives per task; 6.3–8.2M eligible addresses per task;
+  - alert rates on target for 8 detectors;
+  - **the tree and k-NN degenerate** (0% at the operating point, because their top tied score holds more than 1%).
+- It needed **two memory fixes**: one process per cutoff; compact history plus streamed tasks with hash-keyed uniform
+  samples (tests prove equivalence).
+- **Amendment A3:** detectors degenerate on calibration data are excluded from H1–H4 and reported separately (8
+  remain).
+- **Rehearsal** (the calibration week stands in for the evaluation week; structure only, no metric values). It caught:
+  1. the `__main__` block above later definitions (NameError);
+  2. the bootstrap using instance id values as positions (IndexError when ids are numbered across sets).
+
+  Both are fixed, with regression tests. **The final rehearsal passes:** all arms and contrasts produced; E4 and every
+  contrast interval finite; ρ undefined only for the constant baselines; 1,000 block draws.
+- **The post-cutoff label build** sits behind the approval gate (`build_post_cutoff_history`; refusal tested).
+  `docs/tornado-approval.md` does not exist, so **nothing after 2022-08-07 has been read.**

@@ -310,6 +310,23 @@ def dry_run(cutoffs=None) -> dict:
     return out
 
 
+def build_post_cutoff_history(end: date, approval_file: Path = APPROVAL) -> None:
+    """Deposit/withdrawal history for [2022-08-08, end): the only post-cutoff data the run reads (labels).
+    Refuses without the owner's approval file. Feature weeks are all pre-cutoff and already built."""
+    require_approval(end - timedelta(days=1), approval_file=approval_file)
+    from gffs import ethereum as eth
+    from gffs.tornado_study_data import ofac_addresses, study_day
+    fs, ofac = eth.filesystem(), ofac_addresses()
+    d = CUTOFF
+    while d < end:
+        out = STUDY / "history" / f"{d}.json"
+        if not out.exists():
+            rec, _ = study_day(fs, d, ofac, write_edges=False, allow_post_cutoff=True)
+            tmp = out.with_suffix(".part"); tmp.write_text(json.dumps(rec)); tmp.rename(out)
+            print("post-cutoff history", d, rec["stats"]["deposits"], flush=True)
+        d += timedelta(days=1)
+
+
 def build_registry() -> None:
     """As-of contract evidence for every address in the study's feature weeks, plus the 38 OFAC addresses."""
     from gffs.tornado_aux import run_contracts
@@ -332,8 +349,9 @@ def _stress_sets() -> dict:
 
 
 def run() -> dict:
-    """The single frozen run (design + A1 + A2): one process per cutoff, then the shift contrast D."""
+    """The single frozen run (design + A1-A3): post-cutoff labels (gated), one process per cutoff, then D."""
     from gffs.tornado_study_data import EVAL_CUTOFFS
+    build_post_cutoff_history(CUTOFF + timedelta(weeks=WEEKS))          # 8-week labels; the 26-week branch builds more
     results = {}
     for f in _per_cutoff("run-one", EVAL_CUTOFFS):
         results.update(json.loads(f.read_text()))
@@ -364,6 +382,7 @@ def run_one(cutoffs, rehearsal: bool = False) -> dict:
         if c == CUTOFF and not rehearsal:                             # power rule (s7): a count, before any score
             n8 = len(ev["positives"]); rule = {"positives_8w": n8}
             if n8 < 100:
+                build_post_cutoff_history(c + timedelta(weeks=26))
                 ch = compact_history(load_history(HISTORY_START, c + timedelta(weeks=26))); weeks = 26
                 ev["positives"] = labels_compact(ch, ev["eligible"], c, weeks=26); rule["positives_26w"] = len(ev["positives"])
                 if len(ev["positives"]) < 100:

@@ -109,3 +109,10 @@ def test_evaluate_handles_instance_ids_numbered_across_sets():
            for s, off in (("S1", 0), ("S2", 2000), ("S3", 5000))}
     r = evaluate([f"d{i}" for i in range(D)], S0, s0w, syn, H, hw, boots=50)
     assert np.isfinite(r["contrasts"]["SYN-S0"]["ci_block"]).all()
+
+
+def test_post_cutoff_history_build_refuses_without_approval(tmp_path, monkeypatch):
+    import gffs.tornado_study as ts
+    monkeypatch.setattr(ts, "APPROVAL", tmp_path / "missing.md")
+    with pytest.raises(ApprovalRequired):
+        ts.build_post_cutoff_history(date(2022, 10, 3), approval_file=tmp_path / "missing.md")

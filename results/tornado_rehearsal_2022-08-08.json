@@ -1,0 +1,42 @@
+{
+ "detectors_kept": 8,
+ "excluded": [
+  "knn",
+  "tree"
+ ],
+ "arms": [
+  "B_const",
+  "B_shrink",
+  "B_zero",
+  "S0",
+  "S1",
+  "S2",
+  "S3",
+  "S4",
+  "SYN"
+ ],
+ "contrasts": [
+  "S1-S0",
+  "S1-S2",
+  "S2-S0",
+  "S3-S0",
+  "S4-S0",
+  "S4-S1",
+  "S4-S2",
+  "SYN-B_const",
+  "SYN-B_shrink",
+  "SYN-S0"
+ ],
+ "n_holdout": 866,
+ "n_s0": 866,
+ "synthetic_rows": {
+  "S1": 33599,
+  "S2": 27338,
+  "S3": 14548,
+  "S4": 31041
+ },
+ "e4_finite_all_arms": true,
+ "contrast_cis_finite": true,
+ "rho_undefined_only_for_constant_baselines": true,
+ "block_draws": 1000
+}
