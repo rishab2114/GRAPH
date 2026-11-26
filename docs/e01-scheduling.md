@@ -131,3 +131,22 @@ terms excluded:
 **Decision for the frozen E03 design:** define the corpus **by venue or topic** (for example operations-research and
 production journals, or OpenAlex topics for project and production scheduling), not by hand-tuned keyword exclusions.
 Freeze it with the synonym groups before any score. The current counts are diagnostics only.
+
+## Learner v0: protocol fixed before any result (2026-11-26)
+
+- **Data** (`gffs.sched.dataset`): 11 families × 4 templates × 20 seeds = 880 hard instances. Labels come from the
+  two-stage certified solver (30 s, then 300 s). Uncertified instances are excluded.
+- **Split:** *compositional axis only* in v0. Sort the six two-extension families by name and hold out every third:
+  **deadlines + resource_calendar** and **release_dates + resource_calendar**. Every single atom still appears in
+  training. Family overlap between train and test must be 0.
+- **Learner** (`gffs.sched.learn`): a linear priority rule for the serial schedule-generation scheme, fitted by
+  logistic pairwise ranking on 11 task features. The target is the order of certified optimal start times.
+- **Compared with:** the deadline rule (the earlier heuristic), latest finish, most successors, and random (seed 0).
+- **Metrics on the held-out families:**
+  - mean optimality gap against **certified optima only**;
+  - share optimal;
+  - share of feasible instances where a schedule is found;
+  - share of infeasible instances detected (no schedule found);
+  - in-distribution results reported alongside.
+- **Not claimed:** a single compositional split and one seed. This is a feasibility check that learning beats fixed
+  rules, not the E03 selection study.
