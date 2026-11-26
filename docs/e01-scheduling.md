@@ -107,3 +107,27 @@ is fully certified.
 **Headroom is real but modest** (a mean greedy gap of 3.3%). A learned priority rule could show only small absolute
 gains here. Larger or tighter instances would add headroom, but would also raise certification cost, a trade-off to
 decide before E03.
+
+## Evidence sheet and a validity problem in the L01 pre-check (2026-11-26)
+
+`docs/e01-atom-evidence.md` lists, for each atom, the three most-cited matching works and the abstract sentence that
+contains the term, **for human review** (studied, mention only, or unclear). No atom is marked verified.
+
+**The sheet exposed a problem with my pre-check.** Under the broad "scheduling" anchor, the top "deadlines" works are
+**real-time CPU scheduling and control systems**, not project scheduling. Re-counted with computing and networking
+terms excluded:
+
+| Anchor | Works per atom | Zero pairs | Pairs under 10 | Median pair |
+|---|---|---|---|---|
+| Scheduling + synonyms | 228–15,737 | 1 / 45 | 13 | 28 |
+| … excluding computing and networking terms | 115–3,891 | 2 / 45 | 19 | **12** |
+
+**What this shows:**
+- 75% of the "deadlines" hits and 71% of the "preemption" hits came from computing.
+- Part of the earlier non-degenerate spread came from **mixing communities where the words mean different things**.
+- The exclusion list is itself flawed. It drops "network", but "project network" is core project-scheduling
+  vocabulary.
+
+**Decision for the frozen E03 design:** define the corpus **by venue or topic** (for example operations-research and
+production journals, or OpenAlex topics for project and production scheduling), not by hand-tuned keyword exclusions.
+Freeze it with the synonym groups before any score. The current counts are diagnostics only.

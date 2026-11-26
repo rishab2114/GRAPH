@@ -1031,3 +1031,20 @@ Elliptic's common-model recalls as the template, 8 weekly blocks, and instance-c
     learning study.
 - **Stage 2 runner, part 1:** account features (design §4). The reconvergence join is chunked over integer ids so it
   fits a real week (7.0M edges, 467k accounts) in 147 s and 6.5 GB.
+
+---
+
+### 2026-11-26 — E01: certification gate, extended solver, Codex L07–L10 fixed; atom evidence; registry
+
+- **Codex L07–L10:** all four reproduced and fixed, test-first (see `AGENT_DISCUSSION.md`). The key one: a solver
+  timeout had been reported as "infeasible". There are now four outcomes, and gaps use certified optima only.
+- **Extended solver:** multiple resources, maximum lags, multi-mode activities with budgets, all brute-force verified.
+- **Certification gate on a harder generator:** 99.4% coverage, 0 flips. **No-go by the pre-stated per-family rule**
+  (93.75%). The one uncertified instance certifies at 300 s, so two-stage solving was adopted *post hoc* (disclosed).
+  Headroom is modest (mean greedy gap 3.3%).
+- **Atom evidence sheet** (`docs/e01-atom-evidence.md`), for human review. It exposed **community mixing** in the
+  broad-anchor counts: "deadlines" and "preemption" are mostly computing literature. The non-degenerate signal is
+  partly an artefact of mixed meanings. **Decision:** define the corpus by venue or topic, frozen before scoring.
+- **Stage 2:** the pre-cutoff build is complete; the contract registry is built (699,165 contracts; 37/38 listed
+  addresses dated; the remaining one is an externally owned account, so a deviation was logged); the dry run is in
+  progress.
