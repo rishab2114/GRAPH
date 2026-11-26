@@ -486,7 +486,8 @@ def evaluate(names, S0, s0_weeks, syn, H, h_weeks, boots: int = 1000, seed: int 
     draws = {"block": {p: [] for p in pairs}, "iid": {p: [] for p in pairs}, "D_block": []}
     wk_h = [np.flatnonzero(h_weeks == w) for w in range(h_n_weeks)]; wk_0 = [np.flatnonzero(s0_weeks == w) for w in range(WEEKS)]
     for _ in range(boots):
-        inst = {s: (lambda ids: ids[rng.integers(0, len(ids), len(ids))])(np.unique(i)) for s, (_, i) in syn.items()}
+        # draw instance POSITIONS (0..n_instances-1), not id values: ids are numbered across sets (rehearsal IndexError)
+        inst = {s: (lambda n: rng.integers(0, n, n))(len(np.unique(i))) for s, (_, i) in syn.items()}
         ih = np.concatenate([wk_h[w] for w in rng.integers(0, h_n_weeks, h_n_weeks)]); i0 = np.concatenate([wk_0[w] for w in rng.integers(0, WEEKS, WEEKS)])
         jh, j0 = rng.integers(0, len(H), len(H)), rng.integers(0, len(S0), len(S0))
         for kind, (a_idx, h_idx) in (("block", (i0, ih)), ("iid", (j0, jh))):

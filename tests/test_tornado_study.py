@@ -96,3 +96,16 @@ def test_module_entry_point_is_last_so_every_function_exists_when_run_as_a_scrip
     tree = ast.parse(inspect.getsource(m))
     last = tree.body[-1]
     assert isinstance(last, ast.If) and "__main__" in ast.unparse(last.test)
+
+
+def test_evaluate_handles_instance_ids_numbered_across_sets():
+    # Real runs number instances across sets (S2 starts at 2000): ids are not positions (rehearsal IndexError, 2026-11-26).
+    from gffs.tornado_study import evaluate
+    rng = np.random.default_rng(1); D = 4
+    r_h = np.linspace(0.1, 0.4, D)
+    H = (rng.random((200, D)) < r_h).astype(float); hw = rng.integers(0, 8, 200)
+    S0 = (rng.random((300, D)) < r_h).astype(float); s0w = rng.integers(0, 8, 300)
+    syn = {s: ((rng.random((600, D)) < r_h).astype(float), np.repeat(np.arange(200) + off, 3))
+           for s, off in (("S1", 0), ("S2", 2000), ("S3", 5000))}
+    r = evaluate([f"d{i}" for i in range(D)], S0, s0w, syn, H, hw, boots=50)
+    assert np.isfinite(r["contrasts"]["SYN-S0"]["ci_block"]).all()
