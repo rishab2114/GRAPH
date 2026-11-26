@@ -405,7 +405,13 @@ def run_one(cutoffs, rehearsal: bool = False) -> dict:
             shape = {"detectors_kept": len(r["metrics"]["S0"]) and len(r["recall_holdout"]), "excluded": r["degenerate_detectors_excluded"],
                      "arms": sorted(r["metrics"]), "contrasts": sorted(r["contrasts"]), "n_holdout": r["n_holdout"], "n_s0": r["n_s0"],
                      "synthetic_rows": {k: int(len(v[1])) for k, v in syn.items()},
-                     "metrics_finite": all(fin(m) for m in r["metrics"].values() if m), "block_draws": len(r["syn_minus_s0_block_draws"])}
+                     # primary statistic only; rank correlation is undefined by construction for constant baselines
+                     "e4_finite_all_arms": bool(all(np.isfinite(m["e4"]) for m in r["metrics"].values())),
+                     "contrast_cis_finite": bool(all(np.isfinite(c["ci_block"]).all() and np.isfinite(c["ci_iid"]).all()
+                                                     for c in r["contrasts"].values())),
+                     "rho_undefined_only_for_constant_baselines": bool(all(np.isfinite(m["rho"]) for a, m in r["metrics"].items()
+                                                                          if a not in ("B_const", "B_zero"))),
+                     "block_draws": len(r["syn_minus_s0_block_draws"])}
             Path(f"results/tornado_rehearsal_{c}.json").write_text(json.dumps(shape, indent=1))
             print("rehearsal", c, json.dumps(shape), flush=True)
             continue
