@@ -414,14 +414,6 @@ def run_one(cutoffs, rehearsal: bool = False) -> dict:
     return results
 
 
-if __name__ == "__main__":
-    import sys
-    step = sys.argv[1] if len(sys.argv) > 1 else "dry-run"
-    arg = [date.fromisoformat(sys.argv[2])] if len(sys.argv) > 2 else None
-    {"dry-run": lambda: dry_run_all(), "dry-run-one": lambda: dry_run(arg), "registry": build_registry,
-     "run": run, "run-one": lambda: run_one(arg), "rehearse": lambda: run_one(arg, rehearsal=True)}[step]()
-
-
 # ---------------------------------------------------------------- synthetic accounts and metrics (design s6, s8; A1, A2)
 
 def synthetic_accounts(task: dict, sets: dict[str, list[tuple]], sampler, per: int = 200, seed: int = 0):
@@ -515,3 +507,11 @@ def shift_contrast(d_event: np.ndarray, d_p1: np.ndarray, d_p2: np.ndarray) -> d
     n = min(len(d_event), len(d_p1), len(d_p2))
     d = np.asarray(d_event[:n]) - (np.asarray(d_p1[:n]) + np.asarray(d_p2[:n])) / 2
     return {"D": float(np.mean(d_event) - (np.mean(d_p1) + np.mean(d_p2)) / 2), "ci": [float(v) for v in np.percentile(d, [2.5, 97.5])]}
+
+
+if __name__ == "__main__":
+    import sys
+    step = sys.argv[1] if len(sys.argv) > 1 else "dry-run"
+    arg = [date.fromisoformat(sys.argv[2])] if len(sys.argv) > 2 else None
+    {"dry-run": lambda: dry_run_all(), "dry-run-one": lambda: dry_run(arg), "registry": build_registry,
+     "run": run, "run-one": lambda: run_one(arg), "rehearse": lambda: run_one(arg, rehearsal=True)}[step]()

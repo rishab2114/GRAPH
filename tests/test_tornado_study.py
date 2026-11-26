@@ -87,3 +87,12 @@ def test_hash_keyed_sample_is_deterministic_uniform_and_streamable():
     part = smallest_keys(a[:2500], k1[:2500], 100) + smallest_keys(a[2500:], k1[2500:], 100)
     pk = dict(zip(a, k1))
     assert set(sorted(part, key=lambda x: pk[x])[:100]) == whole
+
+
+def test_module_entry_point_is_last_so_every_function_exists_when_run_as_a_script():
+    # The rehearsal crashed with NameError: the __main__ block sat above later definitions (2026-11-26).
+    import ast, inspect
+    import gffs.tornado_study as m
+    tree = ast.parse(inspect.getsource(m))
+    last = tree.body[-1]
+    assert isinstance(last, ast.If) and "__main__" in ast.unparse(last.test)
