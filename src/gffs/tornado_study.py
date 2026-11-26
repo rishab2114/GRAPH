@@ -128,7 +128,9 @@ def build_task(t: date, history: list[dict], registry: dict, with_labels: bool =
     week = week_edges(t)
     frame = frame_for(t, week)
     prior, rel, senders = participation(history, t)
-    ofac_created = {a: registry.get(a) for a in ofac_addresses()}
+    # Listed addresses with no contract creation record are externally owned accounts (no creation event exists):
+    # treated as infrastructure at every task date (deviation logged 2026-11-26, before any evaluation).
+    ofac_created = {a: registry.get(a) or "1970-01-01" for a in ofac_addresses()}
     infra = infrastructure(t, ofac_created, rel, senders)
     eligible = frame - prior - infra
     clean = week[~week["src"].isin(infra) & ~week["dst"].isin(infra)]

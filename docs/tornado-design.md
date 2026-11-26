@@ -321,3 +321,13 @@ Made **before any Stage 2 score exists**, on the basis of the pre-registered pow
 3. **Open question** (for the owner and Codex, not adopted): more blocks would raise power more than more positives
    would. That suggests a pre-specified longer horizon as a secondary estimand. It would add post-cutoff reading and a
    comparison, so it is left undecided here.
+
+- **2026-11-26, before any evaluation: listed accounts with no contract record.** The study's contract registry finds
+  creation records for 37 of the 38 addresses on OFAC's 2022-08-08 list. The remaining one (`0x8589…fda16`) has no
+  creation event, so it is an externally owned account. I believe it is the project's donation wallet, but that is
+  not verified here.
+  - *Why it matters.* Under §3 ("listed addresses created before t") an account with no creation date would never be
+    excluded.
+  - *Rule.* It is treated as infrastructure **at every task date**. Removing its edges can only remove interactions
+    with a listed Tornado address.
+
