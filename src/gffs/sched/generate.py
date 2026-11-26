@@ -26,13 +26,15 @@ def _dag(rng: random.Random, n: int, template: str) -> list[tuple[int, int]]:
     return [(a, b) for a in range(n) for b in range(a + 1, n) if rng.random() < 0.3]
 
 
-def generate(composition: tuple[str, ...], template: str, seed: int, n: int | None = None) -> dict:
+def generate(composition: tuple[str, ...], template: str, seed: int, n: int | None = None, hard: bool = False) -> dict:
+    """`hard`: 10-12 tasks, tight resources (most demands at least half the capacity), longer durations (L09 headroom)."""
     assert all(a in ATOMS for a in composition) and template in TEMPLATES
-    rng = random.Random(f"{'|'.join(sorted(composition))}|{template}|{seed}")
-    n = n or rng.randint(5, 7)
-    cap = rng.randint(2, 4)
-    dur = [rng.randint(1, 4) for _ in range(n)]
-    dem = [rng.randint(0, cap) for _ in range(n)]
+    rng = random.Random(f"{'|'.join(sorted(composition))}|{template}|{seed}{'|hard' if hard else ''}")
+    n = n or (rng.randint(10, 12) if hard else rng.randint(5, 7))
+    cap = rng.randint(3, 5) if hard else rng.randint(2, 4)
+    dur = [rng.randint(1, 6) if hard else rng.randint(1, 4) for _ in range(n)]
+    dem = [(rng.randint((cap + 1) // 2, cap) if rng.random() < 0.7 else rng.randint(0, cap)) if hard else rng.randint(0, cap)
+           for _ in range(n)]
     edges = _dag(rng, n, template)
     g = nx.DiGraph(); g.add_nodes_from(range(n)); g.add_edges_from(edges)
     es = {i: 0 for i in range(n)}

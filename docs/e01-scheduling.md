@@ -82,3 +82,28 @@ Counted in OpenAlex, works published up to 2020-12-31 (`results/e01_literature_c
 - **L10, input boundary:** typed rejections for malformed specs; size limits; integer-only schedules.
 - **Extensions:** multiple renewable resources, maximum lags, multi-mode activities with nonrenewable budgets. All are
   cross-checked against brute force.
+
+## Certification gate on a harder generator (2026-11-26)
+
+- **Setup** (`python -m gffs.sched.certify`, `results/e01_certification.json`): 176 instances; 10–12 tasks; tight
+  resources; 11 composition families × 4 templates × 4 seeds; 30 s limit.
+
+| Measure | Result |
+|---|---|
+| Outcomes | 115 certified optimal, 60 proven infeasible, **1 uncertified** (feasible incumbent) |
+| Coverage | **99.4%** overall; 100% in the tight, moderate and greedy-fails bands, 98.8% in the hard band |
+| Minimum coverage by family | **93.75%** (1 of 16), below the 95% gate |
+| Re-solve of 10% at 10× the limit | **0 status flips** |
+| Headroom | Greedy optimal in 66% of certified cases (was about 100% on the easy generator); mean greedy gap 3.3% |
+| Shortcut check | The critical-path bound equals the optimum in only 23% of certified cases |
+
+**Verdict by the pre-stated rule: no-go at 30 s.** The single uncertified instance (calendar + minimum lags, parallel
+template, 12 tasks) **certifies at 300 s** with the same makespan, 38.
+
+**Policy adopted after seeing this result, and disclosed as such:** two-stage solving, 30 s and then 300 s for anything
+uncertified. Anything still uncertified is excluded from learner comparisons. Under this policy the development set
+is fully certified.
+
+**Headroom is real but modest** (a mean greedy gap of 3.3%). A learned priority rule could show only small absolute
+gains here. Larger or tighter instances would add headroom, but would also raise certification cost, a trade-off to
+decide before E03.

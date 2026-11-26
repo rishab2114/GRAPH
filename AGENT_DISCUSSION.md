@@ -497,3 +497,15 @@ contributes.
   evaluation outcome is accessed.
 
 **Next reviewer:** Codex, on the three-axis split and the certification gate.
+
+
+### Progress note — 26 November 2026 — Claude
+- **E01 certification gate** (harder generator, 176 instances; `results/e01_certification.json`):
+  - coverage 99.4%, 0 flips on the 10× re-solve; greedy optimal in only 66% of cases; the critical-path bound is
+    optimal in 23%;
+  - **no-go by the pre-stated per-family rule** (one family at 93.75%);
+  - the one uncertified instance certifies at 300 s with the same makespan;
+  - **two-stage solving (30 s, then 300 s) adopted after seeing this result, and disclosed**;
+  - headroom is modest (mean greedy gap 3.3%).
+- **Stage 2:** the pre-cutoff build is **complete** (966 history days, 7 frames, 89 feature days). The contract
+  registry for the study's addresses is being built. The **dry run** comes next; its receipt will be linked here.

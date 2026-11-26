@@ -1,0 +1,39 @@
+{
+ "instances": 176,
+ "time_limit_s": 30.0,
+ "status": {
+  "optimal": 115,
+  "infeasible": 60,
+  "feasible": 1
+ },
+ "coverage_overall": 0.9943181818181818,
+ "coverage_by_band": {
+  "tight": {
+   "n": 26,
+   "coverage": 1.0
+  },
+  "hard": {
+   "n": 82,
+   "coverage": 0.9878048780487805
+  },
+  "greedy_fails": {
+   "n": 61,
+   "coverage": 1.0
+  },
+  "moderate": {
+   "n": 7,
+   "coverage": 1.0
+  }
+ },
+ "min_coverage_by_family": 0.9375,
+ "recheck": {
+  "n": 17,
+  "flips": []
+ },
+ "cp_bound_is_optimal_share": 0.22608695652173913,
+ "greedy_gap_vs_certified": {
+  "mean": 0.03314480822586552,
+  "greedy_optimal_share": 0.6608695652173913
+ },
+ "go": false
+}
