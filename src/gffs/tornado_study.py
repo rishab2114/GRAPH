@@ -132,16 +132,20 @@ def build_task(t: date, history: list[dict], registry: dict, with_labels: bool =
     # treated as infrastructure at every task date (deviation logged 2026-11-26, before any evaluation).
     ofac_created = {a: registry.get(a) or "1970-01-01" for a in ofac_addresses()}
     infra = infrastructure(t, ofac_created, rel, senders)
+    frame_size, prior_excluded = len(frame), len(frame & prior)
     eligible = frame - prior - infra
     clean = week[~week["src"].isin(infra) & ~week["dst"].isin(infra)]
-    eoa = frame | set(clean["src"].unique())
+    del week
+    senders = set(clean["src"].unique())
     nodes = pd.unique(pd.concat([clean["src"], clean["dst"]]))
-    classes = {n: ("contract" if registry.get(n) and _d(registry[n]) < t else "eoa" if n in eoa else "unknown") for n in nodes}
+    classes = {n: ("contract" if registry.get(n) and _d(registry[n]) < t else "eoa" if (n in frame or n in senders) else "unknown")
+               for n in nodes}
+    del frame, senders
     positives = labels_for_task(history, eligible, t) if with_labels else {}
     active = set(nodes) & eligible
     feats = account_features(clean, classes, targets=pd.Index(sorted(active)))
     out = {"t": t, "eligible": eligible, "positives": positives, "features": feats,
-           "infra_size": len(infra), "frame_size": len(frame), "prior_excluded": len(frame & prior)}
+           "infra_size": len(infra), "frame_size": frame_size, "prior_excluded": prior_excluded}
     if keep_edges:                       # only the evaluation task needs them (synthetic injection); saves memory
         out.update(clean_edges=clean, classes=classes)
     return out
@@ -198,6 +202,25 @@ def calibration_sample(task: dict, seed: int = 0) -> list:
     return [el[i] for i in rng.choice(len(el), min(CAL_SAMPLE, len(el)), replace=False)]
 
 
+def _per_cutoff(step: str, cutoffs) -> list[Path]:
+    """Run `step` for each cutoff in its own process (memory is fully released between cutoffs)."""
+    import subprocess, sys
+    outs = []
+    for c in cutoffs:
+        subprocess.run([sys.executable, "-W", "ignore", "-m", "gffs.tornado_study", step, str(c)], check=True)
+        outs.append(Path(f"results/tornado_{step.replace('-one', '')}_{c}.json"))
+    return outs
+
+
+def dry_run_all() -> dict:
+    from gffs.tornado_study_data import EVAL_CUTOFFS
+    out = {}
+    for f in _per_cutoff("dry-run-one", EVAL_CUTOFFS):
+        out.update(json.loads(f.read_text()))
+    Path("results/tornado_dry_run.json").write_text(json.dumps(out, indent=1, default=str))
+    return out
+
+
 def dry_run(cutoffs=None) -> dict:
     """Training and calibration tasks only. Reports task sizes, feature coverage and realised calibration alert rates.
     No S0, synthetic or holdout recall is computed (those are study results)."""
@@ -225,8 +248,8 @@ def dry_run(cutoffs=None) -> dict:
                                       "degenerate": bool(rate == 0.0)}
         out[str(c)] = rep
         print(c, json.dumps({k: rep[k] for k in ("training_rows", "training_positives")}), flush=True)
-    Path("results").mkdir(exist_ok=True)
-    Path("results/tornado_dry_run.json").write_text(json.dumps(out, indent=1, default=str))
+        Path("results").mkdir(exist_ok=True)
+        Path(f"results/tornado_dry-run_{c}.json").write_text(json.dumps({str(c): rep}, indent=1, default=str))
     return out
 
 
@@ -252,11 +275,28 @@ def _stress_sets() -> dict:
 
 
 def run() -> dict:
-    """The single frozen run (design + A1 + A2). Post-cutoff labels only behind the approval gate."""
+    """The single frozen run (design + A1 + A2): one process per cutoff, then the shift contrast D."""
+    from gffs.tornado_study_data import EVAL_CUTOFFS
+    results = {}
+    for f in _per_cutoff("run-one", EVAL_CUTOFFS):
+        results.update(json.loads(f.read_text()))
+    ok = [str(c) for c in EVAL_CUTOFFS if "metrics" in results.get(str(c), {})]
+    if len(ok) == 3:
+        ev_, p1, p2 = (results[str(c)] for c in EVAL_CUTOFFS)
+        dc = shift_contrast(np.array(ev_["syn_minus_s0_block_draws"]), np.array(p1["syn_minus_s0_block_draws"]),
+                            np.array(p2["syn_minus_s0_block_draws"]))
+        dc["D"] = ev_["contrasts"]["SYN-S0"]["e4_diff"] - (p1["contrasts"]["SYN-S0"]["e4_diff"] + p2["contrasts"]["SYN-S0"]["e4_diff"]) / 2
+        results["shift_contrast_D"] = dc
+    Path("results/tornado_stage2.json").write_text(json.dumps(results, indent=1, default=str))
+    return results
+
+
+def run_one(cutoffs) -> dict:
+    """One evaluated cutoff of the frozen run. Post-cutoff labels only behind the approval gate."""
     from gffs.scenarios import size_sampler_from
-    from gffs.tornado_study_data import EVAL_CUTOFFS, HISTORY_START
+    from gffs.tornado_study_data import HISTORY_START
     registry, sets, results = load_registry(), _stress_sets(), {}
-    for c in EVAL_CUTOFFS:
+    for c in cutoffs:
         td = task_dates(c); weeks = WEEKS
         history = load_history(HISTORY_START, c + timedelta(weeks=WEEKS))
         ev = build_task(c, history, registry, keep_edges=True)
@@ -266,7 +306,8 @@ def run() -> dict:
                 history = load_history(HISTORY_START, c + timedelta(weeks=26)); weeks = 26
                 ev["positives"] = labels_for_task(history, ev["eligible"], c, weeks=26); rule["positives_26w"] = len(ev["positives"])
                 if len(ev["positives"]) < 100:
-                    results[str(c)] = {"underpowered": rule}; continue
+                    results[str(c)] = {"underpowered": rule}
+                Path(f"results/tornado_run_{c}.json").write_text(json.dumps(results, indent=1)); continue
             Path("results").mkdir(exist_ok=True)
             Path("results/tornado_power_rule.json").write_text(json.dumps({**rule, "horizon_weeks": weeks}, indent=1))
         train = [build_task(t, history, registry) for t in td["train"]]
@@ -294,21 +335,16 @@ def run() -> dict:
         r.update({"horizon_weeks": weeks, "thresholds": taus, "model_hash": model_ids,
                   "sizes": {"eligible": len(ev["eligible"]), "holdout_positives": len(posh), "s0_positives": len(pos0)}})
         results[str(c)] = r
-    ok = [str(c) for c in EVAL_CUTOFFS if "metrics" in results.get(str(c), {})]
-    if len(ok) == 3:
-        ev_, p1, p2 = (results[str(c)] for c in EVAL_CUTOFFS)
-        dc = shift_contrast(np.array(ev_["syn_minus_s0_block_draws"]), np.array(p1["syn_minus_s0_block_draws"]),
-                            np.array(p2["syn_minus_s0_block_draws"]))
-        dc["D"] = ev_["contrasts"]["SYN-S0"]["e4_diff"] - (p1["contrasts"]["SYN-S0"]["e4_diff"] + p2["contrasts"]["SYN-S0"]["e4_diff"]) / 2
-        results["shift_contrast_D"] = dc
-    Path("results/tornado_stage2.json").write_text(json.dumps(results, indent=1, default=str))
+        Path(f"results/tornado_run_{c}.json").write_text(json.dumps({str(c): r}, indent=1, default=str))
     return results
 
 
 if __name__ == "__main__":
     import sys
     step = sys.argv[1] if len(sys.argv) > 1 else "dry-run"
-    {"dry-run": dry_run, "registry": build_registry, "run": run}[step]()
+    arg = [date.fromisoformat(sys.argv[2])] if len(sys.argv) > 2 else None
+    {"dry-run": lambda: dry_run_all(), "dry-run-one": lambda: dry_run(arg), "registry": build_registry,
+     "run": run, "run-one": lambda: run_one(arg)}[step]()
 
 
 # ---------------------------------------------------------------- synthetic accounts and metrics (design s6, s8; A1, A2)
