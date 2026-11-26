@@ -66,3 +66,24 @@ def test_event_minus_placebo_contrast():
     from gffs.tornado_study import shift_contrast
     d = shift_contrast(np.full(100, -0.05), np.full(100, 0.01), np.full(100, 0.03))
     assert abs(d["D"] - (-0.07)) < 1e-12 and d["ci"][1] < 0
+
+
+def test_compact_history_reproduces_participation_and_labels_exactly():
+    from gffs.tornado_study import compact_history, labels_compact, participation_compact
+    ch = compact_history(H)
+    for t in (date(2022, 1, 1), date(2022, 2, 1), date(2022, 3, 2)):
+        assert participation_compact(ch, t) == participation(H, t)
+    eligible = {"d2", "d1", "x"}
+    assert labels_compact(ch, eligible, date(2022, 2, 21), 8) == labels_for_task(H, eligible, date(2022, 2, 21), 8)
+
+
+def test_hash_keyed_sample_is_deterministic_uniform_and_streamable():
+    from gffs.tornado_study import sample_keys, smallest_keys
+    a = [f"0x{i:040x}" for i in range(5000)]
+    k1, k2 = sample_keys(a, "2022-01-01"), sample_keys(a, "2022-01-01")
+    assert (k1 == k2).all() and not (k1 == sample_keys(a, "2022-02-01")).all()
+    # streaming top-k over two halves equals top-k over the whole
+    whole = set(smallest_keys(a, k1, 100))
+    part = smallest_keys(a[:2500], k1[:2500], 100) + smallest_keys(a[2500:], k1[2500:], 100)
+    pk = dict(zip(a, k1))
+    assert set(sorted(part, key=lambda x: pk[x])[:100]) == whole

@@ -82,6 +82,52 @@ def labels_for_task(history: list[dict], eligible: set, t: date, weeks: int = WE
     return {a: (d - t).days // 7 for a, d in first.items() if a in eligible and t <= d < end}
 
 
+def compact_history(history: list[dict]) -> dict:
+    """First date per address for each role, so participation and labels are date comparisons (memory: OOM fix)."""
+    first = {"participation": {}, "deposit": {}, "relayer": {}, "relayed_sender": {}}
+
+    def put(kind, a, d):
+        if a and (a not in first[kind] or d < first[kind][a]):
+            first[kind][a] = d
+    for h in history:
+        d = _d(h["day"])
+        for x in h.get("tornado_txs", []):
+            put("participation", x["sender"], d)
+        for x in h.get("deposits", []):
+            put("participation", x.get("depositor"), d); put("deposit", x.get("depositor"), d)
+        for w in h.get("withdrawals", []):
+            for p_ in w.get("payees", []):
+                put("participation", p_, d)
+            put("participation", w.get("recipient"), d)
+            put("relayer", w.get("fee_payee"), d)
+            if w.get("tx_sender") and w.get("tx_sender") != w.get("recipient"):
+                put("relayed_sender", w["tx_sender"], d)
+    return first
+
+
+def participation_compact(ch: dict, t: date) -> tuple[set, set, set]:
+    before = lambda kind: {a for a, d in ch[kind].items() if d < t}
+    return before("participation"), before("relayer"), before("relayed_sender")
+
+
+def labels_compact(ch: dict, eligible: set, t: date, weeks: int = WEEKS) -> dict:
+    end = t + timedelta(weeks=weeks)
+    return {a: (d - t).days // 7 for a, d in ch["deposit"].items() if t <= d < end and a in eligible}
+
+
+def sample_keys(addresses, task: str, seed: int = 0) -> np.ndarray:
+    """A seeded uniform key per (task, address): the smallest keys form a uniform sample over pooled pairs."""
+    import hashlib
+    return np.array([int(hashlib.sha1(f"{seed}|{task}|{a}".encode()).hexdigest()[:15], 16) for a in addresses], dtype=np.int64)
+
+
+def smallest_keys(addresses, keys: np.ndarray, k: int) -> list:
+    if len(addresses) <= k:
+        return list(addresses)
+    idx = np.argpartition(keys, k)[:k]
+    return [addresses[i] for i in idx]
+
+
 def block_recall_draws(flags: np.ndarray, weeks: np.ndarray, n_weeks: int, draws: int, rng) -> np.ndarray:
     """Bootstrap recall per detector, resampling whole weeks of real positives (A2 primary)."""
     by_week = [np.flatnonzero(weeks == w) for w in range(n_weeks)]
@@ -123,11 +169,11 @@ def load_registry() -> dict:
     return dict(zip(t["address"], t["created"]))
 
 
-def build_task(t: date, history: list[dict], registry: dict, with_labels: bool = True, keep_edges: bool = False) -> dict:
+def build_task(t: date, ch: dict, registry: dict, with_labels: bool = True, keep_edges: bool = False) -> dict:
     """Eligible set, positives (address -> deposit week) and features for task date t (design s3-s4, A1 item 6)."""
     week = week_edges(t)
     frame = frame_for(t, week)
-    prior, rel, senders = participation(history, t)
+    prior, rel, senders = participation_compact(ch, t)
     # Listed addresses with no contract creation record are externally owned accounts (no creation event exists):
     # treated as infrastructure at every task date (deviation logged 2026-11-26, before any evaluation).
     ofac_created = {a: registry.get(a) or "1970-01-01" for a in ofac_addresses()}
@@ -141,7 +187,7 @@ def build_task(t: date, history: list[dict], registry: dict, with_labels: bool =
     classes = {n: ("contract" if registry.get(n) and _d(registry[n]) < t else "eoa" if (n in frame or n in senders) else "unknown")
                for n in nodes}
     del frame, senders
-    positives = labels_for_task(history, eligible, t) if with_labels else {}
+    positives = labels_compact(ch, eligible, t) if with_labels else {}
     active = set(nodes) & eligible
     feats = account_features(clean, classes, targets=pd.Index(sorted(active)))
     out = {"t": t, "eligible": eligible, "positives": positives, "features": feats,
@@ -180,26 +226,40 @@ def strict_tau(s: np.ndarray, alpha: float = ALERT_RATE) -> tuple[float, float]:
     return strict_threshold(s, alpha)
 
 
-def training_set(tasks: list[dict], seed: int = 0) -> tuple[pd.DataFrame, np.ndarray]:
-    rng = np.random.default_rng(seed)
-    Xs, ys = [], []
-    pool = [(i, a) for i, tk in enumerate(tasks) for a in tk["eligible"] if a not in tk["positives"]]
-    pick = rng.choice(len(pool), min(TRAIN_UNLABELLED, len(pool)), replace=False)
-    by_task: dict[int, list] = {}
-    for k in pick:
-        i, a = pool[k]; by_task.setdefault(i, []).append(a)
-    for i, tk in enumerate(tasks):
-        pos = sorted(tk["positives"])
-        Xs.append(X_for(tk, pos)); ys.append(np.ones(len(pos)))
-        neg = sorted(by_task.get(i, []))
-        Xs.append(X_for(tk, neg)); ys.append(np.zeros(len(neg)))
-    return pd.concat(Xs, ignore_index=True), np.concatenate(ys)
+def train_part(tk: dict) -> dict:
+    """What training needs from one task: all positives, and its smallest-key unlabelled candidates (streaming)."""
+    pos = sorted(tk["positives"])
+    neg = [a for a in tk["eligible"] if a not in tk["positives"]]
+    keys = sample_keys(neg, str(tk["t"]))
+    if len(neg) > TRAIN_UNLABELLED:
+        idx = np.argpartition(keys, TRAIN_UNLABELLED)[:TRAIN_UNLABELLED]
+    else:
+        idx = np.arange(len(neg))
+    chosen = [neg[i] for i in idx]
+    return {"Xp": X_for(tk, pos), "Xn": X_for(tk, chosen), "kn": keys[idx],
+            "sizes": {"frame": tk["frame_size"], "eligible": len(tk["eligible"]), "positives": len(pos),
+                      "active_eligible": len(tk["features"]), "prior_excluded": tk["prior_excluded"],
+                      "infrastructure": tk["infra_size"]}}
 
 
-def calibration_sample(task: dict, seed: int = 0) -> list:
-    rng = np.random.default_rng(seed)
-    el = sorted(task["eligible"])
-    return [el[i] for i in rng.choice(len(el), min(CAL_SAMPLE, len(el)), replace=False)]
+def merge_training(parts: list[dict]) -> tuple[pd.DataFrame, np.ndarray]:
+    """All positives plus the 50,000 smallest keys over the pooled (task, address) unlabelled pairs (seed 0)."""
+    Xn = pd.concat([p["Xn"] for p in parts], ignore_index=True); kn = np.concatenate([p["kn"] for p in parts])
+    keep = np.argsort(kn, kind="stable")[:TRAIN_UNLABELLED]
+    Xp = pd.concat([p["Xp"] for p in parts], ignore_index=True)
+    X = pd.concat([Xp, Xn.iloc[keep]], ignore_index=True)
+    return X, np.r_[np.ones(len(Xp)), np.zeros(len(keep))]
+
+
+def cal_part(tk: dict) -> dict:
+    """What calibration needs: positives with their deposit weeks (S0) and a 200,000-address uniform sample (tau)."""
+    el = sorted(tk["eligible"]); keys = sample_keys(el, str(tk["t"]))
+    sample = smallest_keys(el, keys, CAL_SAMPLE)
+    pos = sorted(tk["positives"])
+    return {"Xc": X_for(tk, sample), "Xp": X_for(tk, pos), "weeks": np.array([tk["positives"][a] for a in pos]),
+            "sizes": {"frame": tk["frame_size"], "eligible": len(el), "positives": len(pos),
+                      "active_eligible": len(tk["features"]), "prior_excluded": tk["prior_excluded"],
+                      "infrastructure": tk["infra_size"]}}
 
 
 def _per_cutoff(step: str, cutoffs) -> list[Path]:
@@ -224,28 +284,25 @@ def dry_run_all() -> dict:
 def dry_run(cutoffs=None) -> dict:
     """Training and calibration tasks only. Reports task sizes, feature coverage and realised calibration alert rates.
     No S0, synthetic or holdout recall is computed (those are study results)."""
-    from gffs.tornado_study_data import EVAL_CUTOFFS
+    import gc
+    from gffs.tornado_study_data import EVAL_CUTOFFS, HISTORY_START
     cutoffs = cutoffs or EVAL_CUTOFFS
     registry = load_registry()
     out = {}
     for c in cutoffs:
         td = task_dates(c)
-        history = load_history(date(2019, 12, 16), td["calibration"] + timedelta(weeks=WEEKS))   # never past the cutoff
-        train = [build_task(t, history, registry) for t in td["train"]]
-        cal = build_task(td["calibration"], history, registry)
-        X, y = training_set(train)
-        sample = calibration_sample(cal)
-        Xc = X_for(cal, sample)
-        rep = {"tasks": {str(tk["t"]): {"frame": tk["frame_size"], "eligible": len(tk["eligible"]),
-                                         "positives": len(tk["positives"]), "active_eligible": len(tk["features"]),
-                                         "prior_excluded": tk["prior_excluded"], "infrastructure": tk["infra_size"]}
-                         for tk in train + [cal]},
+        ch = compact_history(load_history(HISTORY_START, td["calibration"] + timedelta(weeks=WEEKS)))   # never past the cutoff
+        parts = []
+        for t in td["train"]:
+            tk = build_task(t, ch, registry); parts.append(train_part(tk)); del tk; gc.collect()
+        tk = build_task(td["calibration"], ch, registry); cal = cal_part(tk); del tk; gc.collect()
+        X, y = merge_training(parts)
+        rep = {"tasks": {**{str(t): p["sizes"] for t, p in zip(td["train"], parts)}, str(td["calibration"]): cal["sizes"]},
                "training_rows": int(len(y)), "training_positives": int(y.sum()), "detectors": {}}
         for name, make in detectors().items():
             m = make().fit(X, y.astype(int))
-            tau, rate = strict_tau(scores(m, Xc))
-            rep["detectors"][name] = {"tau": tau, "realised_calibration_alert_rate": rate,
-                                      "degenerate": bool(rate == 0.0)}
+            tau, rate = strict_tau(scores(m, cal["Xc"]))
+            rep["detectors"][name] = {"tau": tau, "realised_calibration_alert_rate": rate, "degenerate": bool(rate == 0.0)}
         out[str(c)] = rep
         print(c, json.dumps({k: rep[k] for k in ("training_rows", "training_positives")}), flush=True)
         Path("results").mkdir(exist_ok=True)
@@ -298,29 +355,32 @@ def run_one(cutoffs) -> dict:
     registry, sets, results = load_registry(), _stress_sets(), {}
     for c in cutoffs:
         td = task_dates(c); weeks = WEEKS
-        history = load_history(HISTORY_START, c + timedelta(weeks=WEEKS))
-        ev = build_task(c, history, registry, keep_edges=True)
+        import gc
+        ch = compact_history(load_history(HISTORY_START, c + timedelta(weeks=WEEKS)))
+        ev = build_task(c, ch, registry, keep_edges=True)
         if c == CUTOFF:                                              # power rule (s7): a count, before any score
             n8 = len(ev["positives"]); rule = {"positives_8w": n8}
             if n8 < 100:
-                history = load_history(HISTORY_START, c + timedelta(weeks=26)); weeks = 26
-                ev["positives"] = labels_for_task(history, ev["eligible"], c, weeks=26); rule["positives_26w"] = len(ev["positives"])
+                ch = compact_history(load_history(HISTORY_START, c + timedelta(weeks=26))); weeks = 26
+                ev["positives"] = labels_compact(ch, ev["eligible"], c, weeks=26); rule["positives_26w"] = len(ev["positives"])
                 if len(ev["positives"]) < 100:
                     results[str(c)] = {"underpowered": rule}
                 Path(f"results/tornado_run_{c}.json").write_text(json.dumps(results, indent=1)); continue
             Path("results").mkdir(exist_ok=True)
             Path("results/tornado_power_rule.json").write_text(json.dumps({**rule, "horizon_weeks": weeks}, indent=1))
-        train = [build_task(t, history, registry) for t in td["train"]]
-        cal = build_task(td["calibration"], history, registry)
-        X, y = training_set(train)
-        act = pd.concat([X_for(tk, [a for a in tk["positives"] if a in tk["features"].index]) for tk in train])
+        parts = []
+        for t in td["train"]:
+            tk = build_task(t, ch, registry); parts.append(train_part(tk)); del tk; gc.collect()
+        tk = build_task(td["calibration"], ch, registry); cal = cal_part(tk); del tk; gc.collect()
+        X, y = merge_training(parts)
+        act = pd.concat([p["Xp"] for p in parts], ignore_index=True)
         sampler = size_sampler_from(act.rename(columns={"in_W": "in_deg", "out_W": "out_deg", "peel_run_W": "peel_run"}),
                                     pd.Series(1, index=act.index))
         syn_X = synthetic_accounts(ev, sets, sampler)
         names = sorted(detectors())
-        pos0, posh = sorted(cal["positives"]), sorted(ev["positives"])
-        X0, Xh, Xc = X_for(cal, pos0), X_for(ev, posh), X_for(cal, calibration_sample(cal))
-        S0, H = np.zeros((len(pos0), len(names))), np.zeros((len(posh), len(names)))
+        posh = sorted(ev["positives"])
+        X0, Xh, Xc = cal["Xp"], X_for(ev, posh), cal["Xc"]
+        S0, H = np.zeros((len(X0), len(names))), np.zeros((len(posh), len(names)))
         syn = {k: (np.zeros((len(v[0]), len(names))), v[1]) for k, v in syn_X.items()}
         model_ids, taus = {}, {}
         for j, name in enumerate(names):
@@ -330,10 +390,10 @@ def run_one(cutoffs) -> dict:
             S0[:, j] = scores(m, X0) > tau; H[:, j] = scores(m, Xh) > tau
             for k in syn:
                 syn[k][0][:, j] = scores(m, syn_X[k][0]) > tau
-        r = evaluate(names, S0, np.array([cal["positives"][a] for a in pos0]), syn, H,
+        r = evaluate(names, S0, cal["weeks"], syn, H,
                      np.array([ev["positives"][a] for a in posh]), h_n_weeks=weeks)
         r.update({"horizon_weeks": weeks, "thresholds": taus, "model_hash": model_ids,
-                  "sizes": {"eligible": len(ev["eligible"]), "holdout_positives": len(posh), "s0_positives": len(pos0)}})
+                  "sizes": {"eligible": len(ev["eligible"]), "holdout_positives": len(posh), "s0_positives": len(X0)}})
         results[str(c)] = r
         Path(f"results/tornado_run_{c}.json").write_text(json.dumps({str(c): r}, indent=1, default=str))
     return results
