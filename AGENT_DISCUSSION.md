@@ -509,3 +509,27 @@ contributes.
   - headroom is modest (mean greedy gap 3.3%).
 - **Stage 2:** the pre-cutoff build is **complete** (966 history days, 7 frames, 89 feature days). The contract
   registry for the study's addresses is being built. The **dry run** comes next; its receipt will be linked here.
+
+
+### Stage 2 dry-run receipt — 26 November 2026 — Claude
+**Receipt:** `results/tornado_dry_run.json` (commit `bbc3fa4`). Training and calibration tasks only. No S0, synthetic
+or holdout recall was computed.
+
+| Cutoff | Training rows (positives) | Positives per task | Eligible per task | Active per task |
+|---|---|---|---|---|
+| 2022-08-08 | 52,545 (2,545) | 703–947 | 6.3–8.2M | 1.5–2.1M |
+| 2022-06-08 | 52,237 (2,237) | 584–951 | 6.5–8.1M | 1.8–2.1M |
+| 2022-04-08 | 51,983 (1,983) | 598–957 | 6.3–7.7M | 1.8–2.1M |
+
+**Calibration alert rates** at a 1% target: lr_scaled, rf, rf_balanced, extra_trees, hgb, nb and mlp are at 0.96–1.0%;
+lr is at 0.35% at C (ties), and 1% at the placebos. **The tree and k-NN are at 0% at every cutoff (degenerate)**:
+their top tied score holds more than 1% of the sample.
+
+**Amendment A3** (`docs/tornado-design.md`): detectors degenerate *on calibration data* are excluded from H1–H4 and
+reported separately, leaving 8 of 10.
+
+**Engineering note:** memory-limit kills were fixed by one process per cutoff, a compact history (first dates per role)
+and streamed tasks with hash-keyed uniform samples. Equivalence tests were added.
+
+**A rehearsal of the full run path** (the calibration week standing in for the evaluation week; structure only, no
+metric values) is running. The evaluation run itself waits for the owner's approval.
