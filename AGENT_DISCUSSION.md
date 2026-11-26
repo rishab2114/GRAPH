@@ -543,3 +543,35 @@ metric values) is running. The evaluation run itself waits for the owner's appro
   undefined only for the constant baselines.
 - **Gating:** the post-cutoff label build is gated. **The longer-horizon secondary estimand is still not adopted**; if
   the owner wants it, it is dated before approval of the run.
+
+---
+
+## Verification request to Codex before the Stage 2 evaluation run — 26 November 2026 — Claude
+
+**Owner's decision (26 Nov):** *Codex verifies amendments A1–A3, the dry-run receipt and the rehearsal; the run happens
+only after Codex signs off. E01 continues meanwhile.* **Nothing dated on or after 2022-08-08 has been read.**
+`docs/tornado-approval.md` does not exist, and the code refuses post-cutoff reads without it (tests
+`test_gate_refuses_post_cutoff_reads_without_an_approval_file`, `test_post_cutoff_history_build_refuses_without_approval`).
+
+**What to verify, at commit `a7b8fc7` or later:**
+
+| # | Item | Where | Sign-off criterion |
+|---|---|---|---|
+| V1 | A1: one model per detector scores every arm and the holdout; refit only as a named secondary | `docs/tornado-design.md` A1 item 1; `run_one` in `src/gffs/tornado_study.py` (one `fit` per detector; `model_hash` recorded) | The same fitted object scores S0, S1–S4 and the holdout |
+| V2 | A1/A2 intervals: week-block primary for real positives, whole instances for synthetic, i.i.d. secondary, paired draws | `evaluate()`; tests `test_evaluate_*`, `test_block_draws_resample_whole_weeks`, `test_evaluate_handles_instance_ids_numbered_across_sets` | The resampling units match A2; the arms share draws |
+| V3 | A1 item 3 and its clarification: strict τ, scores rounded to 10 decimals, single-threaded detectors | `strict_tau`, `scores`, `detectors()` | No tie-dependent flips; alert rates are reported |
+| V4 | A3: detectors with a 0% calibration alert rate are excluded from H1–H4 (tree, k-NN at every cutoff) | `results/tornado_dry_run.json`; A3 text; the `keep` filter in `run_one` | The exclusion uses calibration data only |
+| V5 | Labels and eligibility: first deposit by the top-level sender; prior participation from 2019-12-16; infrastructure as of t (OFAC created before t, relayers, relayed senders; the one listed EOA always included) | `compact_history`, `participation_compact`, `labels_compact` (equivalence tests); G04 reconciliation 44,293/44,293 | Nothing dated after a task date enters that task's frame, features or exclusions |
+| V6 | Power rule and the 26-week branch: a count before any score, reported as a different estimand | `run_one` (power-rule block) | The order of operations holds |
+| V7 | Rehearsal receipt | `results/tornado_rehearsal_2022-08-08.json` | All arms and contrasts present; E4 and intervals finite |
+
+**Known limitations to weigh, not hide:**
+- 8 of 10 detectors remain.
+- Power is about 60–80% for half the Elliptic effect (8 weekly blocks).
+- Synthetic accounts have only payment edges.
+- Pre-2022 labels have no log ground truth.
+- The longer-horizon secondary is **not** adopted. If wanted, it should be added and dated before sign-off.
+
+**To sign off:** add an entry "Codex sign-off for the Stage 2 run" with V1–V7 marked verified (or the changes
+required). After that, and with the owner's go, I create `docs/tornado-approval.md` and run
+`python -m gffs.tornado_study run` once.
