@@ -123,7 +123,7 @@ def load_registry() -> dict:
     return dict(zip(t["address"], t["created"]))
 
 
-def build_task(t: date, history: list[dict], registry: dict, with_labels: bool = True) -> dict:
+def build_task(t: date, history: list[dict], registry: dict, with_labels: bool = True, keep_edges: bool = False) -> dict:
     """Eligible set, positives (address -> deposit week) and features for task date t (design s3-s4, A1 item 6)."""
     week = week_edges(t)
     frame = frame_for(t, week)
@@ -138,8 +138,11 @@ def build_task(t: date, history: list[dict], registry: dict, with_labels: bool =
     positives = labels_for_task(history, eligible, t) if with_labels else {}
     active = set(nodes) & eligible
     feats = account_features(clean, classes, targets=pd.Index(sorted(active)))
-    return {"t": t, "eligible": eligible, "positives": positives, "features": feats, "clean_edges": clean,
-            "classes": classes, "infra_size": len(infra), "frame_size": len(frame), "prior_excluded": len(frame & prior)}
+    out = {"t": t, "eligible": eligible, "positives": positives, "features": feats,
+           "infra_size": len(infra), "frame_size": len(frame), "prior_excluded": len(frame & prior)}
+    if keep_edges:                       # only the evaluation task needs them (synthetic injection); saves memory
+        out.update(clean_edges=clean, classes=classes)
+    return out
 
 
 def X_for(task: dict, addresses) -> pd.DataFrame:
@@ -202,7 +205,7 @@ def dry_run(cutoffs=None) -> dict:
     out = {}
     for c in cutoffs:
         td = task_dates(c)
-        history = load_history(date(2019, 12, 16), td["calibration"] + timedelta(weeks=WEEKS))
+        history = load_history(date(2019, 12, 16), td["calibration"] + timedelta(weeks=WEEKS))   # never past the cutoff
         train = [build_task(t, history, registry) for t in td["train"]]
         cal = build_task(td["calibration"], history, registry)
         X, y = training_set(train)
@@ -254,7 +257,7 @@ def run() -> dict:
     for c in EVAL_CUTOFFS:
         td = task_dates(c); weeks = WEEKS
         history = load_history(HISTORY_START, c + timedelta(weeks=WEEKS))
-        ev = build_task(c, history, registry)
+        ev = build_task(c, history, registry, keep_edges=True)
         if c == CUTOFF:                                              # power rule (s7): a count, before any score
             n8 = len(ev["positives"]); rule = {"positives_8w": n8}
             if n8 < 100:
